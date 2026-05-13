@@ -1,0 +1,8 @@
+# Project place file
+/find_c00lkidd.rbxlx
+
+# Roblox Studio lock files
+/*.rbxlx.lock
+/*.rbxl.lock
+
+sourcemap.json
