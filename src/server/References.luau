@@ -16,6 +16,51 @@ ckGalaxy.TeleportPartc00lHouse = workspace.Buildings.c00lHouse.SpawnLocation
 ckGalaxy.TeleportPartInsideCave = workspace.Cave.Inside.InsideCaveExit.TPBackArea
 ckGalaxy.TeleportPartOutsideCave = workspace.Cave.Outside.OutsideCaveEntrance.TPToArea
 
+-- GROCERY STORE
+ckGalaxy.ShopSellTNTPrompt = workspace.Important.GroceryStoreObjects.ItemCatalog.Bomb.TNT.TNT.Prompter.ProximityPrompt
+ckGalaxy.ShopSellSlimeballPrompt =
+	workspace.Important.GroceryStoreObjects.ItemCatalog.Food.Slimeball.Slimeball.Prompter.ProximityPrompt
+ckGalaxy.ShopSellCrowbarPrompt =
+	workspace.Important.GroceryStoreObjects.ItemCatalog.Crowbar.Crowbar.Crowbar.crowbar.ProximityPrompt
+ckGalaxy.ShopSellChipsPrompt = workspace.Important.GroceryStoreObjects.ItemCatalog.Food.Chips.Chips.ProximityPrompt
+ckGalaxy.ShopSellColaPackPrompt =
+	workspace.Important.GroceryStoreObjects.ItemCatalog.Food.ColaPack.Prompter.ProximityPrompt
+ckGalaxy.ShopSellTurkeyLegPrompt =
+	workspace.Important.GroceryStoreObjects.ItemCatalog.Food.TurkeyLeg.TurkeyLeg.Handle.ProximityPrompt
+ckGalaxy.ShopSellWaterBalloonPrompt =
+	workspace.Important.GroceryStoreObjects.ItemCatalog.Balloon.WaterBalloon.WaterBalloon.ProximityPrompt
+
+ckGalaxy.ShopItemInfo = {
+	["Chips"] = {
+		ProximityPrompt = ckGalaxy.ShopSellChipsPrompt,
+		Price = 15,
+	},
+	["ColaPack"] = {
+		ProximityPrompt = ckGalaxy.ShopSellColaPackPrompt,
+		Price = 20,
+	},
+	["Crowbar"] = {
+		ProximityPrompt = ckGalaxy.ShopSellCrowbarPrompt,
+		Price = 30,
+	},
+	["Slimeball"] = {
+		ProximityPrompt = ckGalaxy.ShopSellSlimeballPrompt,
+		Price = 20,
+	},
+	["TNT"] = {
+		ProximityPrompt = ckGalaxy.ShopSellTNTPrompt,
+		Price = 100,
+	},
+	["TurkeyLeg"] = {
+		ProximityPrompt = ckGalaxy.ShopSellTurkeyLegPrompt,
+		Price = 20,
+	},
+	["WaterBalloon"] = {
+		ProximityPrompt = ckGalaxy.ShopSellWaterBalloonPrompt,
+		Price = -1,
+	},
+}
+
 -- CAVE ROOM
 ckGalaxy.GrandDoor = workspace.Cave.Inside.ButtonDoor :: Model
 ckGalaxy.HintLabel = workspace.Cave.Inside.CodeObjects.LockImage.SurfaceGui.HintText
@@ -46,10 +91,11 @@ function ckGalaxy.DirectTeleportPlayer(player: Player, newCFrame: CFrame)
 end
 
 local playersTeleporting = {}
-function ckGalaxy.TeleportPlayerOnTeleportPartTouch(tpFromPart: BasePart, tpTo: CFrame)
+-- Creates FOREVER CONNECTION (s) if the script using it does not disconnect themselves
+function ckGalaxy.TeleportPlayerOnTeleportPartTouch(tpFromPart: BasePart, tpTo: CFrame): RBXScriptConnection
 	local eventsModule = ckGalaxy.ServerEventsModule
 
-	tpFromPart.Touched:Connect(function(other)
+	local connection = tpFromPart.Touched:Connect(function(other)
 		if not other.Parent then
 			return
 		end
@@ -73,6 +119,36 @@ function ckGalaxy.TeleportPlayerOnTeleportPartTouch(tpFromPart: BasePart, tpTo: 
 		eventsModule.FireRemoteDisableMovementEvent(player, true)
 		playersTeleporting[player.UserId] = false
 	end)
+
+	return connection
+end
+
+-- Creates FOREVER CONNECTION (s) if the script using it does not disconnect themselves
+function ckGalaxy.ShopSellItemOnPromptTrigger(itemName: string): RBXScriptConnection
+	local eventsModule = ckGalaxy.ServerEventsModule
+
+	local prompt = ckGalaxy.ShopItemInfo[itemName].ProximityPrompt
+
+	local connection = prompt.Triggered:Connect(function(player)
+		local money = eventsModule.FireGetMoney(player)
+		local cost = ckGalaxy.ShopItemInfo[itemName].Price
+
+		if money >= cost then
+			local result = eventsModule.FireAddItem(player, itemName)
+			if not result then
+				eventsModule.FireRemoteNotifyInventoryFull(player)
+				return
+			end
+			eventsModule.FireAddMoney(player, -cost)
+			eventsModule.FireRemoteDeleteOnClient(player, prompt.Parent.Parent)
+		else
+			-- not enough money
+			eventsModule.FireRemoteNotifyNotEnoughMoney(player)
+			return
+		end
+	end)
+
+	return connection
 end
 
 return ckGalaxy
