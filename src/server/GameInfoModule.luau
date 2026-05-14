@@ -1,11 +1,11 @@
-local module = {}
+local GameInfoModule = {}
 
 -- Version unused
-module.Version = "v0.0.0"
+GameInfoModule.Version = "v0.0.0"
 
 -- Used to check that cutscenes sent by Client are valid cutscenes
-module.CutsceneList = {
+GameInfoModule.CutsceneList = {
 	"Intro",
 }
 
-return module
+return GameInfoModule

@@ -69,7 +69,13 @@ ckGalaxy.CaveExit = workspace.Cave.Outside.OutsideCaveEntrance.TP_B
 
 -- HELPER FUNCTIONS
 
--- This can return Humanoid or nil
+--[=[
+ Finds the reference to the Humanoid of the player Character
+
+ This can return Humanoid or nil
+ @param player Player
+ @return Humanoid
+]=]
 function ckGalaxy.GetHumanoid(player: Player)
 	local Humanoid = nil
 	local _, _ = pcall(function()
@@ -82,7 +88,11 @@ function ckGalaxy.GetHumanoid(player: Player)
 	return Humanoid
 end
 
--- Teleport player function to use from server scripts for simple usage
+--[=[
+ Teleport player function to use from server scripts for simple usage
+ @param player Player
+ @param newCFrame CFrame
+]=]
 function ckGalaxy.DirectTeleportPlayer(player: Player, newCFrame: CFrame)
 	if not player or not player.Character or not player.Character.PrimaryPart then
 		return
@@ -91,8 +101,17 @@ function ckGalaxy.DirectTeleportPlayer(player: Player, newCFrame: CFrame)
 end
 
 local playersTeleporting = {}
--- Creates FOREVER CONNECTION (s) if the script using it does not disconnect themselves
-function ckGalaxy.TeleportPlayerOnTeleportPartTouch(tpFromPart: BasePart, tpTo: CFrame): RBXScriptConnection
+
+--[=[
+ Teleports any players that touch tpFromPart to tpToCFrame CFrame 
+ 
+ Issue: Creates FOREVER CONNECTION (s) if the script using it does not disconnect themselves
+
+ @param tpFromPart BasePart
+ @param tpToCFrame CFrame
+ @return RBXScriptConnection
+]=]
+function ckGalaxy.TeleportPlayerOnTeleportPartTouch(tpFromPart: BasePart, tpToCFrame: CFrame): RBXScriptConnection
 	local eventsModule = ckGalaxy.ServerEventsModule
 
 	local connection = tpFromPart.Touched:Connect(function(other)
@@ -111,7 +130,7 @@ function ckGalaxy.TeleportPlayerOnTeleportPartTouch(tpFromPart: BasePart, tpTo: 
 
 		eventsModule.FireRemoteTransitionFunction(player, 0.5)
 		eventsModule.FireRemoteDisableMovementEvent(player, false)
-		ckGalaxy.DirectTeleportPlayer(player, tpTo)
+		ckGalaxy.DirectTeleportPlayer(player, tpToCFrame)
 		eventsModule.FireRemotePlaySound(player, game:GetService("SoundService").SFX.EnterSfx)
 
 		task.wait(0.5)
@@ -123,7 +142,14 @@ function ckGalaxy.TeleportPlayerOnTeleportPartTouch(tpFromPart: BasePart, tpTo: 
 	return connection
 end
 
--- Creates FOREVER CONNECTION (s) if the script using it does not disconnect themselves
+--[=[
+ Sells a shop item to the player that triggers the item's ProximityPrompt
+ 
+ Issue: Creates FOREVER CONNECTION (s) if the script using it does not disconnect themselves
+
+ @param itemName string
+ @return RBXScriptConnection
+]=]
 function ckGalaxy.ShopSellItemOnPromptTrigger(itemName: string): RBXScriptConnection
 	local eventsModule = ckGalaxy.ServerEventsModule
 

@@ -1,1 +1,2 @@
-print("Hello world, from server!")
+print("Server started!")
+-- Run everything inside the "run-init" folder

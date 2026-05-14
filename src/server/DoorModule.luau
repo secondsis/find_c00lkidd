@@ -1,4 +1,4 @@
-local module = {}
+local DoorModule = {}
 
 local References = require(script.Parent.References)
 
@@ -9,7 +9,7 @@ if RunService:IsClient() then
 end
 
 -- RIGHT SIDE
-local tweenService = game:GetService("TweenService")
+local TweenService = game:GetService("TweenService")
 
 local door = References.GrandDoor
 
@@ -19,12 +19,12 @@ local openSfx = rightPart.Parent:WaitForChild("open")
 local closeSfx = rightPart.Parent:WaitForChild("close")
 
 local rightSideMoveRightTween =
-	tweenService:Create(rightPart, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
+	TweenService:Create(rightPart, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
 		CFrame = rightPart.CFrame + Vector3.new(14, 0, 0),
 	})
 
 local rightSideMoveLeftTween =
-	tweenService:Create(rightPart, TweenInfo.new(1.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.In), {
+	TweenService:Create(rightPart, TweenInfo.new(1.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.In), {
 		CFrame = rightPart.CFrame,
 	})
 
@@ -32,33 +32,36 @@ local rightSideMoveLeftTween =
 local leftPart = door:WaitForChild("LeftEdge")
 
 local leftSideMoveRightTween =
-	tweenService:Create(leftPart, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
+	TweenService:Create(leftPart, TweenInfo.new(1.5, Enum.EasingStyle.Sine, Enum.EasingDirection.In), {
 		CFrame = leftPart.CFrame,
 	})
 
 local leftSideMoveLeftTween =
-	tweenService:Create(leftPart, TweenInfo.new(1.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.In), {
+	TweenService:Create(leftPart, TweenInfo.new(1.5, Enum.EasingStyle.Exponential, Enum.EasingDirection.In), {
 		CFrame = leftPart.CFrame + Vector3.new(-14, 0, 0),
 	})
 
 local barrier = door:WaitForChild("ClosedBarrier")
 
-function module.openDoor()
+--- Opens the GrandDoor using a Tween and plays an opening SFX
+function DoorModule.openDoor()
 	openSfx:Play()
 	rightSideMoveRightTween:Play()
 	leftSideMoveLeftTween:Play()
 end
 
-function module.closeDoor()
+--- Closes the GrandDoor using a Tween, plays a closing SFX, and enables a barrier with collision
+function DoorModule.closeDoor()
 	barrier.CanCollide = true
 	closeSfx:Play()
 	rightSideMoveLeftTween:Play()
 	leftSideMoveRightTween:Play()
 end
 
-function module.unlockHints()
+--- Reveals the Hints in the walls of the cave, Removes the transparency of the Hint TextLabel, etc.
+function DoorModule.unlockHints()
 	local hintFolder = door.Parent.CodeObjects
-	print("unlocked hints")
+	print("Game: Unlocked hints")
 	for _, obj in hintFolder:GetDescendants() do
 		if obj.Name == "KeyImage" or obj.Name == "LockImage" then
 			continue
@@ -72,4 +75,4 @@ function module.unlockHints()
 	door.GlitchPart:Destroy()
 end
 
-return module
+return DoorModule

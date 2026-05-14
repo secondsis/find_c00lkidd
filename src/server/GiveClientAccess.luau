@@ -10,8 +10,17 @@ local securityNoneFolder = assetsFolder.Security_NONE
 
 local clonedFolder = ReplicatedStorage.ClonedFolder
 
--- This used to return something but then it just added it to the clonedFolder because variable
--- references don't work across server-client.
+--[=[
+ Clones an object from `ServerStorage.Assets.Security_NONE.[assetPath]` into the client's `ReplicatedStorage.ClonedFolder`
+ 
+ This can be used on the server to clone objects that the client cannot normally access
+
+ `assetPath` should include "." to separate levels of hierarchy
+
+ Issue: Security problem if the server fetches an asset inappropriately, gives access to ALL clients
+ @param player Player
+ @param assetPath string
+]=]
 local function fetchAsset(player: Player, assetPath: string)
 	local assetParents = string.split(assetPath, ".")
 	local asset = securityNoneFolder[table.remove(assetParents, 1)]
