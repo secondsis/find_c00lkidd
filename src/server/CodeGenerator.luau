@@ -3,7 +3,7 @@ local ServerStorage = game:GetService("ServerStorage")
 local References = require(script.Parent.References)
 
 local hintLabel = References.HintLabel
-local doorCodeValue = game:GetService("ServerStorage"):WaitForChild("DoorCode")
+local doorCodeValue = ServerStorage:WaitForChild("DoorCode")
 
 local code = math.random(1000, 9999)
 local translateTable = { "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", "EIGHT", "NINE" }
