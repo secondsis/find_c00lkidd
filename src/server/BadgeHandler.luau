@@ -1,6 +1,6 @@
 -- SERVICES --
 local badgeService = game:GetService("BadgeService")
-local players = game:GetService("Players")
+local Players = game:GetService("Players")
 
 local References = require(script.Parent.References)
 
@@ -10,6 +10,8 @@ local eventsModule = References.ServerEventsModule
 local badgesFolder =
 	workspace:WaitForChild("Buildings"):WaitForChild("c00lHouse"):WaitForChild("Shelf"):WaitForChild("Badges")
 local storedTrophiesFolder = game:GetService("ServerStorage").Assets.Security_NONE.Objects.Trophies
+
+-- BADGES --
 
 local welcomeBadge = 3646574457098757
 
@@ -66,21 +68,30 @@ for _, badge in endingBadges do
 	badgeToPart[badge] = storedTrophiesFolder:WaitForChild(badgeToEnding[badge])
 end
 
-local function checkAllBadges(badgeOwnList)
+--[=[
+ Checks if the BadgeList contains every ending badge and unlocks hints
+ @param badgeOwnList { }
+]=]
+local function checkAllBadges(badgeOwnList: {})
 	if #badgeOwnList == #endingBadges then
 		local module = require(script.Parent.DoorModule)
 		module.unlockHints()
 	end
 end
 
-local function AwardBadge(player, badgeId, dataStoreEntryName: string, value)
+--[=[
+ Checks if the BadgeList contains every ending badge and unlocks hints
+ @param player { }
+]=]
+local function AwardBadge(player: Player, badgeId: number, dataStoreEntryName: string)
 	badgeService:AwardBadge(player, badgeId)
 
 	-- save that into datastore
-	eventsModule.FireSetDataAsync(player, dataStoreEntryName, value)
+	eventsModule.FireSetDataAsync(player, dataStoreEntryName, true)
 end
 
-players.PlayerAdded:Connect(function(player)
+-- Upon player joining, check if they own every ending badge and clone ending trophies into workspace
+Players.PlayerAdded:Connect(function(player)
 	local badgeOwnList = {}
 	for _, badge in endingBadges do
 		local badgeData = eventsModule.FireGetData(player, "Badges.Ending." .. badgeToEnding[badge])
@@ -99,6 +110,7 @@ players.PlayerAdded:Connect(function(player)
 	checkAllBadges(badgeOwnList)
 end)
 
+--
 eventsModule.ConnectRemoteAwardEndingBadge(function(player, endingName)
 	if not player:GetAttribute("Ending") or player:GetAttribute("Ending") ~= endingName then
 		return

@@ -38,7 +38,7 @@ players.PlayerAdded:Connect(function(player: Player)
 
 			dataStore:SetAsync("Player_" .. player.UserId, data)
 			-- GIVE WELCOME BADGE
-			eventsModule.FireAwardBadge(player, 3646574457098757, "Badges.Other.3646574457098757", true)
+			eventsModule.FireAwardBadge(player, 3646574457098757, "Badges.Other.3646574457098757")
 		end
 
 		player_data["Player_" .. player.UserId] = data
@@ -137,7 +137,7 @@ local function getDataOptimally(player: Player, entryName: string): any
 
 				dataStore:SetAsync("Player_" .. player.UserId, data)
 				-- GIVE WELCOME BADGE
-				eventsModule.FireAwardBadge(player, 3646574457098757, "Badges.Other.3646574457098757", true)
+				eventsModule.FireAwardBadge(player, 3646574457098757, "Badges.Other.3646574457098757")
 			end
 
 			player_data["Player_" .. player.UserId] = data
