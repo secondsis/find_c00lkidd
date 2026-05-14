@@ -32,7 +32,7 @@ local prefabs = {
 
 -- Remove any not under workspace
 for _, v in prefabs do
-	for ii, vv in v do
+	for __, vv in v do
 		if not vv:IsDescendantOf(workspace) then
 			table.remove(v, table.find(v, vv))
 		end
@@ -60,7 +60,7 @@ local moneyFolder = Instance.new("Folder")
 moneyFolder.Name = "Generated_Moneys"
 moneyFolder.Parent = destinationFolder
 
-for i, moneyPlaceholder in prefabs.Moneys do
+for _, moneyPlaceholder in prefabs.Moneys do
 	local moneyPrefab = prefabFolder.Money:Clone()
 	local amount = moneyPlaceholder:GetAttribute("Amount")
 	moneyPrefab:SetAttribute("Amount", amount)
@@ -83,7 +83,7 @@ local trashCanFolder = Instance.new("Folder")
 trashCanFolder.Name = "Generated_TrashCans"
 trashCanFolder.Parent = destinationFolder
 
-for i, trashCanPlaceholder in prefabs.TrashCans do
+for _, trashCanPlaceholder in prefabs.TrashCans do
 	local trashCanPrefab = prefabFolder.TrashCan:Clone()
 
 	assert(trashCanPlaceholder:IsA("Part"), "Something tagged with TrashCan was not a Part.")

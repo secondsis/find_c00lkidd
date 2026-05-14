@@ -1,78 +1,108 @@
---[[
+--[=[
 	Ending data entries are structured like:
 	"Badges.Ending.{endingName}"
-]]
+]=]
+
+local DataStoreService = game:GetService("DataStoreService")
+local Players = game:GetService("Players")
+local RunService = game:GetService("RunService")
 
 local References = require(script.Parent.References)
 
-local dataStoreName = game:GetService("RunService"):IsStudio() and "Test_MainGame_PlayerData_v3"
-	or "MainGame_PlayerData_v0"
+local IsStudio = RunService:IsStudio()
 
-local orderedDataStoreName = game:GetService("RunService"):IsStudio() and "Test_Donation_PlayerData_v0"
-	or "Donation_PlayerData_v0"
+local dataStoreName = IsStudio and "Test_MainGame_PlayerData_v3" or "MainGame_PlayerData_v0"
 
-if not game:GetService("RunService"):IsStudio() then
-	print("Data store: " .. dataStoreName)
+local orderedDataStoreName = IsStudio and "Test_Donation_PlayerData_v0" or "Donation_PlayerData_v0"
+
+if not IsStudio then
+	print("Data Store: " .. dataStoreName)
 end
-
-local DSS = game:GetService("DataStoreService")
-local players = game:GetService("Players")
 
 local eventsModule = References.ServerEventsModule
 
-local dataStore = DSS:GetDataStore(dataStoreName)
-local donationDataStore = DSS:GetOrderedDataStore(orderedDataStoreName)
+local dataStore = DataStoreService:GetDataStore(dataStoreName)
+local donationDataStore = DataStoreService:GetOrderedDataStore(orderedDataStoreName)
 
+-- Players' data in this session. Will be saved regularly to DataStore and deleted from table when player leaves
 local player_data = {}
 
-players.PlayerAdded:Connect(function(player: Player)
-	local success, err = pcall(function()
-		local data = dataStore:GetAsync("Player_" .. player.UserId)
+-- Upon player joining, initialize their data and donation data
+Players.PlayerAdded:Connect(function(player: Player)
+	-- Initialize data
+	local _, err = pcall(function()
+		-- Get Player's data
+		local playerGameData = dataStore:GetAsync("Player_" .. player.UserId)
+
+		-- TODO: Have a way to warn the player if their data does not save successfully
+		-- playerGameData["LastSessionSaved"] = false
 
 		-- Initialize new players' data
-		if not data then
-			data = {
+		if not playerGameData then
+			playerGameData = {
 				["Cutscenes.Intro"] = false,
 				["JoinedTick"] = tick(),
 			}
 
-			dataStore:SetAsync("Player_" .. player.UserId, data)
+			dataStore:SetAsync("Player_" .. player.UserId, playerGameData)
 			-- GIVE WELCOME BADGE
 			eventsModule.FireAwardBadge(player, 3646574457098757, "Badges.Other.3646574457098757")
 		end
 
-		player_data["Player_" .. player.UserId] = data
-		print(data)
+		player_data["Player_" .. player.UserId] = playerGameData
+		print(playerGameData)
 	end)
 
 	if err then
-		-- Note: Add UI to tell the player to rejoin
+		-- TODO: Add UI to tell the player to rejoin
 		warn(err)
 	end
 
-	local success, err = pcall(function()
-		local data = donationDataStore:GetAsync("Player_" .. player.UserId)
+	-- Initialize Donation Data
+	local _, err2 = pcall(function()
+		-- Get Player's donation data
+		local playerDonationData = donationDataStore:GetAsync("Player_" .. player.UserId)
 
 		-- Initialize new players' data
-		if not data then
-			data = 0
+		if not playerDonationData then
+			playerDonationData = 0
 
-			donationDataStore:SetAsync("Player_" .. player.UserId, data)
+			donationDataStore:SetAsync("Player_" .. player.UserId, playerDonationData)
 		end
 	end)
 
-	if err then
-		-- Note: Add UI to tell the player to rejoin
-		warn(err)
+	if err2 then
+		-- TODO: Add UI to tell the player to rejoin
+		warn(err2)
 	end
 end)
 
---players.PlayerRemoving:Connect(function(player)
--- I want to remove the player from the data table in multiplayer
---end)
+-- TODO: Check if we need this function (I forgot if I already made a player leaving save feature)
+-- Players.PlayerRemoving:Connect(function(player)
+-- 	local _, err = pcall(function()
+-- 		-- Save Player Data
+-- 		local playerGameData = player_data[player.UserId]
+-- 		dataStore:SetAsync("Player_" .. player.UserId, playerGameData)
 
+-- 		-- Delete player from list
+-- 		table.remove(player_data, player.UserId)
+-- 	end)
+
+-- 	if err then
+-- 		warn(err)
+-- 	end
+-- end)
+
+--[=[
+ Assign values to player's DataStore data in bulk using a list of entries and values
+
+ Note: entries and values MUST be in order corresponding to each other
+ @param player Player
+ @param entryNameList { string }
+ @param values { any }
+]=]
 local function massSetData(player: Player, entryNameList: { string }, values: { any })
-	local success, err = pcall(function()
+	local _, err = pcall(function()
 		local oldData = dataStore:GetAsync("Player_" .. player.UserId)
 
 		for i = 1, #entryNameList do
@@ -94,8 +124,14 @@ local function massSetData(player: Player, entryNameList: { string }, values: { 
 	end
 end
 
+--[=[
+ Assign a value to player's DataStore data
+ @param player Player
+ @param entryName string
+ @param value any
+]=]
 local function setData(player: Player, entryName: string, value: any)
-	local success, err = pcall(function()
+	local _, err = pcall(function()
 		local oldData = dataStore:GetAsync("Player_" .. player.UserId)
 		if oldData[entryName] then
 			return
@@ -110,10 +146,17 @@ local function setData(player: Player, entryName: string, value: any)
 	end
 end
 
+--[=[
+ Get ALL of player's data from DataStore
+
+ This sends a new request to DataStore
+ @param player Player
+ @return any -- The player data
+]=]
 local function getData(player: Player): any
 	local data
 	local success, err = pcall(function()
-		local ds = DSS:GetDataStore(dataStoreName)
+		local ds = DataStoreService:GetDataStore(dataStoreName)
 		data = ds:GetAsync("Player_" .. player.UserId)
 	end)
 	if not success then
@@ -122,42 +165,30 @@ local function getData(player: Player): any
 
 	return data
 end
+--[=[
+ Obtains the value of an entry inside the player's data
 
+ This doesn't request to DataStore and uses table cache
+ @param player Player
+ @param entryName string
+ @param value any
+]=]
 local function getDataOptimally(player: Player, entryName: string): any
+	-- If for some reason the player's data was not fetched
 	if not player_data["Player_" .. player.UserId] then
-		local success, err = pcall(function()
-			local data = dataStore:GetAsync("Player_" .. player.UserId)
-
-			-- Initialize new players' data
-			if not data then
-				data = {
-					["Cutscenes.Intro"] = false,
-					["JoinedTick"] = tick(),
-				}
-
-				dataStore:SetAsync("Player_" .. player.UserId, data)
-				-- GIVE WELCOME BADGE
-				eventsModule.FireAwardBadge(player, 3646574457098757, "Badges.Other.3646574457098757")
-			end
-
-			player_data["Player_" .. player.UserId] = data
-		end)
-
-		if err then
-			-- Note: Add UI to tell the player to rejoin
-			warn(err)
-		end
+		-- TODO: Add UI to tell the player to rejoin
+		warn("Player Data could not be retrieved!")
+		return nil
 	end
 
-	if player_data["Player_" .. player.UserId] then
-		return player_data["Player_" .. player.UserId][entryName]
-	end
+	-- If the player has data
 
-	return nil
+	return player_data["Player_" .. player.UserId][entryName]
 end
 
+-- UNUSED
 local function setDonationData(player: Player, addedValue: number)
-	local success, err = pcall(function()
+	local _, err = pcall(function()
 		local oldData = orderedDataStoreName:GetAsync("Player_" .. player.UserId)
 
 		local newData = oldData + addedValue
@@ -176,6 +207,7 @@ eventsModule.ConnectGetDataAsync(getData)
 eventsModule.ConnectRemoteGetData(getDataOptimally)
 eventsModule.ConnectGetData(getDataOptimally)
 
+-- TODO: Figure out what to do with data if game shuts down
 --game:BindToClose(function(closeReason)
 --	--print(`Closing with reason {closeReason}`)
 --	--task.wait(3)

@@ -110,29 +110,35 @@ Players.PlayerAdded:Connect(function(player)
 	checkAllBadges(badgeOwnList)
 end)
 
---
-eventsModule.ConnectRemoteAwardEndingBadge(function(player, endingName)
+-- Run from client to award badges if the client has been given the appropriate Ending attribute
+eventsModule.ConnectRemoteAwardEndingBadge(function(player: Player, endingName: string)
+	-- Player must have the correct "Ending" attribute
+	-- INEFFICIENT/SCUFFED There might be a better way of securely tracking this
 	if not player:GetAttribute("Ending") or player:GetAttribute("Ending") ~= endingName then
 		return
 	end
 
+	-- Checks if Ending has a corresponding badge
 	if not endingToBadge[endingName] then
 		warn("Badge name does not exist: " .. endingName)
 		return
 	end
 
+	-- Awards the ending badge to the player
 	local success, result = pcall(function()
 		return badgeService:AwardBadge(player.UserId, endingToBadge[endingName])
 	end)
 
+	-- Warning messages if it doesn't work
 	if not success then
 		warn("Failed to award badge.")
 	end
 
 	if not result then
-		warn("Failed to award badge. User may already own it.")
+		warn(player.Name .. " (UID: " .. player.UserId .. ") already has this badge!")
 	end
 
+	-- Make an entry in the DataStore in case badges don't work / players can delete their badges
 	eventsModule.FireSetDataAsync(player, "Badges.Ending." .. endingName, true)
 end)
 

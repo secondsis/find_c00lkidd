@@ -10,6 +10,8 @@ local translateTable = { "ONE", "TWO", "THREE", "FOUR", "FIVE", "SIX", "SEVEN", 
 local strCode = tostring(code)
 
 local translatedCode = ""
+
+-- Using the randomly generated code, turn the numbers into string text
 for i = 1, strCode:len(), 1 do
 	local char = string.sub(strCode, i, i)
 	if char == "0" then
@@ -25,6 +27,7 @@ end
 local kairosMap = { 11, 1, 9, 18, 15, 19 }
 local encoded_code = ""
 
+-- Using the worded format string form of the code numbers, shift the letters using the cipher
 for i = 1, #translatedCode do
 	local char = string.sub(translatedCode, i, i)
 
@@ -38,5 +41,7 @@ for i = 1, #translatedCode do
 	encoded_code ..= string.char(shifted_byte)
 end
 
+-- Set the DoorCode password to the numbered code
 doorCodeValue.Value = code
+-- Set the hint text using the ciphered code
 hintLabel.Text = encoded_code
