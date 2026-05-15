@@ -21,6 +21,10 @@ ckGalaxy.TeleportPartOutsideCave = workspace.Cave.Outside.OutsideCaveEntrance.TP
 -- c00lkidd HOUSE
 ckGalaxy.GubbyToyClickDetector = game:GetService("Workspace").Buildings.c00lHouse["c00l_toys"]["007gub7"].ClickDetector
 ckGalaxy.CatPianoClickDetector = game:GetService("Workspace").Buildings.c00lHouse["c00l_toys"].CatPiano.ClickDetector
+ckGalaxy.Mirror1Prompt =
+	game:GetService("Workspace").Buildings.c00lHouse.Furniture.Bathroom.Mirror.Prompter.ProximityPrompt
+ckGalaxy.Mirror2Prompt =
+	game:GetService("Workspace").Buildings.c00lHouse.Furniture["Main Room"].Mirror.Prompter.ProximityPrompt
 
 -- GROCERY STORE
 ckGalaxy.ShopSellTNTPrompt = workspace.Important.GroceryStoreObjects.ItemCatalog.Bomb.TNT.TNT.Prompter.ProximityPrompt
