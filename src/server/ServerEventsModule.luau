@@ -1,5 +1,8 @@
 -- RemoteEvents, BindableEvents, BindableFunctions, etc. (yes, functions too)
 
+-- Phase out the BindableEvents/BindableFunctions on the server
+-- RemoteEvents/RemoteFunctions are allowed
+-- Bindables can be done via module calls
 export type Events = {
 	FireRemoteDialogueEvent: (Player, string) -> (),
 	ConnectRemoteDisableMovementEvent: ((Player, boolean) -> ()) -> RBXScriptConnection,

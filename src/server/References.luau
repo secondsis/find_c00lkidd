@@ -7,6 +7,8 @@ local ServerStorage = game:GetService("ServerStorage")
 
 -- GENERAL
 ckGalaxy.ServerEventsModule = require(ServerScriptService.Server.ServerEventsModule)
+ckGalaxy.PlayerWalkSpeed = 20
+ckGalaxy.PlayerRunSpeed = 40
 
 -- TELEPORTS
 ckGalaxy.TeleportPartIntro = workspace.Cutscenes.Intro.e7Home.TPPart
@@ -15,6 +17,10 @@ ckGalaxy.TeleportPartc00lHouse = workspace.Buildings.c00lHouse.SpawnLocation
 
 ckGalaxy.TeleportPartInsideCave = workspace.Cave.Inside.InsideCaveExit.TPBackArea
 ckGalaxy.TeleportPartOutsideCave = workspace.Cave.Outside.OutsideCaveEntrance.TPToArea
+
+-- c00lkidd HOUSE
+ckGalaxy.GubbyToyClickDetector = game:GetService("Workspace").Buildings.c00lHouse["c00l_toys"]["007gub7"].ClickDetector
+ckGalaxy.CatPianoClickDetector = game:GetService("Workspace").Buildings.c00lHouse["c00l_toys"].CatPiano.ClickDetector
 
 -- GROCERY STORE
 ckGalaxy.ShopSellTNTPrompt = workspace.Important.GroceryStoreObjects.ItemCatalog.Bomb.TNT.TNT.Prompter.ProximityPrompt
@@ -59,6 +65,17 @@ ckGalaxy.ShopItemInfo = {
 		ProximityPrompt = ckGalaxy.ShopSellWaterBalloonPrompt,
 		Price = -1,
 	},
+}
+
+-- RESTAURANT
+ckGalaxy.RestaurantWallPrompt = game:GetService("Workspace").Buildings.Restaurant.Other.Part.Prompter.ProximityPrompt
+
+-- NEIGHBORHOOD
+ckGalaxy.FrontDoors = {
+	game:GetService("Workspace").Buildings.LargeHome.Building.FrontDoor,
+	game:GetService("Workspace").Buildings.LargeTrailer.Building.FrontDoor,
+	game:GetService("Workspace").Buildings.SmallHome.Building.FrontDoor,
+	game:GetService("Workspace").Buildings.SmallTrailer.Building.FrontDoor,
 }
 
 -- CAVE ROOM
@@ -106,7 +123,6 @@ local playersTeleporting = {}
  Teleports any players that touch tpFromPart to tpToCFrame CFrame 
  
  Issue: Creates FOREVER CONNECTION (s) if the script using it does not disconnect themselves
-
  @param tpFromPart BasePart
  @param tpToCFrame CFrame
  @return RBXScriptConnection

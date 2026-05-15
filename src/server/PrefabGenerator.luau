@@ -4,7 +4,7 @@
 
 local collectionService = game:GetService("CollectionService")
 local SoundService = game:GetService("SoundService")
-local tweenService = game:GetService("TweenService")
+local TweenService = game:GetService("TweenService")
 
 local References = require(script.Parent.References)
 
@@ -13,6 +13,7 @@ local eventsModule = References.ServerEventsModule
 local color3 = Color3.new
 
 local checker = collectionService:GetTagged("Tree")
+-- INEFFICIENT/SCUFFED I don't know any better method to make sure I get "all" of the objects
 while #checker == 0 do
 	task.wait(0.1)
 	checker = collectionService:GetTagged("Tree")
@@ -45,13 +46,18 @@ treeFolder.Name = "Generated_Trees"
 treeFolder.Parent = destinationFolder
 
 for _, treePlaceholder in prefabs.Trees do
+	-- Clone trees from the prefabFolder
 	local treePrefab = prefabFolder.Tree:Clone()
 
+	-- Make sure the treePlaceholder part is a part
 	assert(treePlaceholder:IsA("Part"), "Something tagged with Tree was not a Part.")
 
+	-- Set the new tree's position to the placeholder part
 	treePrefab:PivotTo(treePlaceholder.CFrame)
 
+	-- Put the new tree under the treeFolder
 	treePrefab.Parent = treeFolder
+	-- Destroy the placeholder
 	treePlaceholder:Destroy()
 end
 
@@ -105,7 +111,9 @@ for _, thomasDetector in prefabs.ThomasDetectors do
 		local gasterSfx = SoundService.SFX["Gaster Fade"]
 		gasterSfx:Play()
 		gasterSfx.PlaybackSpeed -= 0.05
+
 		eventsModule.FireSubtractThomas(player)
+
 		local thomasGui = game:GetService("ServerStorage").GUIs.ThomasGui:Clone()
 		thomasGui.Parent = player:FindFirstChild("PlayerGui")
 		thomasDetector.Parent:Destroy()
@@ -122,27 +130,27 @@ for _, light in prefabs.RainbowLights do
 
 		light.Color = color3(1, 0, 0)
 
-		local tween1 = tweenService:Create(light, tweenInfo, {
+		local tween1 = TweenService:Create(light, tweenInfo, {
 			Color = color3(1, 0, 1),
 		})
 
-		local tween2 = tweenService:Create(light, tweenInfo, {
+		local tween2 = TweenService:Create(light, tweenInfo, {
 			Color = color3(0, 0, 1),
 		})
 
-		local tween3 = tweenService:Create(light, tweenInfo, {
+		local tween3 = TweenService:Create(light, tweenInfo, {
 			Color = color3(0, 1, 1),
 		})
 
-		local tween4 = tweenService:Create(light, tweenInfo, {
+		local tween4 = TweenService:Create(light, tweenInfo, {
 			Color = color3(0, 1, 0),
 		})
 
-		local tween5 = tweenService:Create(light, tweenInfo, {
+		local tween5 = TweenService:Create(light, tweenInfo, {
 			Color = color3(1, 1, 0),
 		})
 
-		local tween6 = tweenService:Create(light, tweenInfo, {
+		local tween6 = TweenService:Create(light, tweenInfo, {
 			Color = color3(1, 0, 0),
 		})
 

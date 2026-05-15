@@ -7,20 +7,21 @@ local eventsModule = References.ServerEventsModule
 local sprintEvent = ReplicatedStorage.RemoteEvents.Controls.SprintEvent
 
 sprintEvent.OnServerEvent:Connect(function(player, enabling: boolean)
+	local humanoid: Humanoid = player.Character:FindFirstChild("Humanoid")
+	-- Check if the player has sprinting disabled
 	if not player:GetAttribute("canSprint") then
+		-- Turn off sprinting
 		player:SetAttribute("isSprinting", false)
-		local humanoid: Humanoid = player.Character:FindFirstChild("Humanoid")
-		humanoid.WalkSpeed = 20
+		humanoid.WalkSpeed = References.PlayerWalkSpeed
 		return
 	end
 
-	local humanoid: Humanoid = player.Character:FindFirstChild("Humanoid")
-
+	-- Set whether player is sprinting, and change the WalkSpeed accordingly
 	player:SetAttribute("isSprinting", enabling)
 	if enabling then
-		humanoid.WalkSpeed = 40
+		humanoid.WalkSpeed = References.PlayerRunSpeed
 	else
-		humanoid.WalkSpeed = 20
+		humanoid.WalkSpeed = References.PlayerWalkSpeed
 	end
 end)
 
@@ -35,6 +36,6 @@ eventsModule.ConnectSetCanSprintEvent(function(player: Player, canSprint: boolea
 	player:SetAttribute("isSprinting", false)
 	local humanoid = References.GetHumanoid(player)
 	if humanoid then
-		humanoid.WalkSpeed = 20
+		humanoid.WalkSpeed = References.PlayerWalkSpeed
 	end
 end)

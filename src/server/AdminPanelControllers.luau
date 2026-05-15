@@ -1,3 +1,5 @@
+-- local AdminPanelControllers = {}
+
 local ServerStorage = game:GetService("ServerStorage")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RunService = game:GetService("RunService")
@@ -72,3 +74,6 @@ scriptComms.RemoteEvents.GetDoorCode.OnServerEvent:Connect(function(player)
 		print("Debug Door Code: " .. ServerStorage.DoorCode.Value)
 	end
 end)
+
+-- function AdminPanelControllers.Awake() end
+-- function AdminPanelControllers.Start() end

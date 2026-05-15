@@ -1,12 +1,14 @@
 task.wait(4)
 
+local collectionService = game:GetService("CollectionService")
+
 local References = require(script.Parent.References)
 
 local ShopItemInfo = References.ShopItemInfo
-local collectionService = game:GetService("CollectionService")
 
 local signs = collectionService:GetTagged("SellLabel")
 
+-- For every sign, set the price of the item on the TextLabel
 for i = 1, #signs do
 	local item: TextLabel = signs[i]
 	local itemName = "NIL"
