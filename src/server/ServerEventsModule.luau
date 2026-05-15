@@ -2,12 +2,11 @@
 
 -- Phase out the BindableEvents/BindableFunctions on the server
 -- RemoteEvents/RemoteFunctions are allowed
--- Bindables can be done via module calls
 export type Events = {
 	FireRemoteDialogueEvent: (Player, string) -> (),
 	ConnectRemoteDisableMovementEvent: ((Player, boolean) -> ()) -> RBXScriptConnection,
 	ConnectSetDataAsync: ((Player, string, string, any) -> ()) -> RBXScriptConnection,
-	ConnectGetDataAsync: ((Player, string) -> any) -> RBXScriptConnection, -- Remove any bindables
+	ConnectGetDataAsync: ((Player, string) -> any) -> RBXScriptConnection,
 	FireAddItem: (Player, string) -> boolean,
 	FireRemoteClientTween: (player: Player, tween: Tween) -> (),
 	FireRemoteDialogueFunction: (player: Player, entryName: string) -> (),

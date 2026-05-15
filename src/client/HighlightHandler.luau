@@ -19,6 +19,8 @@ while task.wait(5) do
 		if table.find(connectedPrompts, prompt) then
 			continue
 		end
+
+		-- Value.Value is used to find what object to highlight
 		local adornee = prompt:FindFirstChildOfClass("ObjectValue").Value
 
 		local function showHighlight()

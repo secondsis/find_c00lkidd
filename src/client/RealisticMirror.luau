@@ -1,3 +1,4 @@
+local CollectionService = game:GetService("CollectionService")
 local eventsModule = require(script.Parent.ClientEventsModule)
 
 local prompt = workspace.Buildings.c00lHouse.Furniture["Living Room"].Mirror
@@ -17,7 +18,7 @@ prompt.Triggered:Connect(function(_)
 		dialogueNum += 1
 	else
 		eventsModule.FireDialogueEvent("RealisticMirrorTalk2")
-		game.CollectionService:RemoveTag(prompt, "Prompt")
+		CollectionService:RemoveTag(prompt, "Prompt")
 		prompt.Enabled = false
 	end
 end)
