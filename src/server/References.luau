@@ -20,12 +20,10 @@ ckGalaxy.TeleportPartInsideCave = workspace.Cave.Inside.InsideCaveExit.TPBackAre
 ckGalaxy.TeleportPartOutsideCave = workspace.Cave.Outside.OutsideCaveEntrance.TPToArea
 
 -- c00lkidd HOUSE --
-ckGalaxy.GubbyToyClickDetector = game:GetService("Workspace").Buildings.c00lHouse["c00l_toys"]["007gub7"].ClickDetector
-ckGalaxy.CatPianoClickDetector = game:GetService("Workspace").Buildings.c00lHouse["c00l_toys"].CatPiano.ClickDetector
-ckGalaxy.Mirror1Prompt =
-	game:GetService("Workspace").Buildings.c00lHouse.Furniture.Bathroom.Mirror.Prompter.ProximityPrompt
-ckGalaxy.Mirror2Prompt =
-	game:GetService("Workspace").Buildings.c00lHouse.Furniture["Main Room"].Mirror.Prompter.ProximityPrompt
+ckGalaxy.GubbyToyClickDetector = workspace.Buildings.c00lHouse["c00l_toys"]["007gub7"].ClickDetector
+ckGalaxy.CatPianoClickDetector = workspace.Buildings.c00lHouse["c00l_toys"].CatPiano.ClickDetector
+ckGalaxy.Mirror1Prompt = workspace.Buildings.c00lHouse.Furniture.Bathroom.Mirror.Prompter.ProximityPrompt
+ckGalaxy.Mirror2Prompt = workspace.Buildings.c00lHouse.Furniture["Main Room"].Mirror.Prompter.ProximityPrompt
 
 -- GROCERY STORE --
 ckGalaxy.ShopSellTNTPrompt = workspace.Important.GroceryStoreObjects.ItemCatalog.Bomb.TNT.TNT.Prompter.ProximityPrompt
@@ -73,14 +71,14 @@ ckGalaxy.ShopItemInfo = {
 }
 
 -- RESTAURANT --
-ckGalaxy.RestaurantWallPrompt = game:GetService("Workspace").Buildings.Restaurant.Other.Part.Prompter.ProximityPrompt
+ckGalaxy.RestaurantWallPrompt = workspace.Buildings.Restaurant.Other.Part.Prompter.ProximityPrompt
 
 -- NEIGHBORHOOD --
 ckGalaxy.FrontDoors = {
-	game:GetService("Workspace").Buildings.LargeHome.Building.FrontDoor,
-	game:GetService("Workspace").Buildings.LargeTrailer.Building.FrontDoor,
-	game:GetService("Workspace").Buildings.SmallHome.Building.FrontDoor,
-	game:GetService("Workspace").Buildings.SmallTrailer.Building.FrontDoor,
+	workspace.Buildings.LargeHome.Building.FrontDoor,
+	workspace.Buildings.LargeTrailer.Building.FrontDoor,
+	workspace.Buildings.SmallHome.Building.FrontDoor,
+	workspace.Buildings.SmallTrailer.Building.FrontDoor,
 }
 
 -- CAVE ROOM --
@@ -88,6 +86,10 @@ ckGalaxy.GrandDoor = workspace.Cave.Inside.ButtonDoor :: Model
 ckGalaxy.HintLabel = workspace.Cave.Inside.CodeObjects.LockImage.SurfaceGui.HintText
 ckGalaxy.CaveEntrance = workspace.Cave.Outside.OutsideCaveEntrance.TP_A
 ckGalaxy.CaveExit = workspace.Cave.Outside.OutsideCaveEntrance.TP_B
+ckGalaxy.CavePasswordModel = workspace.Cave.Inside.Password.Password :: Model
+ckGalaxy.CaveDoorCloser = workspace.Cave.Inside.DoorCloser
+ckGalaxy.CavePortal = workspace.Cave.Inside.Portal
+ckGalaxy.CaveSpeenKidPrompt = workspace.Cave.Inside.prompter.ProximityPrompt
 
 -- HELPER FUNCTIONS --
 
@@ -135,27 +137,35 @@ local playersTeleporting = {}
 function ckGalaxy.TeleportPlayerOnTeleportPartTouch(tpFromPart: BasePart, tpToCFrame: CFrame): RBXScriptConnection
 	local eventsModule = ckGalaxy.ServerEventsModule
 
+	-- Connect to the Touched event
 	local connection = tpFromPart.Touched:Connect(function(other)
 		if not other.Parent then
 			return
 		end
+		-- Make sure it is the player
 		local player = game:GetService("Players"):GetPlayerFromCharacter(other.Parent)
 		if not player then
 			return
 		end
 
+		-- Check if player is already teleporting
 		if playersTeleporting[player.UserId] then
 			return
 		end
 		playersTeleporting[player.UserId] = true
 
+		-- Fade out the screen
 		eventsModule.FireRemoteTransitionFunction(player, 0.5)
+		-- Stop Movement
 		eventsModule.FireRemoteDisableMovementEvent(player, false)
+		-- Teleport player
 		ckGalaxy.DirectTeleportPlayer(player, tpToCFrame)
+		-- Play the teleport sound effect
 		eventsModule.FireRemotePlaySound(player, game:GetService("SoundService").SFX.EnterSfx)
 
 		task.wait(0.5)
 
+		-- Re-enable movement again
 		eventsModule.FireRemoteDisableMovementEvent(player, true)
 		playersTeleporting[player.UserId] = false
 	end)

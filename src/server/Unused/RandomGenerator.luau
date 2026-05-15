@@ -10,23 +10,23 @@
 	sleep ending variances
 		chance for cutscene upon sleep?]]
 
-task.wait()
+-- task.wait()
 
-local funValue = math.random(100)
-local randomValue = math.random(100)
+-- local funValue = math.random(100)
+-- local randomValue = math.random(100)
 
--- FUN
+-- -- FUN
 
-local function changeSun() end
+-- local function changeSun() end
 
-local function spawnNPC() end
+-- local function spawnNPC() end
 
-local function modifyEscapeEnding() end
+-- local function modifyEscapeEnding() end
 
-local function modifySleepEnding() end
+-- local function modifySleepEnding() end
 
--- RANDOM
+-- -- RANDOM
 
-local function changeSeason() end
+-- local function changeSeason() end
 
-local function spawnCars() end
+-- local function spawnCars() end

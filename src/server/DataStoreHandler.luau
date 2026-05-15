@@ -186,19 +186,19 @@ local function getDataOptimally(player: Player, entryName: string): any
 	return player_data["Player_" .. player.UserId][entryName]
 end
 
--- UNUSED
-local function setDonationData(player: Player, addedValue: number)
-	local _, err = pcall(function()
-		local oldData = orderedDataStoreName:GetAsync("Player_" .. player.UserId)
+-- UNUSED FUNCTION
+-- local function setDonationData(player: Player, addedValue: number)
+-- 	local _, err = pcall(function()
+-- 		local oldData = orderedDataStoreName:GetAsync("Player_" .. player.UserId)
 
-		local newData = oldData + addedValue
-		orderedDataStoreName:SetAsync("Player_" .. player.UserId, newData)
-	end)
+-- 		local newData = oldData + addedValue
+-- 		orderedDataStoreName:SetAsync("Player_" .. player.UserId, newData)
+-- 	end)
 
-	if err then
-		warn(err)
-	end
-end
+-- 	if err then
+-- 		warn(err)
+-- 	end
+-- end
 
 eventsModule.ConnectSetDataAsync(setData)
 eventsModule.ConnectSetDataMassAsync(massSetData)

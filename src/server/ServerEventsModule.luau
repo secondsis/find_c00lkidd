@@ -7,7 +7,7 @@ export type Events = {
 	FireRemoteDialogueEvent: (Player, string) -> (),
 	ConnectRemoteDisableMovementEvent: ((Player, boolean) -> ()) -> RBXScriptConnection,
 	ConnectSetDataAsync: ((Player, string, string, any) -> ()) -> RBXScriptConnection,
-	ConnectGetDataAsync: ((Player, string) -> any) -> RBXScriptConnection,
+	ConnectGetDataAsync: ((Player, string) -> any) -> RBXScriptConnection, -- Remove any bindables
 	FireAddItem: (Player, string) -> boolean,
 	FireRemoteClientTween: (player: Player, tween: Tween) -> (),
 	FireRemoteDialogueFunction: (player: Player, entryName: string) -> (),

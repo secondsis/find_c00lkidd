@@ -6,5 +6,7 @@ local ServerModules = script:GetChildren()
 require(script.References)
 
 for _, ServerModule in ServerModules do
-	require(ServerModule)
+	if ServerModule:IsA("ModuleScript") then
+		require(ServerModule)
+	end
 end
