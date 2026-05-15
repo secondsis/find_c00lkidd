@@ -1,6 +1,7 @@
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local References = require(script.Parent.References)
+local Remotes = require(ReplicatedStorage.Shared.Remotes)
 local eventModule = References.ServerEventsModule
 
 local centerPart = References.RoadCenter
@@ -9,7 +10,7 @@ local TIME_TO_WAIT = 10
 -- One player at a time, singleplayer anyways
 local activated = false
 
-local event = ReplicatedStorage.RemoteEvents.Ending.BluuEvent
+local event = Remotes.BluuEvent
 
 local function onTouched(other)
 	if activated then

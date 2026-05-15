@@ -82,6 +82,8 @@ ckGalaxy.ShopItemInfo = {
 ckGalaxy.HiddenTileClickDetector = workspace.Important.GroceryStoreObjects.SecretTouch.ClickDetector
 ckGalaxy.StoreTriggerPart = workspace.Important.GroceryStoreObjects.StoreTrigger
 ckGalaxy.CashierPrompt = workspace.Important.NPCs.Cashier.Prompter.ProximityPrompt
+ckGalaxy.PenguinClickDetector =
+	game:GetService("Workspace").Buildings["Grocery Store"].DecorationItems.PENGUIN.ClickDetector
 
 -- RESTAURANT --
 ckGalaxy.RestaurantWallPrompt = workspace.Buildings.Restaurant.Other.Part.Prompter.ProximityPrompt

@@ -3,9 +3,9 @@ local References = require(script.Parent.References)
 local SoundService = game:GetService("SoundService")
 task.wait(2)
 
-local soundEffects = { SoundService.SFX.gubby }
+local soundEffects = { SoundService.SFX.gubby, SoundService.SFX["Oneshot - HELLO Penguin"] }
 
-local clickDetectors = { References.GubbyToyClickDetector }
+local clickDetectors = { References.GubbyToyClickDetector, References.PenguinClickDetector }
 
 local function SetUpClickDetector(clickDetector: ClickDetector, sfx: Sound)
 	clickDetector.MouseClick:Connect(function()
