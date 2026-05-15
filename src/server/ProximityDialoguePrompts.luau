@@ -14,12 +14,14 @@ local DialogueToPromptsDictionary = {
 	},
 }
 
+-- When triggered, prompt will start a dialogue
 local function ConnectDialogueOnPromptTrigger(prompt: ProximityPrompt, dialogueName: string)
 	prompt.Triggered:Connect(function(player)
 		eventsModule.FireRemoteDialogueFunction(player, dialogueName)
 	end)
 end
 
+-- For every dialoguePrompt, set up the trigger
 for _, dialogueName in DialogueToPromptsDictionary do
 	local proximityPrompts = DialogueToPromptsDictionary[dialogueName]
 	for _, prompt in proximityPrompts do

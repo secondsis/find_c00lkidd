@@ -2,15 +2,16 @@
 -- ckGalaxy as in c00lkidd galaxy wow so funny i know
 local ckGalaxy = {}
 
+-- SERVICES --
 local ServerScriptService = game:GetService("ServerScriptService")
 local ServerStorage = game:GetService("ServerStorage")
 
--- GENERAL
+-- GENERAL --
 ckGalaxy.ServerEventsModule = require(ServerScriptService.Server.ServerEventsModule)
 ckGalaxy.PlayerWalkSpeed = 20
 ckGalaxy.PlayerRunSpeed = 40
 
--- TELEPORTS
+-- TELEPORTS --
 ckGalaxy.TeleportPartIntro = workspace.Cutscenes.Intro.e7Home.TPPart
 ckGalaxy.TeleportPartPizzaPlace = ServerStorage.Assets.Security_NONE.Maps.Cutscenes.PizzaPlace.TPPart
 ckGalaxy.TeleportPartc00lHouse = workspace.Buildings.c00lHouse.SpawnLocation
@@ -18,7 +19,7 @@ ckGalaxy.TeleportPartc00lHouse = workspace.Buildings.c00lHouse.SpawnLocation
 ckGalaxy.TeleportPartInsideCave = workspace.Cave.Inside.InsideCaveExit.TPBackArea
 ckGalaxy.TeleportPartOutsideCave = workspace.Cave.Outside.OutsideCaveEntrance.TPToArea
 
--- c00lkidd HOUSE
+-- c00lkidd HOUSE --
 ckGalaxy.GubbyToyClickDetector = game:GetService("Workspace").Buildings.c00lHouse["c00l_toys"]["007gub7"].ClickDetector
 ckGalaxy.CatPianoClickDetector = game:GetService("Workspace").Buildings.c00lHouse["c00l_toys"].CatPiano.ClickDetector
 ckGalaxy.Mirror1Prompt =
@@ -26,7 +27,7 @@ ckGalaxy.Mirror1Prompt =
 ckGalaxy.Mirror2Prompt =
 	game:GetService("Workspace").Buildings.c00lHouse.Furniture["Main Room"].Mirror.Prompter.ProximityPrompt
 
--- GROCERY STORE
+-- GROCERY STORE --
 ckGalaxy.ShopSellTNTPrompt = workspace.Important.GroceryStoreObjects.ItemCatalog.Bomb.TNT.TNT.Prompter.ProximityPrompt
 ckGalaxy.ShopSellSlimeballPrompt =
 	workspace.Important.GroceryStoreObjects.ItemCatalog.Food.Slimeball.Slimeball.Prompter.ProximityPrompt
@@ -71,10 +72,10 @@ ckGalaxy.ShopItemInfo = {
 	},
 }
 
--- RESTAURANT
+-- RESTAURANT --
 ckGalaxy.RestaurantWallPrompt = game:GetService("Workspace").Buildings.Restaurant.Other.Part.Prompter.ProximityPrompt
 
--- NEIGHBORHOOD
+-- NEIGHBORHOOD --
 ckGalaxy.FrontDoors = {
 	game:GetService("Workspace").Buildings.LargeHome.Building.FrontDoor,
 	game:GetService("Workspace").Buildings.LargeTrailer.Building.FrontDoor,
@@ -82,13 +83,13 @@ ckGalaxy.FrontDoors = {
 	game:GetService("Workspace").Buildings.SmallTrailer.Building.FrontDoor,
 }
 
--- CAVE ROOM
+-- CAVE ROOM --
 ckGalaxy.GrandDoor = workspace.Cave.Inside.ButtonDoor :: Model
 ckGalaxy.HintLabel = workspace.Cave.Inside.CodeObjects.LockImage.SurfaceGui.HintText
 ckGalaxy.CaveEntrance = workspace.Cave.Outside.OutsideCaveEntrance.TP_A
 ckGalaxy.CaveExit = workspace.Cave.Outside.OutsideCaveEntrance.TP_B
 
--- HELPER FUNCTIONS
+-- HELPER FUNCTIONS --
 
 --[=[
  Finds the reference to the Humanoid of the player Character
