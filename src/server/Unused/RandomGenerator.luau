@@ -1,4 +1,6 @@
 -- UNUSED
+
+-- Put RigEnding here
 --[[		chance for random useless stuff to happen
 	map turns into a different season
 	bunch of cars

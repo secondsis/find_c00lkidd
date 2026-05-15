@@ -17,6 +17,7 @@ ckGalaxy.GubbyToyClickDetector = workspace.Buildings.c00lHouse["c00l_toys"]["007
 ckGalaxy.CatPianoClickDetector = workspace.Buildings.c00lHouse["c00l_toys"].CatPiano.ClickDetector
 ckGalaxy.Mirror1Prompt = workspace.Buildings.c00lHouse.Furniture.Bathroom.Mirror.Prompter.ProximityPrompt
 ckGalaxy.Mirror2Prompt = workspace.Buildings.c00lHouse.Furniture["Main Room"].Mirror.Prompter.ProximityPrompt
+ckGalaxy.BedPrompt = workspace.Important.MiscInteractables.InteractBed.ProximityPrompt
 
 -- NEIGHBORHOOD / OUTSIDE --
 ckGalaxy.FrontDoors = {
@@ -26,6 +27,12 @@ ckGalaxy.FrontDoors = {
 	workspace.Buildings.SmallTrailer.Building.FrontDoor,
 }
 ckGalaxy.TeleportPartOutsideCave = workspace.Cave.Outside.OutsideCaveEntrance.TPToArea
+ckGalaxy.TheRockPrompt = workspace.Cave.Outside.RockGuy.Prompter.ProximityPrompt
+ckGalaxy.MissingPoster007n7Prompt =
+	workspace.Important.MiscInteractables["MissingPoster_007n7"].Prompter.ProximityPrompt
+ckGalaxy.JeepSpawnerPart = workspace.Important.MiscInteractables["Touch me to regen"].Head
+ckGalaxy.BloxyColaAddict = workspace.Important.NPCs.BloxyColaAddict
+ckGalaxy.RoadCenter = workspace.Misc.Road.RoadCenter
 
 -- GROCERY STORE --
 ckGalaxy.ShopSellTNTPrompt = workspace.Important.GroceryStoreObjects.ItemCatalog.Bomb.TNT.TNT.Prompter.ProximityPrompt
@@ -72,8 +79,17 @@ ckGalaxy.ShopItemInfo = {
 	},
 }
 
+ckGalaxy.HiddenTileClickDetector = workspace.Important.GroceryStoreObjects.SecretTouch.ClickDetector
+ckGalaxy.StoreTriggerPart = workspace.Important.GroceryStoreObjects.StoreTrigger
+ckGalaxy.CashierPrompt = workspace.Important.NPCs.Cashier.Prompter.ProximityPrompt
+
 -- RESTAURANT --
 ckGalaxy.RestaurantWallPrompt = workspace.Buildings.Restaurant.Other.Part.Prompter.ProximityPrompt
+ckGalaxy.GrabDrinkPrompt = workspace.Important.MiscInteractables["Drink_Interactable"].Prompter.ProximityPrompt
+ckGalaxy.McDarndoldSpeakerPrompt = workspace.Important.MiscInteractables.McDarndoldSpeaker.Part.ProximityPrompt
+ckGalaxy.AzraRigPrompt = workspace.Important.NPCs.Azra.Prompter.ProximityPrompt
+ckGalaxy.EzraRigPrompt = workspace.Important.NPCs.Ezra.Prompter.ProximityPrompt
+ckGalaxy.RigPrompt = workspace.Important.NPCs["Rig?"].Prompter.ProximityPrompt
 
 -- CAVE ROOM --
 ckGalaxy.TeleportPartInsideCave = workspace.Cave.Inside.InsideCaveExit.TPBackArea
@@ -89,6 +105,7 @@ ckGalaxy.CaveSpeenKidPrompt = workspace.Cave.Inside.prompter.ProximityPrompt
 -- MISC AREA --
 ckGalaxy.TeleportPartIntro = workspace.Cutscenes.Intro.e7Home.TPPart
 ckGalaxy.TeleportPartPizzaPlace = ServerStorage.Assets.Security_NONE.Maps.Cutscenes.PizzaPlace.TPPart
+ckGalaxy.WallPhonePrompt = workspace.Cutscenes.Intro.e7Home.Important["Wall Phone"].Prompter.ProximityPrompt
 
 -- HELPER FUNCTIONS --
 
@@ -167,41 +184,6 @@ function ckGalaxy.TeleportPlayerOnTeleportPartTouch(tpFromPart: BasePart, tpToCF
 		-- Re-enable movement again
 		eventsModule.FireRemoteDisableMovementEvent(player, true)
 		playersTeleporting[player.UserId] = false
-	end)
-
-	return connection
-end
-
---[=[
- Sells a shop item to the player that triggers the item's ProximityPrompt
- 
- Issue: Creates FOREVER CONNECTION (s) if the script using it does not disconnect themselves
-
- @param itemName string
- @return RBXScriptConnection
-]=]
-function ckGalaxy.ShopSellItemOnPromptTrigger(itemName: string): RBXScriptConnection
-	local eventsModule = ckGalaxy.ServerEventsModule
-
-	local prompt = ckGalaxy.ShopItemInfo[itemName].ProximityPrompt
-
-	local connection = prompt.Triggered:Connect(function(player)
-		local money = eventsModule.FireGetMoney(player)
-		local cost = ckGalaxy.ShopItemInfo[itemName].Price
-
-		if money >= cost then
-			local result = eventsModule.FireAddItem(player, itemName)
-			if not result then
-				eventsModule.FireRemoteNotifyInventoryFull(player)
-				return
-			end
-			eventsModule.FireAddMoney(player, -cost)
-			eventsModule.FireRemoteDeleteOnClient(player, prompt.Parent.Parent)
-		else
-			-- not enough money
-			eventsModule.FireRemoteNotifyNotEnoughMoney(player)
-			return
-		end
 	end)
 
 	return connection

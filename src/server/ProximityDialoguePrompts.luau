@@ -12,6 +12,22 @@ local DialogueToPromptsDictionary = {
 			References.Mirror2Prompt,
 		},
 	},
+	["MissingPoster007n7Talk"] = {
+		ProximityPrompts = {
+			References.MissingPoster007n7Prompt,
+		},
+	},
+	["RigTalk"] = {
+		ProximityPrompts = {
+			References.AzraRigPrompt,
+			References.EzraRigPrompt,
+		},
+	},
+	["CashierTalk1"] = {
+		ProximityPrompts = {
+			References.CashierPrompt,
+		},
+	},
 }
 
 -- When triggered, prompt will start a dialogue
