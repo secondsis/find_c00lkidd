@@ -12,3 +12,5 @@ prompt.Triggered:Connect(function(player)
 		player:SetAttribute("Ending", "Cola Addiction")
 	end
 end)
+
+return {}

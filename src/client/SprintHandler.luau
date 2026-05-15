@@ -11,6 +11,7 @@ end)
 
 local player = game:GetService("Players").LocalPlayer
 
+-- Check for LShift input start
 userInputService.InputBegan:Connect(function(input, gameProcessedEvent)
 	if gameProcessedEvent then
 		return
@@ -21,6 +22,7 @@ userInputService.InputBegan:Connect(function(input, gameProcessedEvent)
 	end
 end)
 
+-- Check for LShift input end
 userInputService.InputEnded:Connect(function(input, gameProcessedEvent)
 	if gameProcessedEvent then
 		return
@@ -48,3 +50,5 @@ sprintButton.Activated:Connect(function()
 		sprintButton.Image = sprintButton:GetAttribute("toggledImage")
 	end
 end)
+
+return {}

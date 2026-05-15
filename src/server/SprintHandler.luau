@@ -39,3 +39,5 @@ eventsModule.ConnectSetCanSprintEvent(function(player: Player, canSprint: boolea
 		humanoid.WalkSpeed = References.PlayerWalkSpeed
 	end
 end)
+
+return {}

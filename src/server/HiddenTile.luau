@@ -3,3 +3,5 @@ task.wait(4)
 References.HiddenTileClickDetector.MouseClick:Connect(function()
 	print("oo secret at the 12th of night come back")
 end)
+
+return {}

@@ -142,3 +142,5 @@ prompt.Triggered:Connect(function(player)
 
 	resetTwn:Play()
 end)
+
+return {}

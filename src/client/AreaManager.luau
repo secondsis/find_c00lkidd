@@ -362,3 +362,5 @@ local function manualFirstPersonManager()
 end
 
 eventsModule.ConnectManualCheckFirstPersonManager(manualFirstPersonManager)
+
+return {}

@@ -1,4 +1,5 @@
 --!strict
+-- UNUSED because it requires actiontemplate and stuff below it.
 export type Action = typeof(script.ActionTemplate)
 type KeybindImpl = {
 	CurrentContext: string,

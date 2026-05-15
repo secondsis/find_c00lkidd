@@ -40,3 +40,5 @@ events.ConnectRemoteTeleportPlayerOnServer(function(player: Player, location: st
 	-- Move player
 	char:PivotTo(locations[location])
 end)
+
+return {}

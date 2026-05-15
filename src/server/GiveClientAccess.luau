@@ -43,3 +43,5 @@ local function fetchAsset(player: Player, assetPath: string)
 end
 
 eventsModule.ConnectCloneAssetSecurityNone(fetchAsset)
+
+return {}

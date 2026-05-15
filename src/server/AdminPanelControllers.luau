@@ -77,3 +77,5 @@ end)
 
 -- function AdminPanelControllers.Awake() end
 -- function AdminPanelControllers.Start() end
+
+return {}

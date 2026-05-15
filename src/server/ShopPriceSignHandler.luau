@@ -27,3 +27,5 @@ for i = 1, #signs do
 	end
 	item.Text = "$" .. price
 end
+
+return {}

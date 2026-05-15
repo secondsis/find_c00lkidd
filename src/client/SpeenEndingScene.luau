@@ -70,3 +70,5 @@ eventsModule.ConnectFakeKidEvent(function()
 	task.wait(4)
 	speenSfx:Play()
 end)
+
+return {}

@@ -18,3 +18,5 @@ local function getNote(noteNumber: number)
 end
 
 eventsModule.ConnectFetchNote(getNote)
+
+return {}

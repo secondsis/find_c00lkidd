@@ -11,3 +11,5 @@ eventsModule.ConnectTeleportToDelusion(function(player: Player)
 		["Password"] = password,
 	})
 end)
+
+return {}

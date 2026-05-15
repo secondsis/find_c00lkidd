@@ -4,3 +4,5 @@ local eMod = require(script.Parent.ClientEventsModule)
 eMod.ConnectDelusionalScene(function()
 	eMod.FireTeleportToDelusion()
 end)
+
+return {}

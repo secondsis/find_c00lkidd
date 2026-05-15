@@ -46,3 +46,5 @@ end
 
 eventsModule.ConnectShakeCamera(shakeCamera)
 eventsModule.ConnectRemoteShakeCamera(shakeCamera)
+
+return {}

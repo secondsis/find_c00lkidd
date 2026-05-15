@@ -23,3 +23,5 @@ hum.Died:Connect(function()
 	task.wait(2)
 	game:GetService("SoundService").SFX["Cat laughing at you meme"]:Play()
 end)
+
+return {}

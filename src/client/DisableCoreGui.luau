@@ -19,3 +19,5 @@ repeat
 		task.wait(2)
 	end
 until true
+
+return {}

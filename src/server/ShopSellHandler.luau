@@ -44,3 +44,5 @@ local cxnList = {}
 for _, ItemName in ShopItemInfo do
 	table.insert(cxnList, ShopSellItemOnPromptTrigger(ItemName))
 end
+
+return {}

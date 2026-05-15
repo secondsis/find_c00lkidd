@@ -31,3 +31,5 @@ prompt.Triggered:Connect(function(player)
 		eventsModule.FireRemoteDeleteOnClient(player, prompt.Parent.Parent)
 	end
 end)
+
+return {}

@@ -31,3 +31,5 @@ end
 for _, prompt in Prompts do
 	ConnectPromptTrigger(prompt)
 end
+
+return {}

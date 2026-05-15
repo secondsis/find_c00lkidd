@@ -22,3 +22,5 @@ eventsModule.ConnectCompletedCutscene(function(player: Player, cutsceneName: str
 
 	eventsModule.FireSetDataAsync(player, "Cutscenes." .. cutsceneName, true)
 end)
+
+return {}

@@ -8,3 +8,5 @@ prompt.Triggered:Connect(function(player)
 	player:SetAttribute("Ending", "SPEEN")
 	eventsModule.FireFakeKidEvent(player)
 end)
+
+return {}

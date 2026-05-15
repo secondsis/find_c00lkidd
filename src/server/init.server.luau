@@ -7,6 +7,8 @@ require(script.References)
 
 for _, ServerModule in ServerModules do
 	if ServerModule:IsA("ModuleScript") then
-		require(ServerModule)
+		task.spawn(function()
+			require(ServerModule)
+		end)
 	end
 end

@@ -18,3 +18,5 @@ end
 
 eventsModule.ConnectEnablePrompts(enable)
 eventsModule.ConnectRemoteEnablePrompts(enable)
+
+return {}

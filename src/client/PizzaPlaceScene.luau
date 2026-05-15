@@ -95,3 +95,5 @@ local function playScene()
 end
 
 carSceneEvent.OnClientEvent:Connect(playScene)
+
+return {}

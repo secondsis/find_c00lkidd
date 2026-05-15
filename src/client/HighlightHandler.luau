@@ -33,3 +33,5 @@ while task.wait(5) do
 		table.insert(connectedPrompts, prompt)
 	end
 end
+
+return {}

@@ -48,3 +48,5 @@ end
 -- Connect events
 eventsModule.ConnectAddMoney(AddMoney)
 eventsModule.ConnectGetMoney(GetMoney)
+
+return {}

@@ -45,3 +45,5 @@ end
 doorCodeValue.Value = code
 -- Set the hint text using the ciphered code
 hintLabel.Text = encoded_code
+
+return {}

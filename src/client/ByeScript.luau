@@ -3,3 +3,5 @@ game.OnClose = function()
 	sound:Play()
 	sound.Ended:Wait()
 end
+
+return {}

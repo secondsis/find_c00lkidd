@@ -63,3 +63,5 @@ event.OnClientEvent:Once(function()
 
 	-- add black bars that move down, lower fov
 end)
+
+return {}

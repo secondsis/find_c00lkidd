@@ -13,3 +13,5 @@ prompt.Triggered:Connect(function(player)
 		prompt.Parent.Parent:Destroy()
 	end
 end)
+
+return {}

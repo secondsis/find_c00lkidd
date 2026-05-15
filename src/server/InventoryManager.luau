@@ -120,3 +120,5 @@ eventsModule.ConnectRemoteGetItem(getItem)
 eventsModule.ConnectRemoteAddPoster(function(player)
 	addItem(player, "MissingFrog")
 end)
+
+return {}

@@ -213,3 +213,5 @@ eventsModule.ConnectGetData(getDataOptimally)
 --	--task.wait(3)
 --	--print("Done")
 --end)
+
+return {}

@@ -44,3 +44,5 @@ for _, dialogueName in DialogueToPromptsDictionary do
 		ConnectDialogueOnPromptTrigger(prompt, dialogueName)
 	end
 end
+
+return {}

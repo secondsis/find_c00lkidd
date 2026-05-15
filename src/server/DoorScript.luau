@@ -145,3 +145,5 @@ end
 for _, door in Doors do
 	HandleDoor(door)
 end
+
+return {}

@@ -43,3 +43,5 @@ for _, _frame in dialogueFrame:GetChildren() do
 		end
 	end
 end
+
+return {}

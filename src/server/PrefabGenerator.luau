@@ -179,3 +179,5 @@ for _, light in prefabs.RainbowLights do
 		end
 	end)
 end
+
+return {}

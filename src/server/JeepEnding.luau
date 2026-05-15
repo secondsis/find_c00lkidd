@@ -20,3 +20,5 @@ JeepSpawnerPart.Touched:Connect(function(other)
 	eventsMod.FireJeepScene(player)
 	player:SetAttribute("Ending", "Escaped")
 end)
+
+return {}

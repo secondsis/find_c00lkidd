@@ -58,3 +58,5 @@ local function teleportToBluuworld(player)
 end
 
 event.OnServerEvent:Connect(teleportToBluuworld)
+
+return {}

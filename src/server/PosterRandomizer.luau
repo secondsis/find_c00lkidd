@@ -20,3 +20,5 @@ for i = 1, #posters do
 	image:SetAttribute("used", true)
 	decal.Texture = image.Texture
 end
+
+return {}

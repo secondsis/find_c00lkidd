@@ -86,7 +86,7 @@ ckGalaxy.PenguinClickDetector =
 	game:GetService("Workspace").Buildings["Grocery Store"].DecorationItems.PENGUIN.ClickDetector
 
 -- RESTAURANT --
-ckGalaxy.RestaurantWallPrompt = workspace.Buildings.Restaurant.Other.Part.Prompter.ProximityPrompt
+ckGalaxy.RestaurantWallPrompt = workspace.Buildings.Restaurant.Other.PromptingPart.Prompter.ProximityPrompt
 ckGalaxy.GrabDrinkPrompt = workspace.Important.MiscInteractables["Drink_Interactable"].Prompter.ProximityPrompt
 ckGalaxy.McDarndoldSpeakerPrompt = workspace.Important.MiscInteractables.McDarndoldSpeaker.Part.ProximityPrompt
 ckGalaxy.AzraRigPrompt = workspace.Important.NPCs.Azra.Prompter.ProximityPrompt

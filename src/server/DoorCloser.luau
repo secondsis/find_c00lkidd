@@ -14,3 +14,5 @@ cxn = part.Touched:Connect(function(other)
 	cxn:Disconnect()
 	doorModule.closeDoor()
 end)
+
+return {}

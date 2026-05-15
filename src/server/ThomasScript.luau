@@ -27,3 +27,5 @@ end
 -- Connect to remotes
 eventsModule.ConnectGetThomasLeft(getThomasLeft)
 eventsModule.ConnectSubtractThomas(subtractThomas)
+
+return {}

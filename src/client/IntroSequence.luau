@@ -171,3 +171,5 @@ local function waitForIntroToFinish()
 end
 
 eventsModule.ConnectWaitForIntroEnd(waitForIntroToFinish)
+
+return {}

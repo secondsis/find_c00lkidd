@@ -144,3 +144,5 @@ eventsModule.ConnectRemoteAwardEndingBadge(function(player: Player, endingName: 
 end)
 
 eventsModule.ConnectAwardBadge(AwardBadge)
+
+return {}

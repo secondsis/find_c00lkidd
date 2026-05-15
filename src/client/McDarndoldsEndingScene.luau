@@ -19,8 +19,6 @@ local lightingPresets = require(ReplicatedStorage.Shared.LightingPresets)
 
 local eventTriggered: boolean = false
 
-local player = game:GetService("Players").LocalPlayer
-
 local function startSpeaker()
 	if eventTriggered then
 		return
@@ -28,7 +26,7 @@ local function startSpeaker()
 	eventTriggered = true
 	prompt.Enabled = false
 
-	for i, v in speakerRoof.Parent:GetChildren() do
+	for _, v in speakerRoof.Parent:GetChildren() do
 		if v:IsA("BasePart") then
 			v.CanCollide = true
 		end
@@ -67,7 +65,7 @@ local function startSpeaker()
 	mmChezburgerSfx:Play()
 	openChezburgerSfx:Play()
 	-- copy cheeseburgers
-	for i = 1, 100, 1 do
+	for _ = 1, 100, 1 do
 		local newBurger = chezburger:Clone()
 		newBurger.Position = speakerRoof.Position
 			+ Vector3.new(math.random(-9, 9), math.random(-5, -0.5), math.random(-9, 9))
@@ -79,3 +77,5 @@ local function startSpeaker()
 end
 
 eventsModule.ConnectMcDarndold(startSpeaker)
+
+return {}

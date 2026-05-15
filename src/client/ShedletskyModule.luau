@@ -4,11 +4,12 @@ if game:GetService("RunService"):IsServer() then
 	warn("Shedletsky module only runs on client.")
 end
 
+local eventsModule = require(script.Parent.ClientEventsModule)
+
 local tweenService = game:GetService("TweenService")
 local folder = game:GetService("Workspace").Cutscenes.Shedletsky
 
 function module.PlayScene()
-	local eventsModule = require(script.Parent.ClientEventsModule)
 	eventsModule.FireDisableMovementEvent(false)
 	local plr = game:GetService("Players").LocalPlayer.Character
 	eventsModule.FireCloneAssetSecurityNone("Characters.Shedletsky_CHICKEN")
@@ -74,5 +75,15 @@ function module.PlayScene()
 	task.wait(1)
 	game:GetService("SoundService").SFX["Shedletsky Chicken Hersheys"]:Play()
 end
+
+local played = false
+
+eventsModule.ConnectShedletskyEnding(function()
+	if played then
+		return
+	end
+	played = true
+	module.PlayScene()
+end)
 
 return module

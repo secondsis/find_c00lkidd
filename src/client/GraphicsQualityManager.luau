@@ -20,3 +20,5 @@ GameSettings.Changed:Connect(function(property: string)
 		end
 	end
 end)
+
+return {}

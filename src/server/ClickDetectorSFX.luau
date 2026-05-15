@@ -19,3 +19,5 @@ end
 for i = 1, #soundEffects, 1 do
 	SetUpClickDetector(clickDetectors[i], soundEffects[i])
 end
+
+return {}

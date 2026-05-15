@@ -435,3 +435,5 @@ eventsModule.ConnectPauseCameraEffects(pauseCameraEffects)
 eventsModule.ConnectRemotePauseCameraEffects(pauseCameraEffects)
 eventsModule.ConnectResumeCameraEffects(resumeCameraEffects)
 eventsModule.ConnectRemoteResumeCameraEffects(resumeCameraEffects)
+
+return {}

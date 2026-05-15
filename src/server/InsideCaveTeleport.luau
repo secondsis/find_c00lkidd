@@ -5,3 +5,5 @@ local tpToPart = References.TeleportPartOutsideCave
 
 -- FOREVER CONNECTION
 local cxn = References.TeleportPlayerOnTeleportPartTouch(tpFromPart, tpToPart.CFrame)
+
+return {}

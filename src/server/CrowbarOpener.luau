@@ -19,3 +19,5 @@ end
 for _, door in FrontDoors do
 	ConnectFrontDoorDestroy(door)
 end
+
+return {}

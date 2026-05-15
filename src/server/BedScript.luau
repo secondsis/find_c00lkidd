@@ -45,3 +45,5 @@ prompt.Triggered:Once(function(player: Player)
 		newLabel:Destroy()
 	end
 end)
+
+return {}

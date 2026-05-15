@@ -17,3 +17,5 @@ end
 
 disableMovementEvent.Event:Connect(movementChanger)
 remoteDisableMovementEvent.OnClientEvent:Connect(movementChanger)
+
+return {}

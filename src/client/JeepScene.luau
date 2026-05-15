@@ -52,3 +52,5 @@ local function playJeepScene()
 end
 
 events.ConnectJeepScene(playJeepScene)
+
+return {}

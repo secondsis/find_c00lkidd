@@ -13,3 +13,5 @@ CatPianoClickDetector.MouseClick:Connect(function()
 
 	sfxes[math.random(#sfxes)]:Play()
 end)
+
+return {}

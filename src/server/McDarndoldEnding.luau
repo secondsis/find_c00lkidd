@@ -5,3 +5,5 @@ References.McDarndoldSpeakerPrompt.Triggered:Connect(function(player)
 	player:SetAttribute("Ending", "McDarndold's")
 	eventsModule.FireMcDarndold(player)
 end)
+
+return {}

@@ -13,3 +13,5 @@ local function tpToThePast()
 end
 
 christmasEvent.OnClientEvent:Connect(tpToThePast)
+
+return {}

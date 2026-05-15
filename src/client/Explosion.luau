@@ -15,3 +15,5 @@ end
 
 eventsModule.ConnectSpawnClientExplosion(spawnExplosion)
 eventsModule.ConnectRemoteSpawnClientExplosion(spawnExplosion)
+
+return {}

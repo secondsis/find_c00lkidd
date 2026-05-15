@@ -10,3 +10,5 @@ prompt.Triggered:Connect(function(player)
 	prompt.MaxActivationDistance = 0
 	pickUpEvent:FireClient(player)
 end)
+
+return {}

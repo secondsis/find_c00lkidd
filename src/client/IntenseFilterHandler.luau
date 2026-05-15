@@ -22,3 +22,5 @@ eventsModule.ConnectScaryVibe(turnScary)
 eventsModule.ConnectRemoteScaryVibe(turnScary)
 eventsModule.ConnectOffScaryVibe(offScary)
 eventsModule.ConnectRemoteOffScaryVibe(offScary)
+
+return {}

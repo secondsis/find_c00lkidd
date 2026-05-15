@@ -29,3 +29,5 @@ eventsModule.ConnectFinishCutscene(function()
 	eventsModule.FireDisableMovementEvent(true)
 	--cutsceneModule.fadeInPlayer(0)
 end)
+
+return {}

@@ -73,3 +73,5 @@ eventsModule.ConnectFrogEnding(function()
 		eventsModule.FireEndingEvent("Ending: Frogs.", "Something was off about that minecraft slimeball...")
 	end)
 end)
+
+return {}

@@ -5,3 +5,5 @@ eventsModule.ConnectRemoteDeleteOnClient(function(obj: Instance)
 		obj:Destroy()
 	end
 end)
+
+return {}

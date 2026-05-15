@@ -14,3 +14,5 @@ part.Touched:Connect(function(other)
 
 	TeleportService:Teleport(END_GAME_ID, player)
 end)
+
+return {}

@@ -23,3 +23,5 @@ local function rejoin(player: Player)
 end
 
 eventsModule.ConnectRejoinEvent(rejoin)
+
+return {}

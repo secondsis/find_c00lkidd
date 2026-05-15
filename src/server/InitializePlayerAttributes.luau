@@ -6,3 +6,5 @@ Players.PlayerAdded:Connect(function(player)
 	player:SetAttribute("canSprint", true)
 	player:SetAttribute("MouseUnlocked", true)
 end)
+
+return {}

@@ -30,3 +30,5 @@ References.StoreTriggerPart.Touched:Connect(function(other)
 		eventsModule.FireShedletskyEnding(player)
 	end
 end)
+
+return {}

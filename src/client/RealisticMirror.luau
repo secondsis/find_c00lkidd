@@ -22,3 +22,5 @@ prompt.Triggered:Connect(function(_)
 		prompt.Enabled = false
 	end
 end)
+
+return {}
