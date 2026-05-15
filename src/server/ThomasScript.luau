@@ -4,6 +4,10 @@ local eventsModule = References.ServerEventsModule
 
 local playerThomasList = {}
 
+--[=[
+ Subtracts a Thomas Remaining from a player, and keeps track between players
+ @param player -- The player who found a Thomas
+]=]
 local function subtractThomas(player: Player)
 	if not playerThomasList[player.UserId] then
 		playerThomasList[player.UserId] = 7
@@ -11,9 +15,15 @@ local function subtractThomas(player: Player)
 	playerThomasList[player.UserId] -= 1
 end
 
+--[=[
+ Returns the number of Thomas Remaining
+ @param player -- The player to check
+ @return number
+]=]
 local function getThomasLeft(player: Player)
 	return playerThomasList[player.UserId]
 end
 
+-- Connect to remotes
 eventsModule.ConnectGetThomasLeft(getThomasLeft)
 eventsModule.ConnectSubtractThomas(subtractThomas)

@@ -116,6 +116,7 @@ eventsModule.ConnectRemoteGetItem(getItem)
 
 --- Add the MissingFrog poster to the player's inventory specifically for the Frog Ending
 --- INEFFICIENT/SCUFFED probably a better way to organize this
+-- Add a way to approve of this poster / client giving itself SOME items at SOME times
 eventsModule.ConnectRemoteAddPoster(function(player)
 	addItem(player, "MissingFrog")
 end)

@@ -113,6 +113,7 @@ end)
 -- Run from client to award badges if the client has been given the appropriate Ending attribute
 eventsModule.ConnectRemoteAwardEndingBadge(function(player: Player, endingName: string)
 	-- Player must have the correct "Ending" attribute
+
 	-- INEFFICIENT/SCUFFED There might be a better way of securely tracking this
 	if not player:GetAttribute("Ending") or player:GetAttribute("Ending") ~= endingName then
 		return

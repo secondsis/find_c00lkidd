@@ -2,7 +2,7 @@
 	Prefabs include: Trees, Moneys, TrashCans
 ]]
 
-local collectionService = game:GetService("CollectionService")
+local CollectionService = game:GetService("CollectionService")
 local SoundService = game:GetService("SoundService")
 local TweenService = game:GetService("TweenService")
 
@@ -10,25 +10,27 @@ local References = require(script.Parent.References)
 
 local eventsModule = References.ServerEventsModule
 
+-- Supposedly saves memory
 local color3 = Color3.new
 
-local checker = collectionService:GetTagged("Tree")
+local checker = CollectionService:GetTagged("Tree")
 -- INEFFICIENT/SCUFFED I don't know any better method to make sure I get "all" of the objects
 while #checker == 0 do
 	task.wait(0.1)
-	checker = collectionService:GetTagged("Tree")
+	checker = CollectionService:GetTagged("Tree")
 end
 
 task.wait(1)
 local prefabFolder = game:GetService("ServerStorage").CommonPrefabs
 local destinationFolder = workspace.Misc.Prefabs
 
+-- Prefabs under a tag
 local prefabs = {
-	Trees = collectionService:GetTagged("Tree"),
-	Moneys = collectionService:GetTagged("Money"),
-	TrashCans = collectionService:GetTagged("TrashCan"),
-	ThomasDetectors = collectionService:GetTagged("ThomasClickDetector"),
-	RainbowLights = collectionService:GetTagged("RainbowLight"),
+	Trees = CollectionService:GetTagged("Tree"),
+	Moneys = CollectionService:GetTagged("Money"),
+	TrashCans = CollectionService:GetTagged("TrashCan"),
+	ThomasDetectors = CollectionService:GetTagged("ThomasClickDetector"),
+	RainbowLights = CollectionService:GetTagged("RainbowLight"),
 }
 
 -- Remove any not under workspace
@@ -107,6 +109,7 @@ end
 for _, thomasDetector in prefabs.ThomasDetectors do
 	assert(thomasDetector:IsA("ClickDetector"))
 
+	-- INEFFICIENT/SCUFFED shouldn't have a whole function inside the prefabGenerator
 	thomasDetector.MouseClick:Once(function(player: Player)
 		local gasterSfx = SoundService.SFX["Gaster Fade"]
 		gasterSfx:Play()

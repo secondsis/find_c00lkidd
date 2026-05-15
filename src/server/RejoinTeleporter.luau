@@ -1,4 +1,5 @@
 local TeleportService = game:GetService("TeleportService")
+local RunService = game:GetService("RunService")
 
 local References = require(script.Parent.References)
 local eventsModule = References.ServerEventsModule
@@ -11,7 +12,8 @@ local _, err = pcall(function()
 	reserveCode = TeleportService:ReserveServer(gameId)
 end)
 
-if err and not game:GetService("RunService"):IsStudio() then
+if err and not RunService:IsStudio() then
+	-- TODO: Tell player about problem rejoining
 	warn("PROBLEM REJOINING\nSHOW DEVELOPER THIS: " .. err)
 end
 

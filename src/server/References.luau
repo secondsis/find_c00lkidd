@@ -11,19 +11,21 @@ ckGalaxy.ServerEventsModule = require(ServerScriptService.Server.ServerEventsMod
 ckGalaxy.PlayerWalkSpeed = 20
 ckGalaxy.PlayerRunSpeed = 40
 
--- TELEPORTS --
-ckGalaxy.TeleportPartIntro = workspace.Cutscenes.Intro.e7Home.TPPart
-ckGalaxy.TeleportPartPizzaPlace = ServerStorage.Assets.Security_NONE.Maps.Cutscenes.PizzaPlace.TPPart
-ckGalaxy.TeleportPartc00lHouse = workspace.Buildings.c00lHouse.SpawnLocation
-
-ckGalaxy.TeleportPartInsideCave = workspace.Cave.Inside.InsideCaveExit.TPBackArea
-ckGalaxy.TeleportPartOutsideCave = workspace.Cave.Outside.OutsideCaveEntrance.TPToArea
-
 -- c00lkidd HOUSE --
+ckGalaxy.TeleportPartc00lHouse = workspace.Buildings.c00lHouse.SpawnLocation
 ckGalaxy.GubbyToyClickDetector = workspace.Buildings.c00lHouse["c00l_toys"]["007gub7"].ClickDetector
 ckGalaxy.CatPianoClickDetector = workspace.Buildings.c00lHouse["c00l_toys"].CatPiano.ClickDetector
 ckGalaxy.Mirror1Prompt = workspace.Buildings.c00lHouse.Furniture.Bathroom.Mirror.Prompter.ProximityPrompt
 ckGalaxy.Mirror2Prompt = workspace.Buildings.c00lHouse.Furniture["Main Room"].Mirror.Prompter.ProximityPrompt
+
+-- NEIGHBORHOOD / OUTSIDE --
+ckGalaxy.FrontDoors = {
+	workspace.Buildings.LargeHome.Building.FrontDoor,
+	workspace.Buildings.LargeTrailer.Building.FrontDoor,
+	workspace.Buildings.SmallHome.Building.FrontDoor,
+	workspace.Buildings.SmallTrailer.Building.FrontDoor,
+}
+ckGalaxy.TeleportPartOutsideCave = workspace.Cave.Outside.OutsideCaveEntrance.TPToArea
 
 -- GROCERY STORE --
 ckGalaxy.ShopSellTNTPrompt = workspace.Important.GroceryStoreObjects.ItemCatalog.Bomb.TNT.TNT.Prompter.ProximityPrompt
@@ -73,15 +75,8 @@ ckGalaxy.ShopItemInfo = {
 -- RESTAURANT --
 ckGalaxy.RestaurantWallPrompt = workspace.Buildings.Restaurant.Other.Part.Prompter.ProximityPrompt
 
--- NEIGHBORHOOD --
-ckGalaxy.FrontDoors = {
-	workspace.Buildings.LargeHome.Building.FrontDoor,
-	workspace.Buildings.LargeTrailer.Building.FrontDoor,
-	workspace.Buildings.SmallHome.Building.FrontDoor,
-	workspace.Buildings.SmallTrailer.Building.FrontDoor,
-}
-
 -- CAVE ROOM --
+ckGalaxy.TeleportPartInsideCave = workspace.Cave.Inside.InsideCaveExit.TPBackArea
 ckGalaxy.GrandDoor = workspace.Cave.Inside.ButtonDoor :: Model
 ckGalaxy.HintLabel = workspace.Cave.Inside.CodeObjects.LockImage.SurfaceGui.HintText
 ckGalaxy.CaveEntrance = workspace.Cave.Outside.OutsideCaveEntrance.TP_A
@@ -90,6 +85,10 @@ ckGalaxy.CavePasswordModel = workspace.Cave.Inside.Password.Password :: Model
 ckGalaxy.CaveDoorCloser = workspace.Cave.Inside.DoorCloser
 ckGalaxy.CavePortal = workspace.Cave.Inside.Portal
 ckGalaxy.CaveSpeenKidPrompt = workspace.Cave.Inside.prompter.ProximityPrompt
+
+-- MISC AREA --
+ckGalaxy.TeleportPartIntro = workspace.Cutscenes.Intro.e7Home.TPPart
+ckGalaxy.TeleportPartPizzaPlace = ServerStorage.Assets.Security_NONE.Maps.Cutscenes.PizzaPlace.TPPart
 
 -- HELPER FUNCTIONS --
 
