@@ -88,9 +88,12 @@ local function PressButton(button: BasePart, buttonNumber: number)
 	buttonPressColor(button)
 end
 
-for i, button in buttons do
+for _, button in buttons do
+	local btnName = button.Name :: string
+	local index = tonumber(btnName:sub(3, 3))
+
 	button.ClickDetector.MouseClick:Connect(function()
-		PressButton(button, i - 1)
+		PressButton(button, index)
 	end)
 end
 

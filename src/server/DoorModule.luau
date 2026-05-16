@@ -41,8 +41,6 @@ local leftSideMoveLeftTween =
 		CFrame = leftPart.CFrame + Vector3.new(-14, 0, 0),
 	})
 
-local barrier = door:WaitForChild("ClosedBarrier")
-
 --- Opens the GrandDoor using a Tween and plays an opening SFX
 function DoorModule.openDoor()
 	openSfx:Play()
@@ -52,7 +50,7 @@ end
 
 --- Closes the GrandDoor using a Tween, plays a closing SFX, and enables a barrier with collision
 function DoorModule.closeDoor()
-	barrier.CanCollide = true
+	door:WaitForChild("ClosedBarrier").CanCollide = true
 	closeSfx:Play()
 	rightSideMoveLeftTween:Play()
 	leftSideMoveRightTween:Play()
