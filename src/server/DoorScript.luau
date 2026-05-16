@@ -12,12 +12,13 @@ local function HandleDoor(Door)
 
 	local lastAction = tick()
 
-	local hingePart = Door.MovingDoorPart:WaitForChild("Hinge")
+	local hingePart = Door.MovingDoorPart.Hinge
 	local doorPart = Door.MovingDoorPart.DoorPart
 
 	local isDoorEnabled = Door:GetAttribute("isDoorEnabled")
 
-	function Open()
+	local function Open()
+		print("opening door")
 		IfReturning = true
 		sound.TimePosition = 0.05
 		sound:Play()
@@ -28,7 +29,8 @@ local function HandleDoor(Door)
 		task.wait(0.9)
 	end
 
-	function Close()
+	local function Close()
+		print("closing door")
 		IfReturning = false
 		sound.TimePosition = 2.5
 		sound:Play()
@@ -38,7 +40,7 @@ local function HandleDoor(Door)
 		task.wait(0.9)
 	end
 
-	function side1Touched(other)
+	local function side1Touched(other)
 		if not other.Parent then
 			return
 		end
@@ -70,7 +72,7 @@ local function HandleDoor(Door)
 		end
 	end
 
-	function side2Touched(other)
+	local function side2Touched(other)
 		if not other.Parent then
 			return
 		end
@@ -105,7 +107,7 @@ local function HandleDoor(Door)
 	local cxn1 = nil
 	local cxn2 = nil
 
-	function enableDoor()
+	local function enableDoor()
 		if not cxn1 and not cxn2 then
 			doorPart.CanCollide = false
 
@@ -114,7 +116,7 @@ local function HandleDoor(Door)
 		end
 	end
 
-	function disableDoor()
+	local function disableDoor()
 		if cxn1 or cxn2 then
 			doorPart.CanCollide = true
 

@@ -7,7 +7,7 @@ local locations = {}
 local tpParts = { References.TeleportPartIntro, References.TeleportPartPizzaPlace, References.TeleportPartc00lHouse }
 
 for _, part in tpParts do
-	locations[part.Name] = part.Value.CFrame
+	locations[part.Name] = part.CFrame
 end
 
 -- Client tells the server to teleport the player but only in certain locations

@@ -27,30 +27,41 @@ local donationDataStore = DataStoreService:GetOrderedDataStore(orderedDataStoreN
 -- Players' data in this session. Will be saved regularly to DataStore and deleted from table when player leaves
 local player_data = {}
 
+--[=[
+ Initialize the player's data
+
+ Please wrap this in a pcall
+ @param player Player
+]=]
+local function InitializePlayerData(player: Player)
+	-- Get Player's data
+	local playerGameData = dataStore:GetAsync("Player_" .. player.UserId)
+
+	-- TODO: Have a way to warn the player if their data does not save successfully
+	-- playerGameData["LastSessionSaved"] = false
+
+	-- Initialize new players' data
+	if not playerGameData then
+		playerGameData = {
+			["Cutscenes.Intro"] = false,
+			["JoinedTick"] = tick(),
+		}
+
+		dataStore:SetAsync("Player_" .. player.UserId, playerGameData)
+		-- GIVE WELCOME BADGE
+		eventsModule.FireAwardBadge(player, 3646574457098757, "Badges.Other.3646574457098757")
+	end
+
+	player_data["Player_" .. player.UserId] = playerGameData
+	print("Initialized player data below:")
+	print(playerGameData)
+end
+
 -- Upon player joining, initialize their data and donation data
 Players.PlayerAdded:Connect(function(player: Player)
 	-- Initialize data
 	local _, err = pcall(function()
-		-- Get Player's data
-		local playerGameData = dataStore:GetAsync("Player_" .. player.UserId)
-
-		-- TODO: Have a way to warn the player if their data does not save successfully
-		-- playerGameData["LastSessionSaved"] = false
-
-		-- Initialize new players' data
-		if not playerGameData then
-			playerGameData = {
-				["Cutscenes.Intro"] = false,
-				["JoinedTick"] = tick(),
-			}
-
-			dataStore:SetAsync("Player_" .. player.UserId, playerGameData)
-			-- GIVE WELCOME BADGE
-			eventsModule.FireAwardBadge(player, 3646574457098757, "Badges.Other.3646574457098757")
-		end
-
-		player_data["Player_" .. player.UserId] = playerGameData
-		print(playerGameData)
+		InitializePlayerData(player)
 	end)
 
 	if err then
@@ -174,10 +185,17 @@ end
  @param value any
 ]=]
 local function getDataOptimally(player: Player, entryName: string): any
-	-- If for some reason the player's data was not fetched
+	-- If for some reason the player's data was not fetched -- cuz of BadgeHandler
 	if not player_data["Player_" .. player.UserId] then
-		-- TODO: Add UI to tell the player to rejoin
-		warn("Player Data could not be retrieved!")
+		-- Initialize data
+		local _, err = pcall(function()
+			InitializePlayerData(player)
+		end)
+
+		if err then
+			-- TODO: Add UI to tell the player to rejoin
+			warn(err)
+		end
 		return nil
 	end
 

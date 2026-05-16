@@ -2,7 +2,6 @@
 
 local collectionService = game:GetService("CollectionService")
 
-local prompts = collectionService:GetTagged("Highlight")
 local highlight = workspace.WhiteHighlight
 
 local function hideHighlight()
@@ -12,8 +11,7 @@ end
 local connectedPrompts = {}
 
 while task.wait(5) do
-	local newPrompts = collectionService:GetTagged("Highlight")
-	prompts = newPrompts
+	local prompts = collectionService:GetTagged("Highlight")
 
 	for _, prompt in prompts do
 		if table.find(connectedPrompts, prompt) then

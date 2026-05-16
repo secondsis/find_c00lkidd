@@ -38,8 +38,8 @@ local function ConnectDialogueOnPromptTrigger(prompt: ProximityPrompt, dialogueN
 end
 
 -- For every dialoguePrompt, set up the trigger
-for _, dialogueName in DialogueToPromptsDictionary do
-	local proximityPrompts = DialogueToPromptsDictionary[dialogueName]
+for dialogueName, valueArray in DialogueToPromptsDictionary do
+	local proximityPrompts = valueArray.ProximityPrompts
 	for _, prompt in proximityPrompts do
 		ConnectDialogueOnPromptTrigger(prompt, dialogueName)
 	end
