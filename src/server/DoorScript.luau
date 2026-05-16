@@ -18,7 +18,6 @@ local function HandleDoor(Door)
 	local isDoorEnabled = Door:GetAttribute("isDoorEnabled")
 
 	local function Open()
-		print("opening door")
 		IfReturning = true
 		sound.TimePosition = 0.05
 		sound:Play()
@@ -30,7 +29,6 @@ local function HandleDoor(Door)
 	end
 
 	local function Close()
-		print("closing door")
 		IfReturning = false
 		sound.TimePosition = 2.5
 		sound:Play()
@@ -133,6 +131,7 @@ local function HandleDoor(Door)
 		doorPart.CanCollide = true
 	end
 
+	-- Always check if this changes
 	Door:GetAttributeChangedSignal("isDoorEnabled"):Connect(function()
 		local newisEnabled = Door:GetAttribute("isDoorEnabled")
 

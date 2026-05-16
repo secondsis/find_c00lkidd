@@ -37,7 +37,7 @@ function module.StartScene()
 	task.wait(1.6)
 	eventsModule.FireShakeCamera(5)
 
-	local dust = script.RoofDustEmitter.Value
+	local dust = workspace.Buildings["Grocery Store"].Inside:WaitForChild("Roof"):WaitForChild("ParticleEmitter")
 	dust.Enabled = true
 	fbiSfx.Ended:Wait()
 	alarmSfx:Stop()

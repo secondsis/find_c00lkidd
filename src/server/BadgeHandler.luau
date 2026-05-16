@@ -80,7 +80,7 @@ local function checkAllBadges(badgeOwnList: {})
 end
 
 --[=[
- Checks if the BadgeList contains every ending badge and unlocks hints
+ Awards the player a badge and sets the DataStore entry value to true
  @param player { }
 ]=]
 local function AwardBadge(player: Player, badgeId: number, dataStoreEntryName: string)
@@ -92,6 +92,7 @@ end
 
 -- Upon player joining, check if they own every ending badge and clone ending trophies into workspace
 Players.PlayerAdded:Connect(function(player)
+	task.wait(1)
 	local badgeOwnList = {}
 	for _, badge in endingBadges do
 		local badgeData = eventsModule.FireGetData(player, "Badges.Ending." .. badgeToEnding[badge])
@@ -102,6 +103,7 @@ Players.PlayerAdded:Connect(function(player)
 
 	for _, v in badgeOwnList do
 		local trophyClone = badgeToPart[v]:Clone()
+
 		local m = require(trophyClone.Statue.ModuleScript)
 		m.Animate()
 		trophyClone.Parent = badgesFolder
@@ -135,6 +137,7 @@ eventsModule.ConnectRemoteAwardEndingBadge(function(player: Player, endingName: 
 		warn("Failed to award badge.")
 	end
 
+	-- The player already has a badge if it did not error but the result was false
 	if not result then
 		warn(player.Name .. " (UID: " .. player.UserId .. ") already has this badge!")
 	end
