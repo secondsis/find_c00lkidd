@@ -5,6 +5,7 @@ local player = game:GetService("Players").LocalPlayer
 -- format: {{Name: string, Text: {string}, Speed: number, FontType: Enum.Font, Sfx: string}}
 -- MUST have name and text
 
+-- Need to rework this
 -- Font and sfx of characters (soon colors)
 module.characterStyles = {
 	["007e7"] = {
@@ -28,7 +29,7 @@ module.characterStyles = {
 do -- STORY-RELEVANT
 	-- Intro Scene
 
-	module.IntroPhoneCall1 = {
+	module.Introduction_PhoneCall = {
 		{
 			Name = "007n7",
 			Text = { "Yo e7? Is that you?" },
@@ -59,14 +60,11 @@ do -- STORY-RELEVANT
 				"BECAUSE THINGS HAVE BEEN INSANE!!",
 				'Are you kidding me? "Did smth happen?"',
 				"...",
-				"Sorry I just realized that might have been too harsh.",
-				"I didn’t mean to come off that way.",
-				"But have you not heard the news?",
-				"RNN must suck.",
-				"Did they not say anything?",
+				"I don't want to be mean or anything,",
+				"but have you not heard the news?",
 				"MY KIDD IS MISSING BRO!!!",
 				"I've been pulling my HAIR STRANDS out. I am going BALD at this rate!",
-				"I thought they would at least do an RMBER alert but I guess not.",
+				"Oh wait, I literally have a burger as a hat.",
 			},
 		},
 		{
@@ -80,11 +78,51 @@ do -- STORY-RELEVANT
 		{
 			Name = "007n7",
 			Text = {
-				"Yeah. It's really lonely here.",
-				"I can do with some company.",
+				"Yeah.",
+				"You gotta help me find him.",
 			},
 		},
 	}
+
+	-- 007e7 comes over to the house driving scene or something
+	-- he drives into the forest and the forest thins out into trunks and then those disappear and the spectre comes over the sky
+
+	module.Introduction_EnterHouse = {
+		{
+			Name = "007e7",
+			Text = {
+				"n7?",
+				"Hellooo?",
+			},
+		},
+	}
+
+	-- 007e7 Walks inside to see around
+
+	module.Introduction_House = {
+		{
+			Name = "007e7",
+			Text = {
+				"I guess I'll search the house then",
+			},
+		},
+	}
+
+	-- You go into a searching mission in the house
+
+	-- After searching around, you find nothing and get tired and go to sleep
+
+	module.Introduction_Sleepy = {
+		{
+			Name = "007e7",
+			Text = {
+				"Maybe he's just out looking for c00lkidd",
+				"But I'm getting pretty tired sooo...",
+			},
+		},
+	}
+
+	-- You go sleep on yo cousin's bed cuz ur like that
 
 	-- RESTAURANT SPAWN RIG(?)
 	--module.SpawnRigTalk1 = {

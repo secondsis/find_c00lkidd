@@ -11,7 +11,7 @@ local References = require(script.Parent.References)
 
 local IsStudio = RunService:IsStudio()
 
-local dataStoreName = IsStudio and "Test_MainGame_PlayerData_v3" or "MainGame_PlayerData_v0"
+local dataStoreName = IsStudio and "Test_MainGame_PlayerData_v6" or "MainGame_PlayerData_v0"
 
 local orderedDataStoreName = IsStudio and "Test_Donation_PlayerData_v0" or "Donation_PlayerData_v0"
 
