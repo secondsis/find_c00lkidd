@@ -7,15 +7,16 @@ local bloom = lighting:WaitForChild("Bloom")
 local depthOfField = lighting:WaitForChild("DepthOfField")
 local sunrays = lighting:WaitForChild("SunRays")
 
-local originalLightingBrightness = lighting.Brightness
-local originalLightingClockTime = lighting.ClockTime
-local originalLightingExposureCompensation = lighting.ExposureCompensation
+local originalLightingBrightness = lighting.Brightness -- 3
+local originalLightingClockTime = lighting.ClockTime --6.1
+local originalLightingExposureCompensation = lighting.ExposureCompensation -- 0
 
 local originalAtmosphereColor = atmosphere.Color
 local originalAtmosphereDensity = atmosphere.Density
 
 local Color3new = Color3.new
 
+-- Lighting when the dark scene happens at McDarndolds
 function lightingModule.McDarndolds()
 	-- Lighting
 	lighting.Brightness = 0
@@ -27,6 +28,7 @@ function lightingModule.McDarndolds()
 	atmosphere.Color = Color3new(0, 0, 0)
 end
 
+-- Normal Lighting
 function lightingModule.Default()
 	--Lighting
 	lighting.Brightness = originalLightingBrightness
@@ -38,12 +40,20 @@ function lightingModule.Default()
 	atmosphere.Color = originalAtmosphereColor
 end
 
+-- Lighting for the PizzaPlace Scene
 function lightingModule.PizzaScene()
 	lighting.Brightness = 3
 	lighting.ClockTime = 14
 	lighting.ExposureCompensation = 0.6
 
 	atmosphere.Density = 0.5
+end
+
+-- Lighting for the Introduction scene drive
+function lightingModule.IntroductionDrive()
+	lighting.Brightness = 3
+	lighting.ClockTime = 12
+	lighting.ExposureCompensation = 0
 end
 
 return lightingModule
