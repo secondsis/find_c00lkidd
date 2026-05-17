@@ -49,7 +49,6 @@ local function HandleCamera(keyframes)
 		end
 
 		tween:Play()
-		tween.Completed:Wait()
 	end
 end
 
@@ -70,7 +69,7 @@ local function HandleAnimations(keyframes)
 
 	for _, keyframe in keyframes do
 		local target = keyframe.Target
-		local animationId = keyframe.Animation
+
 		local timePosition = keyframe.TimePosition
 
 		-- Wait until timePosition (Length since start < timePosition)
@@ -79,28 +78,39 @@ local function HandleAnimations(keyframes)
 		end
 
 		-- Now at the appropriate timePosition, do the animation
-		local animation = Instance.new("Animation")
-		animation.AnimationId = animationId
+		if type(keyframe.Animation) == "string" then
+			-- Treat it as an animationId
+			local animationId = keyframe.Animation :: string
+			local animation = Instance.new("Animation")
+			animation.AnimationId = animationId
 
-		local Animator
+			local Animator
 
-		-- Make sure the target has an Animator/AnimationController
-		if not target:IsA("Humanoid") and target:FindFirstChildWhichIsA("AnimationController") == nil then
-			local AnimationController = Instance.new("AnimationController")
+			-- Make sure the target has an Animator/AnimationController
+			if not target:IsA("Humanoid") and target:FindFirstChildWhichIsA("AnimationController") == nil then
+				local AnimationController = Instance.new("AnimationController")
 
-			Animator = Instance.new("Animator")
+				Animator = Instance.new("Animator")
 
-			Animator.Parent = AnimationController
+				Animator.Parent = AnimationController
 
-			AnimationController.Parent = target
-		elseif target:IsA("Humanoid") and target:FindFirstChildWhichIsA("Animator") == nil then
-			Animator = Instance.new("Animator")
-			Animator.Parent = target
+				AnimationController.Parent = target
+			elseif target:IsA("Humanoid") and target:FindFirstChildWhichIsA("Animator") == nil then
+				Animator = Instance.new("Animator")
+				Animator.Parent = target
+			end
+
+			local animationTrack = Animator:LoadAnimation(animation)
+
+			animationTrack:Play()
+		else
+			-- Treat it as a TweenInfo
+			local tween = TweenService:Create(target, keyframe.Animation.TweenInfo, {
+				[keyframe.Animation.TweenType] = keyframe.Animation.Value,
+			})
+
+			tween:Play()
 		end
-
-		local animationTrack = Animator:LoadAnimation(animation)
-
-		animationTrack:Play()
 	end
 end
 
