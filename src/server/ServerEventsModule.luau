@@ -3,6 +3,8 @@
 -- Phase out the BindableEvents/BindableFunctions on the server
 -- RemoteEvents/RemoteFunctions are allowed
 export type Events = {
+	FireRemotePrepareCutscene: (Player) -> (),
+	FireRemoteFinishCutscene: (Player) -> (),
 	FireRemoteDialogueEvent: (Player, string) -> (),
 	ConnectRemoteDisableMovementEvent: ((Player, boolean) -> ()) -> RBXScriptConnection,
 	ConnectSetDataAsync: ((Player, string, string, any) -> ()) -> RBXScriptConnection,

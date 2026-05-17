@@ -151,4 +151,11 @@ function cutsceneModule.resetCamZoom(duration: number?)
 	cutsceneModule.zoomCam(originalCamFOV, duration)
 end
 
+local function getModule()
+	return cutsceneModule
+end
+
+eventsModule.ConnectGetCutsceneModule(getModule)
+eventsModule.ConnectRemoteGetCutsceneModule(getModule)
+
 return cutsceneModule

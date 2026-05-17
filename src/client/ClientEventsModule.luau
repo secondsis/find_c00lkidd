@@ -63,6 +63,8 @@ export type Events = {
 		resetCamZoom: () -> (),
 	},
 	FirePrepareCutscene: () -> (),
+	ConnectRemotePrepareCutscene: () -> (),
+	ConnectRemoteFinishCutscene: () -> (),
 	FireFinishCutscene: () -> (),
 	FireSetFirstPerson: () -> (),
 	FireSetThirdPerson: () -> (),
