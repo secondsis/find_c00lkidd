@@ -35,24 +35,110 @@ eventsModule.ConnectRemotePrepareCutscene(PrepareCutscene)
  @param keyframes {keyframe}
 ]=]
 local function HandleCamera(keyframes)
+	local startTick = tick()
 	local camera = workspace.CurrentCamera
 
 	for _, keyframe in keyframes do
 		local tween = TweenService:Create(camera, keyframe.TweenInfo, {
 			CFrame = keyframe.CFrame,
 		})
+		local timePosition = keyframe.TimePosition
+
+		while tick() - startTick < timePosition do
+			task.wait()
+		end
 
 		tween:Play()
 		tween.Completed:Wait()
 	end
 end
 
+--[[
+    AnimationKeyframes = {
+        {
+            Target = eag,
+            Animation = "https://rbxidwhat",
+            TimePosition = 0.00 -- Time in seconds
+        },
+        {
+
+        }
+    },
+]]
 local function HandleAnimations(keyframes)
-	keyframes = {}
-	-- Let's say you want to animate the character and jeep
-	-- Need a reference to character and jeep
-	--
+	local startTick = tick()
+
+	for _, keyframe in keyframes do
+		local target = keyframe.Target
+		local animationId = keyframe.Animation
+		local timePosition = keyframe.TimePosition
+
+		-- Wait until timePosition (Length since start < timePosition)
+		while tick() - startTick < timePosition do
+			task.wait()
+		end
+
+		-- Now at the appropriate timePosition, do the animation
+		local animation = Instance.new("Animation")
+		animation.AnimationId = animationId
+
+		local Animator
+
+		-- Make sure the target has an Animator/AnimationController
+		if not target:IsA("Humanoid") and target:FindFirstChildWhichIsA("AnimationController") == nil then
+			local AnimationController = Instance.new("AnimationController")
+
+			Animator = Instance.new("Animator")
+
+			Animator.Parent = AnimationController
+
+			AnimationController.Parent = target
+		elseif target:IsA("Humanoid") and target:FindFirstChildWhichIsA("Animator") == nil then
+			Animator = Instance.new("Animator")
+			Animator.Parent = target
+		end
+
+		local animationTrack = Animator:LoadAnimation(animation)
+
+		animationTrack:Play()
+	end
 end
+
+--[[
+    DialogueKeyframes = {
+        {
+            DialogueName = "whatever",
+            TimePosition = 0.00
+        },
+        {
+            DialogueName = "wae",
+            TimePosition = 10.012
+        }
+    }
+]]
+local function HandleDialogue(keyframes)
+	local startTick = tick()
+
+	for _, keyframe in keyframes do
+		local dialogueName = keyframe.DialogueName
+		local timePosition = keyframe.TimePosition
+
+		while tick() - startTick < timePosition do
+			task.wait()
+		end
+
+		-- Play the dialogue (no player input)
+		eventsModule.FireDialogueEvent(dialogueName)
+	end
+end
+
+local function HandleScene(cutsceneData: any)
+	task.spawn(HandleCamera, cutsceneData.CameraKeyframes)
+	task.spawn(HandleAnimations, cutsceneData.AnimationKeyframes)
+	task.spawn(HandleDialogue, cutsceneData.DialogueKeyframes)
+end
+
+eventsModule.ConnectRemotePlayScene(HandleScene)
 
 --[=[
  Resets the player's perspective after a cutscene: 
