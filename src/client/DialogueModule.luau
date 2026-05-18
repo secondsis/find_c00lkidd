@@ -28,7 +28,7 @@ module.characterStyles = {
 
 do -- STORY-RELEVANT
 	-- Intro Scene
-
+	module.Introduction_PhoneCallReply = nil
 	module.Introduction_PhoneCall = {
 		{
 			Name = "007n7",
@@ -82,6 +82,25 @@ do -- STORY-RELEVANT
 				"You gotta help me find him.",
 			},
 		},
+		{
+			Name = "/Options",
+			Text = {
+				"Going over rn.",
+			},
+			Results = {
+				module.Introduction_PhoneCallReply,
+			},
+		},
+	}
+
+	module.Introduction_PhoneCallReply = {
+
+		{
+			Name = "007n7",
+			Text = {
+				"Thanks man.",
+			},
+		},
 	}
 
 	-- 007e7 comes over to the house driving scene or something
@@ -122,7 +141,7 @@ do -- STORY-RELEVANT
 		},
 	}
 
-	-- You go sleep on yo cousin's bed cuz ur like that
+	-- You go sleep on yo cuz's bed cuz ur like that
 
 	-- RESTAURANT SPAWN RIG(?)
 	--module.SpawnRigTalk1 = {

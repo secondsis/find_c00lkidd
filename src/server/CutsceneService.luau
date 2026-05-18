@@ -1,4 +1,4 @@
-local PathAsString = require(script.Parent.PathAsString)
+local PathAsString = require(game:GetService("ReplicatedStorage").Shared.PathAsString)
 local References = require(script.Parent.References)
 local CutsceneService = {}
 
@@ -7,11 +7,6 @@ local eventsModule = References.ServerEventsModule
 local clonedMap = nil
 local playerOriginalCFrame = nil
 
---[=[
- Plays a cutscene using cutsceneData
- @param player Player
- @param cutsceneData any
-]=]
 --[[
 cutsceneData = {
     MapFolder = ServerStorage.WhateverFolder,
@@ -50,12 +45,16 @@ cutsceneData = {
     }
 }
 ]]
-
+--[=[
+ Plays a cutscene using cutsceneData
+ @param player Player
+ @param cutsceneData any
+]=]
 function CutsceneService.PlayCutscene(player: Player, cutsceneData: any)
 	-- Prepare the player perspective for cutscene
 	CutsceneService.PreparePlayer(player)
 	-- (Optionally) Load the map
-	clonedMap = CutsceneService.LoadMap(cutsceneData.MapFolder)
+	clonedMap = CutsceneService.LoadMap(player, cutsceneData.MapFolder)
 	-- Teleport Player
 	playerOriginalCFrame = CutsceneService.TeleportPlayerToBox(player, cutsceneData.BoxTeleportPart)
 
@@ -65,16 +64,31 @@ function CutsceneService.PlayCutscene(player: Player, cutsceneData: any)
 	CutsceneService.CleanUpCutscene(player)
 end
 
+--[=[
+ Tells the client to prepare for a cutscene
+ @param player Player
+]=]
 function CutsceneService.PreparePlayer(player: Player)
 	eventsModule.FireRemotePrepareCutscene(player)
 end
 
-function CutsceneService.LoadMap(mapFolder: Folder)
+--[=[
+ Tells the client to load the map
+ @param player Player
+ @param mapFolder Folder
+]=]
+function CutsceneService.LoadMap(player: Player, mapFolder: Folder)
+	-- Clone on client
 	local mapClone = mapFolder:Clone()
-	mapClone.Parent = workspace
+	mapClone.Parent = game:GetService("ReplicatedStorage").ClonedFolder
 	return mapClone
 end
 
+--[=[
+ Teleport player into the player box
+ @param player Player
+ @param boxTPPart BasePart -- Contains the CFrame of the destination
+]=]
 function CutsceneService.TeleportPlayerToBox(player: Player, boxTPPart: BasePart)
 	if not player.Character or not player.Character.PrimaryPart then
 		return nil
@@ -110,6 +124,10 @@ function CutsceneService.PlaySceneEffects(player: Player, cutsceneData: any)
 	task.spawn(eventsModule.FireRemotePlayScene, player, cutsceneData)
 end
 
+--[=[
+ Resets everything back to normal
+ @param player Player
+]=]
 function CutsceneService.CleanUpCutscene(player: Player)
 	-- Return player movement, mouse, etc.
 	eventsModule.FireRemoteFinishCutscene(player)

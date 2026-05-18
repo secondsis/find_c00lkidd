@@ -1,13 +1,14 @@
 local TweenService = game:GetService("TweenService")
 local eventsModule = require(script.Parent.ClientEventsModule)
 local cutsceneModule = require(script.Parent.CutsceneModule)
+local PathAsString = require(game:GetService("ReplicatedStorage").Shared.PathAsString)
 
 local player = game:GetService("Players").LocalPlayer
 local mainGameGui = player.PlayerGui:WaitForChild("MainGameGui")
 local wasMainGuiEnabled = false
 
 --[=[
- Prepares the player for a cutscene: Disables the mouse icon, Pauses camera effects, Disables movement,
+ Prepares the player for a cutscene: Disables the mouse icon, Pauses camera effects, Disables movement, Disables UI
  Makes player character invisible
 ]=]
 local function PrepareCutscene()
@@ -23,9 +24,6 @@ end
 eventsModule.ConnectPrepareCutscene(PrepareCutscene)
 eventsModule.ConnectRemotePrepareCutscene(PrepareCutscene)
 
---function TweenInfo.new(time: number?, easingStyle: Enum.EasingStyle?, easingDirection: Enum.EasingDirection?, repeatCount: number?, reverses: boolean?, delayTime: number?): TweenInfo
--- A keyframe has a duration, Enum.EasingStyle, Enum.EasingDirection,
--- A keyframe is basically a TweenInfo
 --[=[
  [BLOCKING]
 
@@ -34,12 +32,21 @@ eventsModule.ConnectRemotePrepareCutscene(PrepareCutscene)
  A keyframe has: .TweenInfo (`TweenInfo`), .CFrame (`CFrame`)
  @param keyframes {keyframe}
 ]=]
-local function HandleCamera(keyframes)
+local function HandleCamera(startCFrame, keyframes)
 	local startTick = tick()
 	local camera = workspace.CurrentCamera
+	camera.CFrame = startCFrame
+	camera.CameraType = Enum.CameraType.Scriptable
 
 	for _, keyframe in keyframes do
-		local tween = TweenService:Create(camera, keyframe.TweenInfo, {
+		local duration = keyframe.TweenInfo.Duration or 0
+		local easingStyle = keyframe.TweenInfo.EasingStyle or Enum.EasingStyle.Linear
+		local easingDirection = keyframe.TweenInfo.EasingDirection or Enum.EasingDirection.InOut
+		local repeatCount = keyframe.TweenInfo.RepeatCount or 0
+		local reverses = keyframe.TweenInfo.Reverses or false
+		local delayTime = keyframe.TweenInfo.DelayTime or 0
+		local tweenInfo = TweenInfo.new(duration, easingStyle, easingDirection, repeatCount, reverses, delayTime)
+		local tween = TweenService:Create(camera, tweenInfo, {
 			CFrame = keyframe.CFrame,
 		})
 		local timePosition = keyframe.TimePosition
@@ -64,6 +71,13 @@ end
         }
     },
 ]]
+
+--[=[
+ [BLOCKING]
+
+ Plays the Animation or Tween in the order and timePosition given by keyframes
+ @param keyframes any
+]=]
 local function HandleAnimations(keyframes)
 	local startTick = tick()
 
@@ -104,8 +118,16 @@ local function HandleAnimations(keyframes)
 
 			animationTrack:Play()
 		else
+			-- TweenInfo except I can't have Tweeninfo in my dictionary somehow
+			local duration = keyframe.Animation.TweenInfo.Duration or 0
+			local easingStyle = keyframe.Animation.TweenInfo.EasingStyle or Enum.EasingStyle.Linear
+			local easingDirection = keyframe.Animation.TweenInfo.EasingDirection or Enum.EasingDirection.InOut
+			local repeatCount = keyframe.Animation.TweenInfo.RepeatCount or 0
+			local reverses = keyframe.Animation.TweenInfo.Reverses or false
+			local delayTime = keyframe.Animation.TweenInfo.DelayTime or 0
+			local tweenInfo = TweenInfo.new(duration, easingStyle, easingDirection, repeatCount, reverses, delayTime)
 			-- Treat it as a TweenInfo
-			local tween = TweenService:Create(target, keyframe.Animation.TweenInfo, {
+			local tween = TweenService:Create(target, tweenInfo, {
 				[keyframe.Animation.TweenType] = keyframe.Animation.Value,
 			})
 
@@ -126,6 +148,10 @@ end
         }
     }
 ]]
+--[=[
+ Plays the dialogue in the order and time position given by keyframes
+ @param keyframes any
+]=]
 local function HandleDialogue(keyframes)
 	local startTick = tick()
 
@@ -142,8 +168,27 @@ local function HandleDialogue(keyframes)
 	end
 end
 
+--[=[
+ Handles the client's end of the cutscene: camera, animations, dialogue
+ @param cutsceneData any
+]=]
 local function HandleScene(cutsceneData: any)
-	task.spawn(HandleCamera, cutsceneData.CameraKeyframes)
+	local newMap = game:GetService("ReplicatedStorage").ClonedFolder:WaitForChild("IntroductionDrivingScene")
+	newMap.Parent = game:GetService("Workspace")
+	--game:GetService("ReplicatedStorage").ClonedFolder:GetChildren()[1]:Destroy()
+	cutsceneData.MapFolder = newMap
+
+	local CutsceneAnimationKeyframes = cutsceneData.AnimationKeyframes
+	for _, v in CutsceneAnimationKeyframes do
+		local animationTarget = v.Target :: string
+		--local ServerStorageAsset = PathAsString.fetchStringPath(animationTarget) :: string
+		-- Replace "game.ServerStorage.Assets.Security_NONE.Maps.Cutscenes" with "workspace"
+		local newPath = "workspace" .. animationTarget:sub(55)
+		local newAsset = PathAsString.fetchAsset(newPath)
+		v.Target = newAsset
+	end
+
+	task.spawn(HandleCamera, cutsceneData.CameraStartCFrame, cutsceneData.CameraKeyframes)
 	task.spawn(HandleAnimations, cutsceneData.AnimationKeyframes)
 	task.spawn(HandleDialogue, cutsceneData.DialogueKeyframes)
 end

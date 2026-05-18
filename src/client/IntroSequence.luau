@@ -25,94 +25,24 @@ local cam3 = replicatedStorage.Values.ObjectValues.MissingPosterCam
 
 local sfxGroup = soundService.SFX
 local pickUpSfx = sfxGroup.phone_pickup
-local hangUpSfx = sfxGroup.HangUpPhone
+-- local hangUpSfx = sfxGroup.HangUpPhone
 local phoneRingSfx = sfxGroup.phoneRing.Value
 local markiplierSfx = sfxGroup.MarkiplierGameplay
 
-local originalPhoneCF = wallPhone.Speaker.CFrame
+-- local originalPhoneCF = wallPhone.Speaker.CFrame
 
 local phoneTween = tweenService:Create(wallPhone.Speaker, TweenInfo.new(0.5, Enum.EasingStyle.Linear), {
 	CFrame = wallPhone:WaitForChild("SpeakerPos2").CFrame,
 })
 
-local playingIntro = false
+local isPlayingIntro = false
 
-local endScene = coroutine.create(function()
-	workspace.Cutscenes.Intro:ClearAllChildren()
-	local char = game:GetService("Players").LocalPlayer.Character
-	eventsModule.FireRemoteTeleportPlayerOnServer("c00lHouse")
-	cutsceneModule.resetCam()
-	cutsceneModule.resetCamZoom()
-	cutsceneModule.fadeInPlayer(0)
-	-- Set data on server
-	eventsModule.FireCompletedCutscene("Intro")
-	playingIntro = false
-end)
+local playPhoneAnimation
+local playConversation
+local endScene
 
-local playConversation = coroutine.create(function()
-	holdTrack:Play()
-
-	eventsModule.FireDialogueFunction("IntroPhoneCall1", { "enablePromptsAfter_false" })
-
-	task.wait(1)
-
-	eventsModule.FireDialogueFunction("IntroPhoneCall2", { "enablePromptsAfter_false" })
-	-- Change scene to missing poster
-	eventsModule.FireSmoothTransitionFunction(1)
-	cutsceneModule.changeCamCFrame(cam3.Value.CFrame)
-	cutsceneModule.zoomCam(50, 10)
-
-	eventsModule.FireDialogueFunction("IntroPhoneCall3")
-	eventsModule.FireSmoothTransitionFunction(1)
-	cutsceneModule.changeCamCFrame(cam2.CFrame)
-	cutsceneModule.resetCamZoom(1)
-	eventsModule.FireWaitForDialogueFinish()
-
-	eventsModule.FireSmoothTransitionFunction(2)
-	coroutine.resume(endScene)
-end)
-
-local playPhoneAnimation = coroutine.create(function()
-	walkToTrack:Play()
-	walkToTrack.Stopped:Connect(function()
-		pickUpTrack:Play()
-		phoneTween:Play()
-		phoneRingSfx:Stop()
-		pickUpSfx:Play()
-	end)
-end)
-
-pickUpEvent.OnClientEvent:Connect(function()
-	-- after interacting with phone
-	eventsModule.FireSmoothTransitionFunction(3)
-	eventsModule.FirePauseCameraEffects()
-	eventsModule.FireCloneAssetSecurityNone("Objects.007e7_Clone2")
-	local clone2Asset = replicatedStorage.ClonedFolder:WaitForChild("007e7_Clone2")
-	local clone2 = clone2Asset:Clone()
-	clone2Asset:Destroy()
-	clone2.Parent = introFolder
-
-	local cloneHumanoid2 = clone2:WaitForChild("Humanoid")
-	local animator2 = cloneHumanoid2:WaitForChild("Animator")
-
-	walkToTrack = animator2:LoadAnimation(cloneHumanoid2.walkto_phone)
-	pickUpTrack = animator2:LoadAnimation(cloneHumanoid2.grab_phone)
-	holdTrack = animator2:LoadAnimation(cloneHumanoid2.hold_phone)
-
-	pickUpTrack.Stopped:Connect(function()
-		coroutine.resume(playConversation)
-	end)
-
-	-- Camera to phone
-	cutsceneModule.changeCamCFrame(cam2.CFrame)
-	cutsceneModule.fadeOutPlayer(0)
-	task.wait(1)
-	coroutine.resume(playPhoneAnimation)
-end)
-local startIntroThread: thread
-
-startIntroThread = coroutine.create(function()
-	playingIntro = true
+local function PlayPart1_WatchingTV()
+	isPlayingIntro = true
 
 	eventsModule.FireSmoothTransitionFunction(3)
 	eventsModule.FirePrepareCutscene()
@@ -157,19 +87,90 @@ startIntroThread = coroutine.create(function()
 	cutsceneModule.fadeInPlayer(2.5)
 	cutsceneModule.resetCam()
 	eventsModule.FireEnableMouseIcon()
-end)
+end
 
-eventsModule.ConnectStartIntroScene(function()
+local function PlayPart2_PickUpPhone()
+	-- after interacting with phone
+	eventsModule.FireSmoothTransitionFunction(3)
+	eventsModule.FirePauseCameraEffects()
+	eventsModule.FireCloneAssetSecurityNone("Objects.007e7_Clone2")
+	local clone2Asset = replicatedStorage.ClonedFolder:WaitForChild("007e7_Clone2")
+	local clone2 = clone2Asset:Clone()
+	clone2Asset:Destroy()
+	clone2.Parent = introFolder
+
+	local cloneHumanoid2 = clone2:WaitForChild("Humanoid")
+	local animator2 = cloneHumanoid2:WaitForChild("Animator")
+
+	walkToTrack = animator2:LoadAnimation(cloneHumanoid2.walkto_phone)
+	pickUpTrack = animator2:LoadAnimation(cloneHumanoid2.grab_phone)
+	holdTrack = animator2:LoadAnimation(cloneHumanoid2.hold_phone)
+
+	pickUpTrack.Stopped:Connect(function()
+		coroutine.resume(playConversation)
+	end)
+
+	-- Camera to phone
+	cutsceneModule.changeCamCFrame(cam2.CFrame)
+	cutsceneModule.fadeOutPlayer(0)
+	task.wait(1)
+	coroutine.resume(playPhoneAnimation)
+end
+
+local function PlayPart3_PhoneAnimation()
+	walkToTrack:Play()
+	walkToTrack.Stopped:Connect(function()
+		pickUpTrack:Play()
+		phoneTween:Play()
+		phoneRingSfx:Stop()
+		pickUpSfx:Play()
+	end)
+end
+
+local function PlayPart4_PhoneConversation()
+	holdTrack:Play()
+
+	eventsModule.FireDialogueFunction("Introduction_PhoneCall")
+
+	task.wait(1)
+
+	-- GO driving scene
+	eventsModule.FireSmoothTransitionFunction(1)
+	eventsModule.FireWaitForDialogueFinish()
+
+	eventsModule.FireSmoothTransitionFunction(2)
+	coroutine.resume(endScene)
+end
+
+local function EndScene()
+	workspace.Cutscenes.Intro:ClearAllChildren()
+	eventsModule.FireRemoteTeleportPlayerOnServer("c00lHouse")
+	cutsceneModule.resetCam()
+	cutsceneModule.resetCamZoom()
+	cutsceneModule.fadeInPlayer(0)
+	-- Set data on server
+	eventsModule.FireCompletedCutscene("Intro")
+	isPlayingIntro = false
+end
+
+local startIntroThread = coroutine.create(PlayPart1_WatchingTV)
+pickUpEvent.OnClientEvent:Connect(PlayPart2_PickUpPhone)
+playPhoneAnimation = coroutine.create(PlayPart3_PhoneAnimation)
+playConversation = coroutine.create(PlayPart4_PhoneConversation)
+endScene = coroutine.create(EndScene)
+
+local function StartIntroductionScene()
 	coroutine.resume(startIntroThread)
-end)
+end
 
-local function waitForIntroToFinish()
+local function WaitForIntroFinish()
 	task.wait()
-	while playingIntro do
+	while isPlayingIntro do
 		task.wait()
 	end
 end
 
-eventsModule.ConnectWaitForIntroEnd(waitForIntroToFinish)
+eventsModule.ConnectStartIntroScene(StartIntroductionScene)
+eventsModule.ConnectWaitForIntroEnd(WaitForIntroFinish)
 
 return {}
