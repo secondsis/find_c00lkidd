@@ -1,3 +1,5 @@
+local Players = game:GetService("Players")
+local CutsceneDataModule = require(script.Parent.CutsceneDataModule)
 local PathAsString = require(game:GetService("ReplicatedStorage").Shared.PathAsString)
 local References = require(script.Parent.References)
 local CutsceneService = {}
@@ -63,6 +65,8 @@ function CutsceneService.PlayCutscene(player: Player, cutsceneData: any)
 	-- Finish and reset
 	CutsceneService.CleanUpCutscene(player)
 end
+
+-- Client needs to call this
 
 --[=[
  Tells the client to prepare for a cutscene
@@ -138,5 +142,17 @@ function CutsceneService.CleanUpCutscene(player: Player)
 	-- Destroy map
 	clonedMap:Destroy()
 end
+
+local function PlayCutscene(player: Player, cutsceneName: string)
+	-- Implement a check to verify that the player is allowed to view this
+	if not player:GetAttribute("Cutscenes") or player:GetAttribute("Cutscenes") ~= cutsceneName then
+		return
+	end
+
+	-- Play the cutscene
+	CutsceneService.PlayCutscene(player, CutsceneDataModule[cutsceneName])
+end
+
+eventsModule.ConnectRemotePlayCutscene(PlayCutscene)
 
 return CutsceneService

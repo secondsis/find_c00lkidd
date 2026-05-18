@@ -2,7 +2,12 @@ Adding this back in because I really don't care anymore what you think about my 
 
 TODO: 
 
+Figure out how to give client permission by server to: view a cutscene, view dialogue, get ending
+
+
 Necessary Features: 
+    => INTRODUCTION / CUTSCENE REVAMP
+
     1. Final Battle
         Figure out how to introduce Spectre in the battle
     2. Animate Christmas Scene

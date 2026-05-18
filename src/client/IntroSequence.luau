@@ -21,7 +21,7 @@ local cameraFolder = importantFolder.Cameras
 local cam1 = cameraFolder:WaitForChild("pos1", math.huge)
 local cam2 = cameraFolder:WaitForChild("pos2")
 
-local cam3 = replicatedStorage.Values.ObjectValues.MissingPosterCam
+-- local cam3 = replicatedStorage.Values.ObjectValues.MissingPosterCam
 
 local sfxGroup = soundService.SFX
 local pickUpSfx = sfxGroup.phone_pickup
@@ -132,12 +132,25 @@ local function PlayPart4_PhoneConversation()
 
 	eventsModule.FireDialogueFunction("Introduction_PhoneCall")
 
-	task.wait(1)
+	eventsModule.FireWaitForDialogueFinish()
+	eventsModule.FireSmoothTransitionFunction(1)
 
 	-- GO driving scene
-	eventsModule.FireSmoothTransitionFunction(1)
-	eventsModule.FireWaitForDialogueFinish()
+	eventsModule.FireRemotePlayCutscene(game:GetService("Players").LocalPlayer, "IntroductionDrive")
+	-- Wait for the scene to end
+	local ended = false
+	eventsModule.ConnectRemoteFinishCutscene(function()
+		ended = true
+	end)
+	while not ended do
+		task.wait()
+	end
 
+	-- Then 007e7 arrives at house cutscene
+
+	-- Then 007e7 searches the house
+
+	-- End the scene overall
 	eventsModule.FireSmoothTransitionFunction(2)
 	coroutine.resume(endScene)
 end
