@@ -84,6 +84,11 @@ function CutsceneService.TeleportPlayerToBox(player: Player, boxTPPart: BasePart
 	return originalPlayerCFrame
 end
 
+--[=[
+ Plays the client's scene effects: camera, animations, dialogue
+ @param player Player
+ @param cutsceneData any
+]=]
 function CutsceneService.PlaySceneEffects(player: Player, cutsceneData: any)
 	-- Camera, Animations, Dialogue
 
