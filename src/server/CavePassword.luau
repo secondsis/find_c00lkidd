@@ -66,7 +66,9 @@ model.Green.ClickDetector.MouseClick:Connect(function(player) -- Enter button
 	else
 		attempts += 1
 		if attempts >= 3 and model.Parent.Parent.CodeObjects.KeyImage.Decal.Transparency == 1 then
-			ServerEventsModule.FireDelusionalScene(player)
+			-- Fire this bindable to the server
+			local DelusionTeleportModule = require(script.Parent.DelusionTeleporter)
+			DelusionTeleportModule.TeleportToDelusion(player)
 		end
 		incorrectSfx:Play()
 		model.screen.BrickColor = BrickColor.new("Really red") --changes screen color

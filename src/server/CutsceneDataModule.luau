@@ -1,4 +1,4 @@
-local module = {}
+local CutsceneDataModule = {}
 
 --[[
 cutsceneData = {
@@ -40,7 +40,7 @@ cutsceneData = {
 -- function TweenInfo.new(time: number?, easingStyle: Enum.EasingStyle?, easingDirection: Enum.EasingDirection?, repeatCount: number?, reverses: boolean?, delayTime: number?): TweenInfo
 ]]
 
-module.IntroductionDrive = {
+CutsceneDataModule.IntroductionDrive = {
 	MapFolder = game:GetService("ServerStorage").Assets["Security_NONE"].Maps.Cutscenes.IntroductionDrivingScene,
 	BoxTeleportPart = game:GetService("ServerStorage").Assets["Security_NONE"].Maps.Cutscenes.IntroductionDrivingScene.PlayerBox.TPPart,
 	CameraStartCFrame = CFrame.new(-519.934, 19.72, -1408.226) * CFrame.Angles(math.rad(-32.099), math.rad(0.401), 0),
@@ -74,4 +74,4 @@ module.IntroductionDrive = {
 	DialogueKeyframes = {},
 }
 
-return module
+return CutsceneDataModule

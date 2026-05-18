@@ -44,12 +44,12 @@ local endScene
 local function PlayPart1_WatchingTV()
 	isPlayingIntro = true
 
+	-- Prepare for the cutscene
 	eventsModule.FireSmoothTransitionFunction(3)
 	eventsModule.FirePrepareCutscene()
-
 	eventsModule.FireRemoteTeleportPlayerOnServer("Intro")
 
-	-- clone 1
+	-- Clone 007e7 to lay on couch
 	eventsModule.FireCloneAssetSecurityNone("Objects.007e7_Clone1")
 	local clone1Asset = replicatedStorage.ClonedFolder:WaitForChild("007e7_Clone1")
 	local clone1 = clone1Asset:Clone()
@@ -63,24 +63,31 @@ local function PlayPart1_WatchingTV()
 	local gettingUpTrack = animator1:LoadAnimation(cloneHumanoid1.getting_up)
 	local turningOffTrack = animator1:LoadAnimation(cloneHumanoid1.turning_off)
 
+	-- Set the scene: 007e7 is laying on the couch and markiplier is playing on the TV
 	layingTrack:Play()
-
-	-- Camera to couch
 	markiplierSfx:Play()
+
+	-- Move camera to face the couch
 	cutsceneModule.changeCamCFrame(cam1.CFrame)
 	task.wait(5)
+	--After a bit, the phone will ring
 	phoneRingSfx:Play()
 	task.wait(2)
+	-- 007e7 gets up
 	layingTrack:Stop()
 	gettingUpTrack:Play()
-
 	gettingUpTrack.Stopped:Wait()
+	-- 007e7 turns off the TV
 	turningOffTrack:Play()
+	-- Right when the remote clicks, stop markipllier
 	task.wait(24 / 60)
 	markiplierSfx:Stop()
+	-- Remote click sound effect
 	sfxGroup["Television 4 (SFX)"]:Play()
+	-- Kill markiplier
 	importantFolder.TVDecal.Value:Destroy()
 	task.wait(1)
+	-- Transition to controlling 007e7 character
 	eventsModule.FireSmoothTransitionFunction(2)
 	eventsModule.FireDisableSkipEvent()
 	cloneHumanoid1.Parent:Destroy()
@@ -90,9 +97,10 @@ local function PlayPart1_WatchingTV()
 end
 
 local function PlayPart2_PickUpPhone()
-	-- after interacting with phone
+	-- After interacting with phone
 	eventsModule.FireSmoothTransitionFunction(3)
 	eventsModule.FirePauseCameraEffects()
+	-- Make another clone of 007e7 that will pick up the phone
 	eventsModule.FireCloneAssetSecurityNone("Objects.007e7_Clone2")
 	local clone2Asset = replicatedStorage.ClonedFolder:WaitForChild("007e7_Clone2")
 	local clone2 = clone2Asset:Clone()
@@ -106,6 +114,7 @@ local function PlayPart2_PickUpPhone()
 	pickUpTrack = animator2:LoadAnimation(cloneHumanoid2.grab_phone)
 	holdTrack = animator2:LoadAnimation(cloneHumanoid2.hold_phone)
 
+	-- When the pickUp animation is finished, play the dialogue
 	pickUpTrack.Stopped:Connect(function()
 		coroutine.resume(playConversation)
 	end)
@@ -135,7 +144,7 @@ local function PlayPart4_PhoneConversation()
 	eventsModule.FireWaitForDialogueFinish()
 	eventsModule.FireSmoothTransitionFunction(1)
 
-	-- GO driving scene
+	-- Go to driving scene
 	eventsModule.FireRemotePlayCutscene(game:GetService("Players").LocalPlayer, "IntroductionDrive")
 	-- Wait for the scene to end
 	local ended = false
@@ -148,7 +157,7 @@ local function PlayPart4_PhoneConversation()
 
 	-- Then 007e7 arrives at house cutscene
 
-	-- Then 007e7 searches the house
+	-- Then 007e7 searches the house (IntroMission)
 
 	-- End the scene overall
 	eventsModule.FireSmoothTransitionFunction(2)
@@ -156,8 +165,11 @@ local function PlayPart4_PhoneConversation()
 end
 
 local function EndScene()
+	-- Remove the Intro house
 	workspace.Cutscenes.Intro:ClearAllChildren()
+	-- Put the player back into the c00lHouse
 	eventsModule.FireRemoteTeleportPlayerOnServer("c00lHouse")
+	-- Reset cameras
 	cutsceneModule.resetCam()
 	cutsceneModule.resetCamZoom()
 	cutsceneModule.fadeInPlayer(0)

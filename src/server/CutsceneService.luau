@@ -153,6 +153,7 @@ local function PlayCutscene(player: Player, cutsceneName: string)
 	CutsceneService.PlayCutscene(player, CutsceneDataModule[cutsceneName])
 end
 
+-- Be able to play cutscene by client request
 eventsModule.ConnectRemotePlayCutscene(PlayCutscene)
 
 return CutsceneService
