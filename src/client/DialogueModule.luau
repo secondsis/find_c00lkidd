@@ -106,6 +106,7 @@ do -- STORY-RELEVANT
 	-- 007e7 comes over to the house driving scene or something
 	-- he drives into the forest and the forest thins out into trunks and then those disappear and the spectre comes over the sky
 
+	-- Make sure to use { "fastDialogue_true" } when called
 	module.Introduction_EnterHouse = {
 		{
 			Name = "007e7",

@@ -4,11 +4,15 @@ local soundService = game:GetService("SoundService")
 
 local cutsceneModule = require(script.Parent.CutsceneModule)
 local eventsModule = require(script.Parent.ClientEventsModule)
+local PropertyManipulator = require(script.Parent.PropertyManipulator)
+local MissionHandler =
+	require(game:GetService("Players").LocalPlayer.PlayerGui:WaitForChild("MissionGui"):WaitForChild("MissionHandler"))
 
 local pickUpEvent = replicatedStorage.RemoteEvents.Cutscenes.Intro.PickUpPhoneEvent
 
 local introFolder = workspace.Cutscenes.Intro
 local importantFolder = introFolder.e7Home.Important
+local CheckForTouchFolder = workspace.Buildings.c00lHouse.CheckForTouch
 
 local wallPhone = importantFolder:WaitForChild("Wall Phone")
 
@@ -156,8 +160,36 @@ local function PlayPart4_PhoneConversation()
 	end
 
 	-- Then 007e7 arrives at house cutscene
+	eventsModule.FireRemotePlayCutscene(game:GetService("Players").LocalPlayer, "IntroductionHouse")
 
 	-- Then 007e7 searches the house (IntroMission)
+
+	-- When player touches a room's respective parts, go tick the box
+	local RoomParts = {
+		LivingRoom = CheckForTouchFolder.LivingRoom,
+		DownstairsBedroom = CheckForTouchFolder.DownstairsBedroom,
+		Garage = CheckForTouchFolder.Garage,
+		FamilyRoom = CheckForTouchFolder.FamilyRoom,
+		["007n7Bedroom"] = CheckForTouchFolder["007n7Bedroom"],
+		c00lkiddBedrooom = CheckForTouchFolder.c00lkiddBedroom,
+	}
+
+	local function ConnectTouchEvents()
+		for roomName, roomPart in RoomParts do
+			-- Mark off this room when .Touched
+			roomPart.Touched:Connect(function()
+				MissionHandler.MarkComplete(roomName)
+			end)
+		end
+	end
+
+	local function StartPlayerMission(player: Player)
+		-- Turn on UI
+		PropertyManipulator.ManipulateProperty(player.PlayerGui.MissionGui, "Enabled", true)
+		ConnectTouchEvents()
+	end
+
+	StartPlayerMission(game:GetService("Players").LocalPlayer)
 
 	-- End the scene overall
 	eventsModule.FireSmoothTransitionFunction(2)

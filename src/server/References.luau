@@ -18,6 +18,7 @@ ckGalaxy.CatPianoClickDetector = workspace.Buildings.c00lHouse["c00l_toys"].CatP
 ckGalaxy.Mirror1Prompt = workspace.Buildings.c00lHouse.Furniture.Bathroom.Mirror.Prompter.ProximityPrompt
 ckGalaxy.Mirror2Prompt = workspace.Buildings.c00lHouse.Furniture["Main Room"].Mirror.Prompter.ProximityPrompt
 ckGalaxy.BedPrompt = workspace.Important.MiscInteractables.InteractBed.ProximityPrompt
+ckGalaxy.CheckForTouchFolder = workspace.Buildings.c00lHouse.CheckForTouch
 
 -- NEIGHBORHOOD / OUTSIDE --
 ckGalaxy.FrontDoors = {
@@ -82,8 +83,7 @@ ckGalaxy.ShopItemInfo = {
 ckGalaxy.HiddenTileClickDetector = workspace.Important.GroceryStoreObjects.SecretTouch.ClickDetector
 ckGalaxy.StoreTriggerPart = workspace.Important.GroceryStoreObjects.StoreTrigger
 ckGalaxy.CashierPrompt = workspace.Important.NPCs.Cashier.Prompter.ProximityPrompt
-ckGalaxy.PenguinClickDetector =
-	game:GetService("Workspace").Buildings["Grocery Store"].DecorationItems.PENGUIN.ClickDetector
+ckGalaxy.PenguinClickDetector = workspace.Buildings["Grocery Store"].DecorationItems.PENGUIN.ClickDetector
 
 -- RESTAURANT --
 ckGalaxy.RestaurantWallPrompt = workspace.Buildings.Restaurant.Other.PromptingPart.Prompter.ProximityPrompt

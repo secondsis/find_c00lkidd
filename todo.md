@@ -28,6 +28,7 @@ Known Bugs:
 Other Features: 
     1. Donation Leaderboard
     2. Evil 007e7 in mirror (mirror cracks over time as player collects endings)
+        Make sky redder too
     3. Hidden Tile secret ending
     4. Tester in-game and outside game bug report form (in-game gets sent to Discord message?)
     5. Bluuworld subplace? Teleporting players to Bluuworld itself is fine I guess
@@ -63,7 +64,7 @@ Dialogue cmds:
 disableMovement_false
 enableMovementAfter_false
 enablePromptsAfter_false
-fastDialogue_true
+fastDialogue_true -- For cutscenes, for example
 
 Endings: (13)
 McDarndolds
