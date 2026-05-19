@@ -12,7 +12,7 @@ local playerOriginalCFrame = nil
 --[[
 cutsceneData = {
     MapFolder = ServerStorage.WhateverFolder,
-    BoxTeleportPart = MapFolder.WhateverTPPart,
+    TeleportPart = MapFolder.WhateverTPPart,
     CameraKeyframes = {
         {
             CFrame = whatev,
@@ -53,17 +53,31 @@ cutsceneData = {
  @param cutsceneData any
 ]=]
 function CutsceneService.PlayCutscene(player: Player, cutsceneData: any)
+	print("Preparing Player for cutscene...")
 	-- Prepare the player perspective for cutscene
 	CutsceneService.PreparePlayer(player)
-	-- (Optionally) Load the map
-	clonedMap = CutsceneService.LoadMap(player, cutsceneData.MapFolder)
-	-- Teleport Player
-	playerOriginalCFrame = CutsceneService.TeleportPlayerToBox(player, cutsceneData.BoxTeleportPart)
 
+	print("Loading map...")
+	-- (Optionally) Load the map
+	if cutsceneData.MapFolder then
+		clonedMap = CutsceneService.LoadMap(player, cutsceneData.MapFolder)
+	end
+
+	print("Teleporting player...")
+	-- (Optionally) Teleport Player
+	if cutsceneData.TeleportPart then
+		playerOriginalCFrame = CutsceneService.TeleportPlayerToBox(player, cutsceneData.TeleportPart)
+	end
+
+	print("Playing cutscene effects...")
 	-- Play Camera, Animations, Dialogue
 	CutsceneService.PlaySceneEffects(player, cutsceneData)
+
+	print("Cleaning up scene...")
 	-- Finish and reset
 	CutsceneService.CleanUpCutscene(player)
+
+	print("Done!")
 end
 
 -- Client needs to call this
@@ -114,18 +128,10 @@ function CutsceneService.PlaySceneEffects(player: Player, cutsceneData: any)
 	-- Manipulate cutsceneData until it is ready for the client
 	-- "ServerStorage.Assets.Security_NONE.Maps.Cutscenes" .SceneName.Target
 	-- workspace.SceneName.Target
-	local CutsceneAnimationKeyframes = cutsceneData.AnimationKeyframes
-	for _, v in CutsceneAnimationKeyframes do
-		local animationTarget = v.Target
-		local ServerStorageAsset = PathAsString.fetchStringPath(animationTarget) :: string
-		-- Replace "ServerStorage.Assets.Security_NONE.Maps.Cutscenes" with "workspace"
-		local newPath = "workspace" .. ServerStorageAsset:sub(50)
-		local newAsset = PathAsString.fetchAsset(newPath)
-		v.Target = newAsset
+	local function playScene()
+		eventsModule.FireRemotePlayScene(player, cutsceneData)
 	end
-
-	-- Client will have access to the new targets
-	task.spawn(eventsModule.FireRemotePlayScene, player, cutsceneData)
+	task.spawn(playScene)
 end
 
 --[=[
@@ -143,17 +149,19 @@ function CutsceneService.CleanUpCutscene(player: Player)
 	clonedMap:Destroy()
 end
 
-local function PlayCutscene(player: Player, cutsceneName: string)
+local function RemotePlayCutscene(player: Player, cutsceneName: string)
 	-- Implement a check to verify that the player is allowed to view this
-	if not player:GetAttribute("Cutscenes") or player:GetAttribute("Cutscenes") ~= cutsceneName then
+	if player:GetAttribute("Cutscenes") == nil or player:GetAttribute("Cutscenes") ~= cutsceneName then
+		warn("Player does not have permission to play this cutscene!")
 		return
 	end
 
+	print("confirmed")
 	-- Play the cutscene
 	CutsceneService.PlayCutscene(player, CutsceneDataModule[cutsceneName])
 end
 
 -- Be able to play cutscene by client request
-eventsModule.ConnectRemotePlayCutscene(PlayCutscene)
+eventsModule.ConnectRemotePlayCutscene(RemotePlayCutscene)
 
 return CutsceneService

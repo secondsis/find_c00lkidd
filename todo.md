@@ -3,6 +3,7 @@ Adding this back in because I really don't care anymore what you think about my 
 TODO: 
 
 Figure out how to give client permission by server to: view a cutscene, view dialogue, get ending
+Need to work on making the introduction work
 
 
 Necessary Features: 
@@ -20,10 +21,8 @@ Necessary Features:
     6. Mobile/PC UI Scaling
     7. Revamped Dialogue System
    
-
-
 Known Bugs: 
-    1. Inventory item GUI freaks out when
+    1. 
 
 Other Features: 
     1. Donation Leaderboard

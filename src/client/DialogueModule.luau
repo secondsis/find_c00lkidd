@@ -28,7 +28,16 @@ module.characterStyles = {
 
 do -- STORY-RELEVANT
 	-- Intro Scene
-	module.Introduction_PhoneCallReply = nil
+	module.Introduction_PhoneCallReply = {
+
+		{
+			Name = "007n7",
+			Text = {
+				"Thanks man.",
+			},
+		},
+	}
+
 	module.Introduction_PhoneCall = {
 		{
 			Name = "007n7",
@@ -93,20 +102,11 @@ do -- STORY-RELEVANT
 		},
 	}
 
-	module.Introduction_PhoneCallReply = {
-
-		{
-			Name = "007n7",
-			Text = {
-				"Thanks man.",
-			},
-		},
-	}
-
 	-- 007e7 comes over to the house driving scene or something
 	-- he drives into the forest and the forest thins out into trunks and then those disappear and the spectre comes over the sky
 
-	-- Make sure to use { "fastDialogue_true" } when called
+	-- Make sure to use { "fastDialogue_true" } when called, this makes it so that the player cannot change the speed with input
+
 	module.Introduction_EnterHouse = {
 		{
 			Name = "007e7",

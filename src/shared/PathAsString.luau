@@ -1,5 +1,10 @@
 local module = {}
 
+--[=[
+ Gets the asset Instance from the assetPath string where "." separate items
+ @param assetPath string
+ @return Instance
+]=]
 function module.fetchAsset(assetPath: string)
 	local assetParents = string.split(assetPath, ".")
 
@@ -21,16 +26,29 @@ function module.fetchAsset(assetPath: string)
 	return asset
 end
 
+--[=[
+ Gets the string path of an instance
+ @param asset Instance
+ @return string
+]=]
 function module.fetchStringPath(asset: Instance)
-	local resultPathReversed = asset.Name
+	local resultPathReversed: string = asset.Name
 
 	while asset.Parent do
 		resultPathReversed ..= "." .. asset.Parent.Name
 		asset = asset.Parent
 	end
-	resultPathReversed ..= "." .. asset.Name
 
-	return resultPathReversed:reverse()
+	-- Creating error invalid argument #1 to split because.. resultPathReversed is nil?
+	local pathTable: { string } = string.split(resultPathReversed, ".")
+	local result = table.remove(pathTable, #pathTable)
+
+	for _ = #pathTable - 1, 0, -1 do
+		local nextInstance = table.remove(pathTable, #pathTable)
+		result ..= "." .. nextInstance
+	end
+
+	return result
 end
 
 return module

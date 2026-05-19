@@ -3,7 +3,7 @@ local CutsceneDataModule = {}
 --[[
 cutsceneData = {
     MapFolder = ServerStorage.WhateverFolder,
-    BoxTeleportPart = MapFolder.WhateverTPPart,
+    TeleportPart = MapFolder.WhateverTPPart,
     CameraKeyframes = {
         {
             CFrame = whatev,
@@ -39,10 +39,10 @@ cutsceneData = {
 }
 -- function TweenInfo.new(time: number?, easingStyle: Enum.EasingStyle?, easingDirection: Enum.EasingDirection?, repeatCount: number?, reverses: boolean?, delayTime: number?): TweenInfo
 ]]
-
+--- Follow the structure above (F12 view file)
 CutsceneDataModule.IntroductionDrive = {
 	MapFolder = game:GetService("ServerStorage").Assets["Security_NONE"].Maps.Cutscenes.IntroductionDrivingScene,
-	BoxTeleportPart = game:GetService("ServerStorage").Assets["Security_NONE"].Maps.Cutscenes.IntroductionDrivingScene.PlayerBox.TPPart,
+	TeleportPart = game:GetService("ServerStorage").Assets["Security_NONE"].Maps.Cutscenes.IntroductionDrivingScene.PlayerBox.TPPart,
 	CameraStartCFrame = CFrame.new(-519.934, 19.72, -1408.226) * CFrame.Angles(math.rad(-32.099), math.rad(0.401), 0),
 	CameraKeyframes = {
 		{
@@ -74,9 +74,10 @@ CutsceneDataModule.IntroductionDrive = {
 	DialogueKeyframes = {},
 }
 
+-- Entering the House as 007e7 looking for his cousin
 CutsceneDataModule.IntroductionHouse = {
 	MapFolder = game:GetService("ServerStorage").Assets["Security_NONE"].Maps.Cutscenes.IntroductionDrivingScene,
-	BoxTeleportPart = game:GetService("ServerStorage").Assets["Security_NONE"].Maps.Cutscenes.IntroductionDrivingScene.PlayerBox.TPPart,
+	TeleportPart = game:GetService("ServerStorage").Assets["Security_NONE"].Maps.Cutscenes.IntroductionDrivingScene.PlayerBox.TPPart,
 	CameraStartCFrame = CFrame.new(218.318, 8.766, 74.832) * CFrame.Angles(math.rad(-20.403), math.rad(-164.618), 0),
 	CameraKeyframes = {
 		{

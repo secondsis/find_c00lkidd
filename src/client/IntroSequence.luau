@@ -1,3 +1,4 @@
+local Players = game:GetService("Players")
 local tweenService = game:GetService("TweenService")
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local soundService = game:GetService("SoundService")
@@ -54,22 +55,23 @@ local function PlayPart1_WatchingTV()
 	eventsModule.FireRemoteTeleportPlayerOnServer("Intro")
 
 	-- Clone 007e7 to lay on couch
-	eventsModule.FireCloneAssetSecurityNone("Objects.007e7_Clone1")
-	local clone1Asset = replicatedStorage.ClonedFolder:WaitForChild("007e7_Clone1")
-	local clone1 = clone1Asset:Clone()
-	clone1Asset:Destroy()
-	clone1.Parent = introFolder
 
-	local cloneHumanoid1 = clone1:WaitForChild("Humanoid")
-	local animator1 = cloneHumanoid1:WaitForChild("Animator")
+	-- eventsModule.FireCloneAssetSecurityNone("Objects.007e7_Clone1")
+	-- local clone1Asset = replicatedStorage.ClonedFolder:WaitForChild("007e7_Clone1")
+	-- local clone1 = clone1Asset:Clone()
+	-- clone1Asset:Destroy()
+	-- clone1.Parent = introFolder
 
-	local layingTrack = animator1:LoadAnimation(cloneHumanoid1.laying)
-	local gettingUpTrack = animator1:LoadAnimation(cloneHumanoid1.getting_up)
-	local turningOffTrack = animator1:LoadAnimation(cloneHumanoid1.turning_off)
+	-- local cloneHumanoid1 = clone1:WaitForChild("Humanoid")
+	-- local animator1 = cloneHumanoid1:WaitForChild("Animator")
 
-	-- Set the scene: 007e7 is laying on the couch and markiplier is playing on the TV
-	layingTrack:Play()
-	markiplierSfx:Play()
+	-- local layingTrack = animator1:LoadAnimation(cloneHumanoid1.laying)
+	-- local gettingUpTrack = animator1:LoadAnimation(cloneHumanoid1.getting_up)
+	-- local turningOffTrack = animator1:LoadAnimation(cloneHumanoid1.turning_off)
+
+	-- -- Set the scene: 007e7 is laying on the couch and markiplier is playing on the TV
+	-- layingTrack:Play()
+	-- markiplierSfx:Play()
 
 	-- Move camera to face the couch
 	cutsceneModule.changeCamCFrame(cam1.CFrame)
@@ -77,24 +79,26 @@ local function PlayPart1_WatchingTV()
 	--After a bit, the phone will ring
 	phoneRingSfx:Play()
 	task.wait(2)
+
 	-- 007e7 gets up
-	layingTrack:Stop()
-	gettingUpTrack:Play()
-	gettingUpTrack.Stopped:Wait()
-	-- 007e7 turns off the TV
-	turningOffTrack:Play()
-	-- Right when the remote clicks, stop markipllier
-	task.wait(24 / 60)
-	markiplierSfx:Stop()
-	-- Remote click sound effect
-	sfxGroup["Television 4 (SFX)"]:Play()
-	-- Kill markiplier
-	importantFolder.TVDecal.Value:Destroy()
+	-- layingTrack:Stop()
+	-- gettingUpTrack:Play()
+	-- gettingUpTrack.Stopped:Wait()
+	-- -- 007e7 turns off the TV
+	-- turningOffTrack:Play()
+	-- -- Right when the remote clicks, stop markipllier
+	-- task.wait(24 / 60)
+	-- markiplierSfx:Stop()
+	-- -- Remote click sound effect
+	-- sfxGroup["Television 4 (SFX)"]:Play()
+	-- -- Kill markiplier
+	-- importantFolder.TVDecal.Value:Destroy()
+
 	task.wait(1)
 	-- Transition to controlling 007e7 character
 	eventsModule.FireSmoothTransitionFunction(2)
 	eventsModule.FireDisableSkipEvent()
-	cloneHumanoid1.Parent:Destroy()
+	-- cloneHumanoid1.Parent:Destroy()
 	cutsceneModule.fadeInPlayer(2.5)
 	cutsceneModule.resetCam()
 	eventsModule.FireEnableMouseIcon()
@@ -143,13 +147,18 @@ end
 local function PlayPart4_PhoneConversation()
 	holdTrack:Play()
 
+	print("Playing hold track")
+
 	eventsModule.FireDialogueFunction("Introduction_PhoneCall")
+	print("Fired dialogue dunction")
 
 	eventsModule.FireWaitForDialogueFinish()
 	eventsModule.FireSmoothTransitionFunction(1)
 
+	print("Dialogue finished")
+
 	-- Go to driving scene
-	eventsModule.FireRemotePlayCutscene(game:GetService("Players").LocalPlayer, "IntroductionDrive")
+	eventsModule.FireRemotePlayCutscene("IntroductionDrive")
 	-- Wait for the scene to end
 	local ended = false
 	eventsModule.ConnectRemoteFinishCutscene(function()
@@ -159,13 +168,12 @@ local function PlayPart4_PhoneConversation()
 		task.wait()
 	end
 
-	-- Then 007e7 arrives at house cutscene
-	eventsModule.FireRemotePlayCutscene(game:GetService("Players").LocalPlayer, "IntroductionHouse")
+	-- Then 007e7 arrives at house cutscene ( COMBINE INTO ONE CUTSCENE )
+	eventsModule.FireRemotePlayCutscene("IntroductionHouse")
 
 	-- Then 007e7 searches the house (IntroMission)
-
 	-- When player touches a room's respective parts, go tick the box
-	local RoomParts = {
+	local RoomFolders = {
 		LivingRoom = CheckForTouchFolder.LivingRoom,
 		DownstairsBedroom = CheckForTouchFolder.DownstairsBedroom,
 		Garage = CheckForTouchFolder.Garage,
@@ -175,11 +183,23 @@ local function PlayPart4_PhoneConversation()
 	}
 
 	local function ConnectTouchEvents()
-		for roomName, roomPart in RoomParts do
-			-- Mark off this room when .Touched
-			roomPart.Touched:Connect(function()
-				MissionHandler.MarkComplete(roomName)
-			end)
+		for roomName, roomFolder in RoomFolders do
+			-- Mark off this room when .Touched -- issue with .Touched not valid member
+			for _, roomPart in roomFolder:GetChildren() do
+				roomPart.Touched:Connect(function(other)
+					-- Make sure it is the player first
+					if not other.Parent then
+						return
+					end
+
+					if Players:GetPlayerFromCharacter(other.Parent) ~= Players.LocalPlayer then
+						return
+					end
+
+					-- Will not double-mark so it is fine as is
+					MissionHandler.MarkComplete(roomName)
+				end)
+			end
 		end
 	end
 
