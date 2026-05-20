@@ -7,6 +7,12 @@ local player = game:GetService("Players").LocalPlayer
 local mainGameGui = player.PlayerGui:WaitForChild("MainGameGui")
 local wasMainGuiEnabled = false
 
+local IsCutsceneEffectFinished = {
+	Camera = false,
+	Animations = false,
+	Dialogue = false,
+}
+
 --[=[
  Prepares the player for a cutscene: Disables the mouse icon, Pauses camera effects, Disables movement, Disables UI
  Makes player character invisible
@@ -38,6 +44,8 @@ local function HandleCamera(startCFrame, keyframes)
 	camera.CFrame = startCFrame
 	camera.CameraType = Enum.CameraType.Scriptable
 
+	local cameraTweensFinished = {}
+
 	for _, keyframe in keyframes do
 		local duration = keyframe.TweenInfo.Duration or 0
 		local easingStyle = keyframe.TweenInfo.EasingStyle or Enum.EasingStyle.Linear
@@ -55,8 +63,29 @@ local function HandleCamera(startCFrame, keyframes)
 			task.wait()
 		end
 
+		cameraTweensFinished[tween] = false
 		tween:Play()
+
+		tween.Completed:Connect(function(a0: Enum.PlaybackState)
+			cameraTweensFinished[tween] = true
+		end)
 	end
+
+	local function CheckIfCameraFinished()
+		for _, val in cameraTweensFinished do
+			if val == false then
+				return false
+			end
+		end
+		return true
+	end
+
+	while not CheckIfCameraFinished() do
+		task.wait()
+	end
+
+	print("Finished camera!")
+	IsCutsceneEffectFinished.Camera = true
 end
 
 --[[
@@ -80,11 +109,14 @@ end
 ]=]
 local function HandleAnimations(keyframes)
 	local startTick = tick()
+	local areAnimationsFinished = {}
 
 	for _, keyframe in keyframes do
 		local target = keyframe.Target
 
 		local timePosition = keyframe.TimePosition
+
+		print(keyframe)
 
 		-- Wait until timePosition (Length since start < timePosition)
 		while tick() - startTick < timePosition do
@@ -115,8 +147,19 @@ local function HandleAnimations(keyframes)
 			end
 
 			local animationTrack = Animator:LoadAnimation(animation)
-
+			areAnimationsFinished[animationTrack] = false
 			animationTrack:Play()
+			animationTrack.Ended:Connect(function()
+				areAnimationsFinished[animationTrack] = true
+			end)
+
+			if keyframe.EndPosition then
+				print("has end pos")
+				task.delay(keyframe.EndPosition - keyframe.TimePosition, function()
+					print("stopping animation")
+					animationTrack:Stop()
+				end)
+			end
 		else
 			-- TweenInfo except I can't have Tweeninfo in my dictionary somehow
 			local duration = keyframe.Animation.TweenInfo.Duration or 0
@@ -131,9 +174,35 @@ local function HandleAnimations(keyframes)
 				[keyframe.Animation.TweenType] = keyframe.Animation.Value,
 			})
 
+			areAnimationsFinished[tween] = false
 			tween:Play()
+			tween.Completed:Connect(function(playback: Enum.PlaybackState)
+				areAnimationsFinished[tween] = true
+			end)
+
+			if keyframe.EndPosition then
+				task.delay(tick() - startTick, function()
+					tween:Cancel()
+				end)
+			end
 		end
 	end
+
+	local function CheckIfAnimationFinished()
+		for _, val in areAnimationsFinished do
+			if val == false then
+				return false
+			end
+		end
+		return true
+	end
+
+	while not CheckIfAnimationFinished() do
+		task.wait()
+	end
+
+	print("Finished animations!")
+	IsCutsceneEffectFinished.Animations = true
 end
 
 --[[
@@ -165,7 +234,11 @@ local function HandleDialogue(keyframes)
 
 		-- Play the dialogue (no player input)
 		eventsModule.FireDialogueEvent(dialogueName)
+		eventsModule.FireWaitForDialogueFinish()
 	end
+
+	print("Finished dialogue!")
+	IsCutsceneEffectFinished.Dialogue = true
 end
 
 --[=[
@@ -188,9 +261,29 @@ local function HandleScene(cutsceneData: any)
 		v.Target = newAsset
 	end
 
+	-- Reset dictionary
+	for key, _ in IsCutsceneEffectFinished do
+		IsCutsceneEffectFinished[key] = false
+	end
+
 	task.spawn(HandleCamera, cutsceneData.CameraStartCFrame, cutsceneData.CameraKeyframes)
 	task.spawn(HandleAnimations, cutsceneData.AnimationKeyframes)
 	task.spawn(HandleDialogue, cutsceneData.DialogueKeyframes)
+
+	-- Wait until all of them are done
+	-- Why doesnt this even run...
+	while
+		not (
+			IsCutsceneEffectFinished.Animations
+			and IsCutsceneEffectFinished.Camera
+			and IsCutsceneEffectFinished.Dialogue
+		)
+	do
+		task.wait()
+	end
+
+	-- Tell the server that this cutscene is over
+	eventsModule.FireRemoteFinishedScene()
 end
 
 eventsModule.ConnectRemotePlayScene(HandleScene)

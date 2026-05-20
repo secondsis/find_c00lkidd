@@ -153,10 +153,9 @@ local function PlayPart4_PhoneConversation()
 	print("Fired dialogue dunction")
 
 	eventsModule.FireWaitForDialogueFinish()
-	eventsModule.FireSmoothTransitionFunction(1)
 
 	print("Dialogue finished")
-
+	eventsModule.FireSmoothTransitionFunction(3)
 	-- Go to driving scene
 	eventsModule.FireRemotePlayCutscene("IntroductionDrive")
 	-- Wait for the scene to end
@@ -170,6 +169,7 @@ local function PlayPart4_PhoneConversation()
 
 	-- Then 007e7 arrives at house cutscene ( COMBINE INTO ONE CUTSCENE )
 	eventsModule.FireRemotePlayCutscene("IntroductionHouse")
+	-- teleport 115.692 z axis
 
 	-- Then 007e7 searches the house (IntroMission)
 	-- When player touches a room's respective parts, go tick the box
@@ -179,7 +179,7 @@ local function PlayPart4_PhoneConversation()
 		Garage = CheckForTouchFolder.Garage,
 		FamilyRoom = CheckForTouchFolder.FamilyRoom,
 		["007n7Bedroom"] = CheckForTouchFolder["007n7Bedroom"],
-		c00lkiddBedrooom = CheckForTouchFolder.c00lkiddBedroom,
+		c00lkiddBedroom = CheckForTouchFolder.c00lkiddBedroom,
 	}
 
 	local function ConnectTouchEvents()

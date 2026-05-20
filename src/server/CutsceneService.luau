@@ -71,7 +71,27 @@ function CutsceneService.PlayCutscene(player: Player, cutsceneData: any)
 
 	print("Playing cutscene effects...")
 	-- Play Camera, Animations, Dialogue
+	-- Needs to be BLOCKING but likely better to wait for "Done" event and have a timeout! to keep the server running
+	-- Make a RemoteEvent and wait for that until a certain point
 	CutsceneService.PlaySceneEffects(player, cutsceneData)
+
+	local startTick = tick()
+	local isFinished = false
+	local function setFinished()
+		isFinished = true
+	end
+
+	-- Wait for scene to finish
+	eventsModule.ConnectRemoteFinishedScene(setFinished)
+
+	local timeout = 1200 -- in seconds (20 minutes)
+
+	while not isFinished do
+		task.wait()
+		if tick() - startTick > timeout then
+			warn("Player " .. player.Name .. " cutscene timeout!")
+		end
+	end
 
 	print("Cleaning up scene...")
 	-- Finish and reset
@@ -123,15 +143,7 @@ end
 ]=]
 function CutsceneService.PlaySceneEffects(player: Player, cutsceneData: any)
 	-- Camera, Animations, Dialogue
-
-	-- Prepare and find the newly cloned animation targets of cutsceneData
-	-- Manipulate cutsceneData until it is ready for the client
-	-- "ServerStorage.Assets.Security_NONE.Maps.Cutscenes" .SceneName.Target
-	-- workspace.SceneName.Target
-	local function playScene()
-		eventsModule.FireRemotePlayScene(player, cutsceneData)
-	end
-	task.spawn(playScene)
+	eventsModule.FireRemotePlayScene(player, cutsceneData)
 end
 
 --[=[
@@ -149,12 +161,18 @@ function CutsceneService.CleanUpCutscene(player: Player)
 	clonedMap:Destroy()
 end
 
+--[=[
+ Ran from the client to play a cutscene, but the client must be verified
+ to view the cutscene by the server earlier
+ @param player Player
+ @param cutsceneName string
+]=]
 local function RemotePlayCutscene(player: Player, cutsceneName: string)
 	-- Implement a check to verify that the player is allowed to view this
-	if player:GetAttribute("Cutscenes") == nil or player:GetAttribute("Cutscenes") ~= cutsceneName then
-		warn("Player does not have permission to play this cutscene!")
-		return
-	end
+	-- if player:GetAttribute("Cutscenes") == nil or player:GetAttribute("Cutscenes") ~= cutsceneName then
+	-- 	warn("Player does not have permission to play this cutscene!")
+	-- 	return
+	-- end
 
 	print("confirmed")
 	-- Play the cutscene

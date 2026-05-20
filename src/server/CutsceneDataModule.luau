@@ -39,6 +39,7 @@ cutsceneData = {
 }
 -- function TweenInfo.new(time: number?, easingStyle: Enum.EasingStyle?, easingDirection: Enum.EasingDirection?, repeatCount: number?, reverses: boolean?, delayTime: number?): TweenInfo
 ]]
+
 --- Follow the structure above (F12 view file)
 CutsceneDataModule.IntroductionDrive = {
 	MapFolder = game:GetService("ServerStorage").Assets["Security_NONE"].Maps.Cutscenes.IntroductionDrivingScene,
@@ -58,8 +59,10 @@ CutsceneDataModule.IntroductionDrive = {
 			Target = "game.ServerStorage.Assets.Security_NONE.Maps.Cutscenes.IntroductionDrivingScene.Jeep",
 			Animation = "rbxassetid://91437771603580",
 			TimePosition = 0.00,
+			EndPosition = 60.00,
 		},
 		{
+			-- why does this no work
 			Target = "game.ServerStorage.Assets.Security_NONE.Maps.Cutscenes.IntroductionDrivingScene.Jeep.Primary",
 			Animation = {
 				TweenInfo = {
@@ -76,19 +79,22 @@ CutsceneDataModule.IntroductionDrive = {
 
 -- Entering the House as 007e7 looking for his cousin
 CutsceneDataModule.IntroductionHouse = {
-	MapFolder = game:GetService("ServerStorage").Assets["Security_NONE"].Maps.Cutscenes.IntroductionDrivingScene,
-	TeleportPart = game:GetService("ServerStorage").Assets["Security_NONE"].Maps.Cutscenes.IntroductionDrivingScene.PlayerBox.TPPart,
-	CameraStartCFrame = CFrame.new(218.318, 8.766, 74.832) * CFrame.Angles(math.rad(-20.403), math.rad(-164.618), 0),
+	MapFolder = game:GetService("ServerStorage").Assets["Security_NONE"].Maps.Cutscenes.Introduction_EnterHouse,
+	TeleportPart = game:GetService("ServerStorage").Assets["Security_NONE"].Maps.Cutscenes.Introduction_EnterHouse.PlayerBox.TPPart,
+	CameraStartCFrame = CFrame.new(218.318, 8.766 + 171.128, 74.832)
+		* CFrame.Angles(math.rad(-20.403), math.rad(-164.618), 0),
 	CameraKeyframes = {
 		{
-			CFrame = CFrame.new(227.856, 8.786, 125.478) * CFrame.Angles(math.rad(-17.704), math.rad(7.382), 0),
+			CFrame = CFrame.new(227.856, 8.786 + 171.128, 125.478)
+				* CFrame.Angles(math.rad(-17.704), math.rad(7.382), 0),
 			TweenInfo = {
 				Duration = 0,
 			},
 			TimePosition = 7.00,
 		},
 		{
-			CFrame = CFrame.new(227.027, 6.156, 117.909) * CFrame.Angles(math.rad(-11.405), math.rad(6.182), 0),
+			CFrame = CFrame.new(227.027, 6.156 + 171.128, 117.909)
+				* CFrame.Angles(math.rad(-11.405), math.rad(6.182), 0),
 			TweenInfo = {
 				Duration = 5,
 			},
@@ -97,14 +103,14 @@ CutsceneDataModule.IntroductionHouse = {
 	},
 	AnimationKeyframes = {
 		{
-			-- Walk to House
+			-- Walk to House use the bare map
 			Target = "game.ServerStorage.Assets.Security_NONE.Maps.Cutscenes.IntroductionEnterHouse.007e7.HumanoidRootPart",
 			Animation = {
 				TweenInfo = {
 					Duration = 7,
 				},
 				TweenType = "CFrame",
-				Value = CFrame.new(224.625, 3.455, 111.39) * CFrame.Angles(0, math.pi, 0),
+				Value = CFrame.new(224.625, 3.455 + 171.128, 111.39) * CFrame.Angles(0, math.pi, 0),
 			},
 			TimePosition = 0.00,
 		},
@@ -134,7 +140,7 @@ CutsceneDataModule.IntroductionHouse = {
 					Duration = 28 / 60,
 				},
 				TweenType = "CFrame",
-				Value = CFrame.new(222.068, 4.327, 112.341) * CFrame.Angles(0, math.rad(-142.167), 0),
+				Value = CFrame.new(222.068, 4.327 + 171.128, 112.341) * CFrame.Angles(0, math.rad(-142.167), 0),
 			},
 			TimePosition = 2.65 + 3.1 + 0.55,
 		},
@@ -146,7 +152,7 @@ CutsceneDataModule.IntroductionHouse = {
 					Duration = 83 / 60 - 28 / 60,
 				},
 				TweenType = "CFrame",
-				Value = CFrame.new(222.068, 4.327, 112.341) * CFrame.Angles(0, math.rad(-142.167), 0),
+				Value = CFrame.new(222.068, 4.327 + 171.128, 112.341) * CFrame.Angles(0, math.rad(-142.167), 0),
 			},
 			TimePosition = 2.65 + 3.1 + 28 / 60 + 0.55,
 		},
