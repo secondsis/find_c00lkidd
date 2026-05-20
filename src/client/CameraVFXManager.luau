@@ -64,6 +64,7 @@ local function bobbingFunc(deltaTime)
 		)
 	end
 
+	print("Camera CFrame set to bobbing")
 	Camera.CFrame = Camera.CFrame
 		* (
 			CFrame.fromEulerAnglesXYZ(0, 0, math.rad(func3))
@@ -214,6 +215,7 @@ function camFX.setFirstPerson()
 	if cxn1 or cxn2 or cxn3 then
 		return
 	end
+	print("Set First person and CAMERA cframe set to Head")
 	-- camrz is never used
 	local camrx, camry, _ = Camera.CFrame:ToOrientation()
 	local AngleX, TargetAngleX = math.deg(camrx), math.deg(camrx)
@@ -254,6 +256,7 @@ function camFX.setFirstPerson()
 		TargetAngleY = (TargetAngleY - delta.x) % 360
 	end)
 
+	-- First person I tHink
 	cxn3 = RunService.RenderStepped:Connect(function()
 		UserInputService.MouseBehavior = Enum.MouseBehavior.LockCenter
 		character.Humanoid.AutoRotate = false
@@ -264,6 +267,7 @@ function camFX.setFirstPerson()
 		AngleY = (AngleY + dist * 0.35) % 360
 		Camera.CameraType = Enum.CameraType.Scriptable
 
+		print("Camera CFrame set to head at an angle and offset")
 		Camera.CFrame = CFrameNew(head.Position)
 			* CFrameAngles(0, mathrad(AngleY), 0)
 			* CFrameAngles(mathrad(AngleX), 0, 0)
@@ -305,6 +309,8 @@ function camFX.setThirdPerson()
 		return
 	end
 
+	print("Third person")
+
 	if cxn1 then
 		cxn1:Disconnect()
 		cxn1 = nil
@@ -327,6 +333,7 @@ function camFX.setThirdPerson()
 
 	bobbingModule.setSensitivity(0.5)
 
+	print("Camera CFrame set to Head")
 	Camera.CFrame = character.Head.CFrame
 	Camera.CameraType = Enum.CameraType.Custom
 	Camera.Focus = character.Head.CFrame
@@ -336,6 +343,7 @@ end
 
 function camFX.PauseEffects()
 	pausedInfo.Paused = true
+	-- Stops bobbing
 	bobbingModule.stopBobbing()
 
 	pausedInfo.WasFirstPerson = false

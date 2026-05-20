@@ -22,7 +22,8 @@ Necessary Features:
     7. Revamped Dialogue System
    
 Known Bugs: 
-    1. 
+    1. Camera "rolls" when you try to rotate it in certain cutscenes
+        I think this is because of AreaManager constantly trying to put the player in first person, causing the cxn to run
 
 Other Features: 
     1. Donation Leaderboard

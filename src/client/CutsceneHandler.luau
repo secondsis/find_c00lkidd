@@ -130,22 +130,31 @@ local function HandleAnimations(keyframes)
 			local animation = Instance.new("Animation")
 			animation.AnimationId = animationId
 
-			local Animator
+			local Animator = nil
 
 			-- Make sure the target has an Animator/AnimationController
-			if not target:IsA("Humanoid") and target:FindFirstChildWhichIsA("AnimationController") == nil then
-				local AnimationController = Instance.new("AnimationController")
 
-				Animator = Instance.new("Animator")
+			if not target:IsA("Humanoid") then
+				local temp = target:FindFirstChildWhichIsA("AnimationController")
+				if temp then
+					Animator = temp:FindFirstChildWhichIsA("Animator")
+				end
 
-				Animator.Parent = AnimationController
-
-				AnimationController.Parent = target
-			elseif target:IsA("Humanoid") and target:FindFirstChildWhichIsA("Animator") == nil then
-				Animator = Instance.new("Animator")
-				Animator.Parent = target
+				if not Animator then
+					local AnimationController = Instance.new("AnimationController")
+					Animator = Instance.new("Animator")
+					Animator.Parent = AnimationController
+					AnimationController.Parent = target
+				end
+			else
+				Animator = target:FindFirstChildWhichIsA("Animator")
+				if not Animator then
+					Animator = Instance.new("Animator")
+					Animator.Parent = target
+				end
 			end
 
+			-- nil
 			local animationTrack = Animator:LoadAnimation(animation)
 			areAnimationsFinished[animationTrack] = false
 			animationTrack:Play()
@@ -246,8 +255,10 @@ end
  @param cutsceneData any
 ]=]
 local function HandleScene(cutsceneData: any)
-	local newMap = game:GetService("ReplicatedStorage").ClonedFolder:WaitForChild("IntroductionDrivingScene")
+	print(cutsceneData.MapFolderName)
+	local newMap = game:GetService("ReplicatedStorage").ClonedFolder:WaitForChild(cutsceneData.MapFolderName)
 	newMap.Parent = game:GetService("Workspace")
+	-- Destroy after use
 	--game:GetService("ReplicatedStorage").ClonedFolder:GetChildren()[1]:Destroy()
 	cutsceneData.MapFolder = newMap
 

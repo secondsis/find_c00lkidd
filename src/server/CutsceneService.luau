@@ -53,17 +53,15 @@ cutsceneData = {
  @param cutsceneData any
 ]=]
 function CutsceneService.PlayCutscene(player: Player, cutsceneData: any)
-	print("Preparing Player for cutscene...")
 	-- Prepare the player perspective for cutscene
 	CutsceneService.PreparePlayer(player)
 
-	print("Loading map...")
 	-- (Optionally) Load the map
 	if cutsceneData.MapFolder then
+		cutsceneData.MapFolderName = cutsceneData.MapFolder.Name
 		clonedMap = CutsceneService.LoadMap(player, cutsceneData.MapFolder)
 	end
 
-	print("Teleporting player...")
 	-- (Optionally) Teleport Player
 	if cutsceneData.TeleportPart then
 		playerOriginalCFrame = CutsceneService.TeleportPlayerToBox(player, cutsceneData.TeleportPart)
@@ -115,7 +113,7 @@ end
  @param player Player
  @param mapFolder Folder
 ]=]
-function CutsceneService.LoadMap(player: Player, mapFolder: Folder)
+function CutsceneService.LoadMap(_: Player, mapFolder: Folder)
 	-- Clone on client
 	local mapClone = mapFolder:Clone()
 	mapClone.Parent = game:GetService("ReplicatedStorage").ClonedFolder

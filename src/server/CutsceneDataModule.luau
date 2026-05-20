@@ -79,8 +79,8 @@ CutsceneDataModule.IntroductionDrive = {
 
 -- Entering the House as 007e7 looking for his cousin
 CutsceneDataModule.IntroductionHouse = {
-	MapFolder = game:GetService("ServerStorage").Assets["Security_NONE"].Maps.Cutscenes.Introduction_EnterHouse,
-	TeleportPart = game:GetService("ServerStorage").Assets["Security_NONE"].Maps.Cutscenes.Introduction_EnterHouse.PlayerBox.TPPart,
+	MapFolder = game:GetService("ServerStorage").Assets["Security_NONE"].Maps.Cutscenes.IntroductionEnterHouse,
+	TeleportPart = game:GetService("ServerStorage").Assets["Security_NONE"].Maps.Cutscenes.IntroductionEnterHouse.TPPart,
 	CameraStartCFrame = CFrame.new(218.318, 8.766 + 171.128, 74.832)
 		* CFrame.Angles(math.rad(-20.403), math.rad(-164.618), 0),
 	CameraKeyframes = {
