@@ -67,7 +67,6 @@ function CutsceneService.PlayCutscene(player: Player, cutsceneData: any)
 		playerOriginalCFrame = CutsceneService.TeleportPlayerToBox(player, cutsceneData.TeleportPart)
 	end
 
-	print("Playing cutscene effects...")
 	-- Play Camera, Animations, Dialogue
 	-- Needs to be BLOCKING but likely better to wait for "Done" event and have a timeout! to keep the server running
 	-- Make a RemoteEvent and wait for that until a certain point
@@ -91,11 +90,8 @@ function CutsceneService.PlayCutscene(player: Player, cutsceneData: any)
 		end
 	end
 
-	print("Cleaning up scene...")
 	-- Finish and reset
 	CutsceneService.CleanUpCutscene(player)
-
-	print("Done!")
 end
 
 -- Client needs to call this
@@ -172,7 +168,6 @@ local function RemotePlayCutscene(player: Player, cutsceneName: string)
 	-- 	return
 	-- end
 
-	print("confirmed")
 	-- Play the cutscene
 	CutsceneService.PlayCutscene(player, CutsceneDataModule[cutsceneName])
 end

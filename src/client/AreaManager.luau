@@ -29,6 +29,13 @@ local detectors = {
 local overlapParams = OverlapParams.new()
 overlapParams.CollisionGroup = "PlayerDetectors"
 
+local PauseManagers = {
+	FirstPersonManager = false,
+	SoundAreaManager = false,
+	HouseMirrorManager = false,
+	SprintingManager = false,
+}
+
 local player = players.LocalPlayer
 
 local playerIsIn = {}
@@ -266,23 +273,43 @@ local function sprintingAreaCallbackIfPlayer()
 	end
 end
 
--- Requires Detection every .1 sec
-task.spawn(function()
-	repeat
-		task.wait(0.2)
+local function PauseAreaManager(manager: string)
+	PauseManagers[manager] = true
+end
 
-		-- FIRST PERSON MANAGER
-		task.spawn(firstPersonManager)
+local function ResumeAreaManager(manager: string)
+	PauseManagers[manager] = false
+end
 
-	until false
-end)
+local function PauseAllAreaManagers()
+	for name, _ in PauseManagers do
+		PauseManagers[name] = true
+	end
+end
 
-task.spawn(function()
-	repeat
-		task.wait(0.5)
+local function ResumeAllAreaManagers()
+	for name, _ in PauseManagers do
+		PauseManagers[name] = false
+	end
+end
 
-		-- SOUND AREA MANAGER
-		task.spawn(function()
+--- Detects first person every .2 sec
+local function FirstPersonManagerRunner()
+	while task.wait(0.1) do
+		repeat
+			task.wait(0.2)
+
+			-- FIRST PERSON MANAGER
+			task.spawn(firstPersonManager)
+
+		until PauseManagers["FirstPersonManager"]
+	end
+end
+
+local function SoundAreaManagerRunner()
+	while task.wait(0.1) do
+		repeat
+			task.wait(0.5)
 			if detectPlayer(c00lhouseDetector, playOutTweens, true) then
 				return
 			end
@@ -302,10 +329,16 @@ task.spawn(function()
 			if detectPlayer(mapDetector, soundAreaNormalCallbackIfPlayer) then
 				return
 			end
-		end)
+		until PauseManagers["SoundAreaManager"]
+	end
+end
 
-		-- SPRINTING AREA MANAGER
-		task.spawn(function()
+local function SprintingAreaManagerRunner()
+	while task.wait(0.1) do
+		repeat
+			task.wait(0.5)
+			-- SPRINTING AREA MANAGER
+
 			-- These are the areas where sprinting is disabled.
 
 			if detectPlayer(introHouseDetector, sprintingAreaCallbackIfPlayer) then
@@ -321,26 +354,25 @@ task.spawn(function()
 			if not canSprint then
 				enableSprinting()
 			end
-		end)
 
-	until false
-end)
+		until PauseManagers["SprintingManager"]
+	end
+end
 
--- Requires detection every 1 sec
-task.spawn(function()
-	repeat
-		-- HOUSE MIRROR AREA MANAGER
-		task.spawn(function()
+local function HouseMirrorManagerRunner()
+	while task.wait(0.1) do
+		repeat
+			task.wait(1)
+
+			-- HOUSE MIRROR AREA MANAGER
 			if detectPlayer(c00lhouseDetector, nil, true) then
 				enableMirrors()
 			else
 				disableMirrors()
 			end
-		end)
-
-		task.wait(1)
-	until false
-end)
+		until PauseManagers["HouseMirrorManager"]
+	end
+end
 
 local function manualFirstPersonManager()
 	local function callback()
@@ -362,5 +394,9 @@ local function manualFirstPersonManager()
 end
 
 eventsModule.ConnectManualCheckFirstPersonManager(manualFirstPersonManager)
+eventsModule.ConnectPauseAreaManager(PauseAreaManager)
+eventsModule.ConnectResumeAreaManager(ResumeAreaManager)
+eventsModule.ConnectPauseAllAreaManagers(PauseAllAreaManagers)
+eventsModule.ConnectResumeAllAreaManagers(ResumeAllAreaManagers)
 
 return {}

@@ -147,14 +147,10 @@ end
 local function PlayPart4_PhoneConversation()
 	holdTrack:Play()
 
-	print("Playing hold track")
-
 	eventsModule.FireDialogueFunction("Introduction_PhoneCall")
-	print("Fired dialogue dunction")
 
 	eventsModule.FireWaitForDialogueFinish()
 
-	print("Dialogue finished")
 	eventsModule.FireSmoothTransitionFunction(3)
 	-- Go to driving scene
 	eventsModule.FireRemotePlayCutscene("IntroductionDrive")
@@ -167,9 +163,17 @@ local function PlayPart4_PhoneConversation()
 		task.wait()
 	end
 
+	eventsModule.FireTransitionFunction(4)
+
 	-- Then 007e7 arrives at house cutscene ( COMBINE INTO ONE CUTSCENE )
 	eventsModule.FireRemotePlayCutscene("IntroductionHouse")
-	-- teleport 115.692 z axis
+	local ended2 = false
+	eventsModule.ConnectRemoteFinishCutscene(function()
+		ended2 = true
+	end)
+	while not ended2 do
+		task.wait()
+	end
 
 	-- Then 007e7 searches the house (IntroMission)
 	-- When player touches a room's respective parts, go tick the box

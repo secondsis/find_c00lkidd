@@ -64,7 +64,6 @@ local function bobbingFunc(deltaTime)
 		)
 	end
 
-	print("Camera CFrame set to bobbing")
 	Camera.CFrame = Camera.CFrame
 		* (
 			CFrame.fromEulerAnglesXYZ(0, 0, math.rad(func3))
@@ -215,7 +214,6 @@ function camFX.setFirstPerson()
 	if cxn1 or cxn2 or cxn3 then
 		return
 	end
-	print("Set First person and CAMERA cframe set to Head")
 	-- camrz is never used
 	local camrx, camry, _ = Camera.CFrame:ToOrientation()
 	local AngleX, TargetAngleX = math.deg(camrx), math.deg(camrx)
@@ -266,8 +264,6 @@ function camFX.setFirstPerson()
 		dist = mathabs(dist) > 180 and dist - (dist / mathabs(dist)) * 360 or dist
 		AngleY = (AngleY + dist * 0.35) % 360
 		Camera.CameraType = Enum.CameraType.Scriptable
-
-		print("Camera CFrame set to head at an angle and offset")
 		Camera.CFrame = CFrameNew(head.Position)
 			* CFrameAngles(0, mathrad(AngleY), 0)
 			* CFrameAngles(mathrad(AngleX), 0, 0)
@@ -309,8 +305,6 @@ function camFX.setThirdPerson()
 		return
 	end
 
-	print("Third person")
-
 	if cxn1 then
 		cxn1:Disconnect()
 		cxn1 = nil
@@ -333,7 +327,6 @@ function camFX.setThirdPerson()
 
 	bobbingModule.setSensitivity(0.5)
 
-	print("Camera CFrame set to Head")
 	Camera.CFrame = character.Head.CFrame
 	Camera.CameraType = Enum.CameraType.Custom
 	Camera.Focus = character.Head.CFrame
@@ -372,6 +365,7 @@ function camFX.ResumeEffects()
 	bobbingModule.startBobbing()
 	-- tell area manager to do another check
 	eventsModule.FireManualCheckFirstPersonManager()
+
 	--if pausedInfo.WasFirstPerson then
 	--	module.setFirstPerson()
 	--else

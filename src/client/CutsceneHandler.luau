@@ -84,7 +84,6 @@ local function HandleCamera(startCFrame, keyframes)
 		task.wait()
 	end
 
-	print("Finished camera!")
 	IsCutsceneEffectFinished.Camera = true
 end
 
@@ -154,7 +153,6 @@ local function HandleAnimations(keyframes)
 				end
 			end
 
-			-- nil
 			local animationTrack = Animator:LoadAnimation(animation)
 			areAnimationsFinished[animationTrack] = false
 			animationTrack:Play()
@@ -246,7 +244,6 @@ local function HandleDialogue(keyframes)
 		eventsModule.FireWaitForDialogueFinish()
 	end
 
-	print("Finished dialogue!")
 	IsCutsceneEffectFinished.Dialogue = true
 end
 
@@ -255,7 +252,6 @@ end
  @param cutsceneData any
 ]=]
 local function HandleScene(cutsceneData: any)
-	print(cutsceneData.MapFolderName)
 	local newMap = game:GetService("ReplicatedStorage").ClonedFolder:WaitForChild(cutsceneData.MapFolderName)
 	newMap.Parent = game:GetService("Workspace")
 	-- Destroy after use
@@ -277,12 +273,14 @@ local function HandleScene(cutsceneData: any)
 		IsCutsceneEffectFinished[key] = false
 	end
 
+	-- Stop the first person from activating
+	eventsModule.FirePauseAllAreaManagers()
+
 	task.spawn(HandleCamera, cutsceneData.CameraStartCFrame, cutsceneData.CameraKeyframes)
 	task.spawn(HandleAnimations, cutsceneData.AnimationKeyframes)
 	task.spawn(HandleDialogue, cutsceneData.DialogueKeyframes)
 
 	-- Wait until all of them are done
-	-- Why doesnt this even run...
 	while
 		not (
 			IsCutsceneEffectFinished.Animations
@@ -295,6 +293,7 @@ local function HandleScene(cutsceneData: any)
 
 	-- Tell the server that this cutscene is over
 	eventsModule.FireRemoteFinishedScene()
+	eventsModule.FireResumeAllAreaManagers()
 end
 
 eventsModule.ConnectRemotePlayScene(HandleScene)
@@ -316,7 +315,7 @@ local function CleanUpCutscene()
 	end
 end
 
--- TODO: Unify the game's usage of cutscene functions
+-- TODO: Unify the game's usage of cutscene functions (Nile scene, Fake Kid, others i frogt)
 eventsModule.ConnectFinishCutscene(function()
 	eventsModule.FireEnableMouseIcon()
 	eventsModule.FireResumeCameraEffects()

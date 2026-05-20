@@ -49,7 +49,7 @@ CutsceneDataModule.IntroductionDrive = {
 		{
 			CFrame = CFrame.new(985.983, 19.72, -1408.226) * CFrame.Angles(math.rad(-32.099), math.rad(0.401), 0),
 			TweenInfo = {
-				Duration = 60,
+				Duration = 10,
 			},
 			TimePosition = 0.00,
 		},
@@ -59,14 +59,14 @@ CutsceneDataModule.IntroductionDrive = {
 			Target = "game.ServerStorage.Assets.Security_NONE.Maps.Cutscenes.IntroductionDrivingScene.Jeep",
 			Animation = "rbxassetid://91437771603580",
 			TimePosition = 0.00,
-			EndPosition = 60.00,
+			EndPosition = 10.00,
 		},
 		{
 			-- why does this no work
 			Target = "game.ServerStorage.Assets.Security_NONE.Maps.Cutscenes.IntroductionDrivingScene.Jeep.Primary",
 			Animation = {
 				TweenInfo = {
-					Duration = 60,
+					Duration = 10,
 				},
 				TweenType = "CFrame",
 				Value = CFrame.new(987.208, 9.2, -1419.397) * CFrame.Angles(0, math.rad(90), 0),
@@ -96,7 +96,7 @@ CutsceneDataModule.IntroductionHouse = {
 			CFrame = CFrame.new(227.027, 6.156 + 171.128, 117.909)
 				* CFrame.Angles(math.rad(-11.405), math.rad(6.182), 0),
 			TweenInfo = {
-				Duration = 5,
+				Duration = 0,
 			},
 			TimePosition = 7.00,
 		},
