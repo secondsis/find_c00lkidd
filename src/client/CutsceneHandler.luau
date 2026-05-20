@@ -127,6 +127,7 @@ local function HandleAnimations(keyframes)
 			-- Treat it as an animationId
 			local animationId = keyframe.Animation :: string
 			local animation = Instance.new("Animation")
+			animation.Name = "Animation " .. animationId
 			animation.AnimationId = animationId
 
 			local Animator = nil
@@ -150,15 +151,34 @@ local function HandleAnimations(keyframes)
 				if not Animator then
 					Animator = Instance.new("Animator")
 					Animator.Parent = target
+					Animator.AnimationPlayed:Connect(function(trask)
+						print("Playing " .. animationId)
+					end)
 				end
 			end
 
 			local animationTrack = Animator:LoadAnimation(animation)
+			print(target)
 			areAnimationsFinished[animationTrack] = false
+
+			-- print("Before: ")
+			-- print(Animator:GetPlayingAnimationTracks())
+
+			-- -- Stop all other animations, prevent stacking
+			-- for _, track: AnimationTrack in Animator:GetPlayingAnimationTracks() do
+			-- 	track:Stop()
+			-- end
+
+			-- print("After: ")
+			-- print(Animator:GetPlayingAnimationTracks())
+
 			animationTrack:Play()
-			animationTrack.Ended:Connect(function()
+			animationTrack.Stopped:Connect(function()
+				print("finished")
 				areAnimationsFinished[animationTrack] = true
 			end)
+
+			print(areAnimationsFinished)
 
 			if keyframe.EndPosition then
 				print("has end pos")
@@ -166,6 +186,11 @@ local function HandleAnimations(keyframes)
 					print("stopping animation")
 					animationTrack:Stop()
 				end)
+			else
+				-- This prevents the last track from running and idk why
+
+				-- animationTrack.Stopped:Wait()
+				-- areAnimationsFinished[animationTrack] = true
 			end
 		else
 			-- TweenInfo except I can't have Tweeninfo in my dictionary somehow

@@ -40,66 +40,70 @@ do -- STORY-RELEVANT
 
 	module.Introduction_PhoneCall = {
 		{
-			Name = "007n7",
-			Text = { "Yo e7? Is that you?" },
+			Name = "placeholder",
+			Text = { "placeholder" },
 		},
-		{
-			Name = "007e7",
-			Text = { "Yea, wsp bro?" },
-		},
-		{
-			Name = "007n7",
-			Text = { "Dude you don’t know how glad I am to be hearing your voice..." },
-		},
-		{
-			Name = "007e7",
-			Text = { "Did smth happen?" },
-		},
-		{
-			Name = "007n7",
-			Text = { "no" },
-		},
-		{
-			Name = "007e7",
-			Text = { "wow why are you calling me then" },
-		},
-		{
-			Name = "007n7",
-			Text = {
-				"BECAUSE THINGS HAVE BEEN INSANE!!",
-				'Are you kidding me? "Did smth happen?"',
-				"...",
-				"I don't want to be mean or anything,",
-				"but have you not heard the news?",
-				"MY KIDD IS MISSING BRO!!!",
-				"I've been pulling my HAIR STRANDS out. I am going BALD at this rate!",
-				"Oh wait, I literally have a burger as a hat.",
-			},
-		},
-		{
-			Name = "007e7",
-			Text = {
-				"Damn. That sucks man.",
-				"What can I do to help?",
-				"Do you need me to come over 'cause I can definitely do that.",
-			},
-		},
-		{
-			Name = "007n7",
-			Text = {
-				"Yeah.",
-				"You gotta help me find him.",
-			},
-		},
-		{
-			Name = "/Options",
-			Text = {
-				"Going over rn.",
-			},
-			Results = {
-				module.Introduction_PhoneCallReply,
-			},
-		},
+		-- {
+		-- 	Name = "007n7",
+		-- 	Text = { "Yo e7? Is that you?" },
+		-- },
+		-- {
+		-- 	Name = "007e7",
+		-- 	Text = { "Yea, wsp bro?" },
+		-- },
+		-- {
+		-- 	Name = "007n7",
+		-- 	Text = { "Dude you don’t know how glad I am to be hearing your voice..." },
+		-- },
+		-- {
+		-- 	Name = "007e7",
+		-- 	Text = { "Did smth happen?" },
+		-- },
+		-- {
+		-- 	Name = "007n7",
+		-- 	Text = { "no" },
+		-- },
+		-- {
+		-- 	Name = "007e7",
+		-- 	Text = { "wow why are you calling me then" },
+		-- },
+		-- {
+		-- 	Name = "007n7",
+		-- 	Text = {
+		-- 		"BECAUSE THINGS HAVE BEEN INSANE!!",
+		-- 		'Are you kidding me? "Did smth happen?"',
+		-- 		"...",
+		-- 		"I don't want to be mean or anything,",
+		-- 		"but have you not heard the news?",
+		-- 		"MY KIDD IS MISSING BRO!!!",
+		-- 		"I've been pulling my HAIR STRANDS out. I am going BALD at this rate!",
+		-- 		"Oh wait, I literally have a burger as a hat.",
+		-- 	},
+		-- },
+		-- {
+		-- 	Name = "007e7",
+		-- 	Text = {
+		-- 		"Damn. That sucks man.",
+		-- 		"What can I do to help?",
+		-- 		"Do you need me to come over 'cause I can definitely do that.",
+		-- 	},
+		-- },
+		-- {
+		-- 	Name = "007n7",
+		-- 	Text = {
+		-- 		"Yeah.",
+		-- 		"You gotta help me find him.",
+		-- 	},
+		-- },
+		-- {
+		-- 	Name = "/Options",
+		-- 	Text = {
+		-- 		"Going over rn.",
+		-- 	},
+		-- 	Results = {
+		-- 		module.Introduction_PhoneCallReply,
+		-- 	},
+		-- },
 	}
 
 	-- 007e7 comes over to the house driving scene or something
