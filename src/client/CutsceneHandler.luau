@@ -126,6 +126,7 @@ local function HandleAnimations(keyframes)
 		if type(keyframe.Animation) == "string" then
 			-- Treat it as an animationId
 			local animationId = keyframe.Animation :: string
+			print(animationId)
 			local animation = Instance.new("Animation")
 			animation.Name = "Animation " .. animationId
 			animation.AnimationId = animationId
@@ -133,7 +134,6 @@ local function HandleAnimations(keyframes)
 			local Animator = nil
 
 			-- Make sure the target has an Animator/AnimationController
-
 			if not target:IsA("Humanoid") then
 				local temp = target:FindFirstChildWhichIsA("AnimationController")
 				if temp then
@@ -151,9 +151,6 @@ local function HandleAnimations(keyframes)
 				if not Animator then
 					Animator = Instance.new("Animator")
 					Animator.Parent = target
-					Animator.AnimationPlayed:Connect(function(trask)
-						print("Playing " .. animationId)
-					end)
 				end
 			end
 
@@ -180,17 +177,24 @@ local function HandleAnimations(keyframes)
 
 			print(areAnimationsFinished)
 
+			-- 127848 never runs / does run but not visible
+
 			if keyframe.EndPosition then
 				print("has end pos")
-				task.delay(keyframe.EndPosition - keyframe.TimePosition, function()
-					print("stopping animation")
-					animationTrack:Stop()
+				task.spawn(function()
+					task.wait(keyframe.EndPosition - keyframe.TimePosition)
+
+					print("stopping animation " .. animationId)
+					repeat
+						print("STOPPING " .. animationId)
+						animationTrack:Stop()
+					until animationTrack.IsPlaying == false
+					print("STOPPED " .. animationId)
 				end)
 			else
 				-- This prevents the last track from running and idk why
-
-				-- animationTrack.Stopped:Wait()
-				-- areAnimationsFinished[animationTrack] = true
+				task.wait(animationTrack.Length)
+				areAnimationsFinished[animationTrack] = true
 			end
 		else
 			-- TweenInfo except I can't have Tweeninfo in my dictionary somehow

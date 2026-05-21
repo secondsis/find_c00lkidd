@@ -131,13 +131,13 @@ CutsceneDataModule.IntroductionHouse = {
 			Target = "game.ServerStorage.Assets.Security_NONE.Maps.Cutscenes.IntroductionEnterHouse.007e7.Humanoid",
 			Animation = "rbxassetid://77820894385233",
 			TimePosition = 7.01 + 2.65,
-			EndPosition = 7 + 2.65 + 0.15 + 0.4, --
+			EndPosition = 7 + 2.65 + 2, --
 		},
 		{
 			-- Punch door -- need to wait to event to open door
 			Target = "game.ServerStorage.Assets.Security_NONE.Maps.Cutscenes.IntroductionEnterHouse.007e7.Humanoid",
 			Animation = "rbxassetid://127848443044377",
-			TimePosition = 7.01 + 2.65 + 0.15 + 0.4, -- Add how long dialogue takes
+			TimePosition = 7.01 + 2.65 + 2 + 1, -- Add how long dialogue takes
 		},
 		{
 			-- Open Door
@@ -149,7 +149,7 @@ CutsceneDataModule.IntroductionHouse = {
 				TweenType = "CFrame",
 				Value = CFrame.new(222.068, 4.327 + 171.128, 112.341) * CFrame.Angles(0, math.rad(-142.167), 0),
 			},
-			TimePosition = 7.02 + 2.65 + 3.1 + 0.55,
+			TimePosition = 7.02 + 2.65 + 3.1 + 2 + 1,
 		},
 		{
 			-- Open Door 2
@@ -161,14 +161,14 @@ CutsceneDataModule.IntroductionHouse = {
 				TweenType = "CFrame",
 				Value = CFrame.new(222.068, 4.327 + 171.128, 112.341) * CFrame.Angles(0, math.rad(-142.167), 0),
 			},
-			TimePosition = 7.03 + 2.65 + 3.1 + 28 / 60 + 0.55,
+			TimePosition = 7.03 + 2.65 + 3.1 + 28 / 60 + 2 + 1,
 		},
 		{
 			-- Punch door idle until transition
 			Target = "game.ServerStorage.Assets.Security_NONE.Maps.Cutscenes.IntroductionEnterHouse.007e7.Humanoid",
 			Animation = "rbxassetid://93756319231245",
 			TimePosition = 7.04 + 2.65 + 4 + 1 / 6 + 0.55, -- Waiting until transition is over
-			EndPosition = 7 + 2.65 + 4 + 1 / 6 + 0.55 + 2,
+			EndPosition = 7 + 2.65 + 4 + 1 / 6 + 2 + 2 + 1,
 		},
 	},
 	DialogueKeyframes = {
