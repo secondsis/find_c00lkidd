@@ -100,6 +100,14 @@ end
     },
 ]]
 
+local tempConverter = {
+	["rbxassetid://106993552854913"] = "Jeep Animation",
+	["rbxassetid://80412463384009"] = "Peek Animation",
+	["rbxassetid://77820894385233"] = "Peek Idle",
+	["rbxassetid://127848443044377"] = "Punch Door Animation",
+	["rbxassetid://93756319231245"] = "Punch Door Idle",
+}
+
 --[=[
  [BLOCKING]
 
@@ -107,6 +115,7 @@ end
  @param keyframes any
 ]=]
 local function HandleAnimations(keyframes)
+	-- Include WaitForEnd, WaitForPreviousEnd, and WaitForPreviousEvent as alternatives to TimePosition
 	local startTick = tick()
 	local areAnimationsFinished = {}
 
@@ -126,7 +135,6 @@ local function HandleAnimations(keyframes)
 		if type(keyframe.Animation) == "string" then
 			-- Treat it as an animationId
 			local animationId = keyframe.Animation :: string
-			print(animationId)
 			local animation = Instance.new("Animation")
 			animation.Name = "Animation " .. animationId
 			animation.AnimationId = animationId
@@ -141,7 +149,10 @@ local function HandleAnimations(keyframes)
 				end
 
 				if not Animator then
-					local AnimationController = Instance.new("AnimationController")
+					local AnimationController = target:FindFirstChildWhichIsA("AnimationController")
+					if not AnimationController then
+						AnimationController = Instance.new("AnimationController")
+					end
 					Animator = Instance.new("Animator")
 					Animator.Parent = AnimationController
 					AnimationController.Parent = target
@@ -158,25 +169,19 @@ local function HandleAnimations(keyframes)
 			print(target)
 			areAnimationsFinished[animationTrack] = false
 
-			-- print("Before: ")
-			-- print(Animator:GetPlayingAnimationTracks())
-
-			-- -- Stop all other animations, prevent stacking
-			-- for _, track: AnimationTrack in Animator:GetPlayingAnimationTracks() do
-			-- 	track:Stop()
-			-- end
-
-			-- print("After: ")
-			-- print(Animator:GetPlayingAnimationTracks())
-
 			animationTrack:Play()
+			pcall(function()
+				print("Playing " .. tempConverter[animationId])
+			end)
+			-- Check when finished playing
 			animationTrack.Stopped:Connect(function()
-				print("finished")
+				print("finished " .. animationId)
 				areAnimationsFinished[animationTrack] = true
 			end)
 
 			print(areAnimationsFinished)
 
+			-- Animations MIGHT be stacking
 			-- 127848 never runs / does run but not visible
 
 			if keyframe.EndPosition then
@@ -184,12 +189,9 @@ local function HandleAnimations(keyframes)
 				task.spawn(function()
 					task.wait(keyframe.EndPosition - keyframe.TimePosition)
 
-					print("stopping animation " .. animationId)
 					repeat
-						print("STOPPING " .. animationId)
-						animationTrack:Stop()
+						animationTrack:Stop() -- This should stop the track?
 					until animationTrack.IsPlaying == false
-					print("STOPPED " .. animationId)
 				end)
 			else
 				-- This prevents the last track from running and idk why
