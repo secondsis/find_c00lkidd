@@ -108,6 +108,8 @@ local tempConverter = {
 	["rbxassetid://93756319231245"] = "Punch Door Idle",
 }
 
+local previousAnimations = {}
+
 --[=[
  [BLOCKING]
 
@@ -119,7 +121,7 @@ local function HandleAnimations(keyframes)
 	local startTick = tick()
 	local areAnimationsFinished = {}
 
-	for _, keyframe in keyframes do
+	for index, keyframe in keyframes do
 		local target = keyframe.Target
 
 		local timePosition = keyframe.TimePosition
@@ -127,14 +129,32 @@ local function HandleAnimations(keyframes)
 		print(keyframe)
 
 		-- Wait until timePosition (Length since start < timePosition)
-		while tick() - startTick < timePosition do
-			task.wait()
+		if timePosition then
+			while tick() - startTick < timePosition do
+				task.wait()
+			end
+		elseif keyframe.WaitForEnd then
+			local rbxId = keyframe.WaitForEnd :: string
+			for i = #previousAnimations, 0, -1 do
+				local animTrack: AnimationTrack = previousAnimations[i]
+				if string.match(animTrack.Name, rbxId) then
+					-- The Animation to Wait For
+					animTrack.Stopped:Wait()
+				end
+			end
+		elseif keyframe.WaitForPreviousEnd then
+			previousAnimations[#previousAnimations].Stopped:Wait()
+		elseif keyframe.WaitForPreviousEvent then
+			local animTrack: AnimationTrack = previousAnimations[#previousAnimations]
+			animTrack:GetMarkerReachedSignal(keyframe.WaitForPreviousEvent):Wait()
 		end
 
 		-- Now at the appropriate timePosition, do the animation
 		if type(keyframe.Animation) == "string" then
-			-- Treat it as an animationId
+			-- Assume keyframe.Animation is an animationId
 			local animationId = keyframe.Animation :: string
+
+			-- Create new Animation Instance
 			local animation = Instance.new("Animation")
 			animation.Name = "Animation " .. animationId
 			animation.AnimationId = animationId
@@ -164,11 +184,15 @@ local function HandleAnimations(keyframes)
 					Animator.Parent = target
 				end
 			end
+			-- Animator is now defined
 
-			local animationTrack = Animator:LoadAnimation(animation)
+			-- Load Animation
+			local animationTrack: AnimationTrack = Animator:LoadAnimation(animation)
 			print(target)
 			areAnimationsFinished[animationTrack] = false
+			table.insert(previousAnimations, animationTrack)
 
+			-- Play Animation
 			animationTrack:Play()
 			pcall(function()
 				print("Playing " .. tempConverter[animationId])
@@ -181,9 +205,6 @@ local function HandleAnimations(keyframes)
 
 			print(areAnimationsFinished)
 
-			-- Animations MIGHT be stacking
-			-- 127848 never runs / does run but not visible
-
 			if keyframe.EndPosition then
 				print("has end pos")
 				task.spawn(function()
@@ -194,8 +215,10 @@ local function HandleAnimations(keyframes)
 					until animationTrack.IsPlaying == false
 				end)
 			else
-				-- This prevents the last track from running and idk why
-				task.wait(animationTrack.Length)
+				-- Do not wait for the last animation to end (so can transition smoothly)
+				if index ~= #keyframes then
+					task.wait(animationTrack.Length)
+				end
 				areAnimationsFinished[animationTrack] = true
 			end
 		else

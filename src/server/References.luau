@@ -19,6 +19,7 @@ ckGalaxy.Mirror1Prompt = workspace.Buildings.c00lHouse.Furniture.Bathroom.Mirror
 ckGalaxy.Mirror2Prompt = workspace.Buildings.c00lHouse.Furniture["Main Room"].Mirror.Prompter.ProximityPrompt
 ckGalaxy.BedPrompt = workspace.Important.MiscInteractables.InteractBed.ProximityPrompt
 ckGalaxy.CheckForTouchFolder = workspace.Buildings.c00lHouse.CheckForTouch
+ckGalaxy.TeleportPartHouseMission = workspace
 
 -- NEIGHBORHOOD / OUTSIDE --
 ckGalaxy.FrontDoors = {

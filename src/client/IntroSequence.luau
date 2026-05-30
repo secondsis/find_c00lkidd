@@ -1,15 +1,15 @@
 local Players = game:GetService("Players")
-local tweenService = game:GetService("TweenService")
-local replicatedStorage = game:GetService("ReplicatedStorage")
-local soundService = game:GetService("SoundService")
+local TweenService = game:GetService("TweenService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local SoundService = game:GetService("SoundService")
 
 local cutsceneModule = require(script.Parent.CutsceneModule)
 local eventsModule = require(script.Parent.ClientEventsModule)
 local PropertyManipulator = require(script.Parent.PropertyManipulator)
-local MissionHandler =
-	require(game:GetService("Players").LocalPlayer.PlayerGui:WaitForChild("MissionGui"):WaitForChild("MissionHandler"))
+local MissionGui = Players.LocalPlayer.PlayerGui:WaitForChild("MissionGui")
+local MissionHandler = require(MissionGui:WaitForChild("MissionHandler"))
 
-local pickUpEvent = replicatedStorage.RemoteEvents.Cutscenes.Intro.PickUpPhoneEvent
+local pickUpEvent: RemoteEvent = ReplicatedStorage.RemoteEvents.Cutscenes.Intro.PickUpPhoneEvent
 
 local introFolder = workspace.Cutscenes.Intro
 local importantFolder = introFolder.e7Home.Important
@@ -28,7 +28,7 @@ local cam2 = cameraFolder:WaitForChild("pos2")
 
 -- local cam3 = replicatedStorage.Values.ObjectValues.MissingPosterCam
 
-local sfxGroup = soundService.SFX
+local sfxGroup = SoundService.SFX
 local pickUpSfx = sfxGroup.phone_pickup
 -- local hangUpSfx = sfxGroup.HangUpPhone
 local phoneRingSfx = sfxGroup.phoneRing.Value
@@ -36,7 +36,7 @@ local markiplierSfx = sfxGroup.MarkiplierGameplay
 
 -- local originalPhoneCF = wallPhone.Speaker.CFrame
 
-local phoneTween = tweenService:Create(wallPhone.Speaker, TweenInfo.new(0.5, Enum.EasingStyle.Linear), {
+local phoneTween = TweenService:Create(wallPhone.Speaker, TweenInfo.new(0.5, Enum.EasingStyle.Linear), {
 	CFrame = wallPhone:WaitForChild("SpeakerPos2").CFrame,
 })
 
@@ -110,7 +110,7 @@ local function PlayPart2_PickUpPhone()
 	eventsModule.FirePauseCameraEffects()
 	-- Make another clone of 007e7 that will pick up the phone
 	eventsModule.FireCloneAssetSecurityNone("Objects.007e7_Clone2")
-	local clone2Asset = replicatedStorage.ClonedFolder:WaitForChild("007e7_Clone2")
+	local clone2Asset = ReplicatedStorage.ClonedFolder:WaitForChild("007e7_Clone2")
 	local clone2 = clone2Asset:Clone()
 	clone2Asset:Destroy()
 	clone2.Parent = introFolder
@@ -145,10 +145,13 @@ local function PlayPart3_PhoneAnimation()
 end
 
 local function PlayPart4_PhoneConversation()
+	-- Hold the phone
 	holdTrack:Play()
 
+	-- Play phone dialogue
 	eventsModule.FireDialogueFunction("Introduction_PhoneCall")
 
+	-- Wait for that to finish
 	eventsModule.FireWaitForDialogueFinish()
 
 	eventsModule.FireSmoothTransitionFunction(3)
@@ -186,11 +189,20 @@ local function PlayPart4_PhoneConversation()
 		c00lkiddBedroom = CheckForTouchFolder.c00lkiddBedroom,
 	}
 
+	local function EndPlayerMission()
+		-- Turn off mission ui
+		MissionGui.Enabled = false
+	end
+
 	local function ConnectTouchEvents()
+		local exploredRooms = {}
 		for roomName, roomFolder in RoomFolders do
 			-- Mark off this room when .Touched -- issue with .Touched not valid member
 			for _, roomPart in roomFolder:GetChildren() do
 				roomPart.Touched:Connect(function(other)
+					if table.find(exploredRooms, roomName) then
+						return
+					end
 					-- Make sure it is the player first
 					if not other.Parent then
 						return
@@ -200,8 +212,13 @@ local function PlayPart4_PhoneConversation()
 						return
 					end
 
-					-- Will not double-mark so it is fine as is
 					MissionHandler.MarkComplete(roomName)
+					table.insert(exploredRooms, roomName)
+
+					-- Check if all rooms have been seen
+					if #exploredRooms == #RoomFolders then
+						EndPlayerMission()
+					end
 				end)
 			end
 		end
@@ -209,10 +226,14 @@ local function PlayPart4_PhoneConversation()
 
 	local function StartPlayerMission(player: Player)
 		-- Turn on UI
-		PropertyManipulator.ManipulateProperty(player.PlayerGui.MissionGui, "Enabled", true)
+		PropertyManipulator.ManipulateProperty(player.PlayerGui:WaitForChild("MissionGui"), "Enabled", true)
 		ConnectTouchEvents()
+
+		-- Teleport Player
+		eventsModule.FireRemoteTeleportPlayerOnServer("HouseMission")
 	end
 
+	-- Begin the MissionUI and room detection
 	StartPlayerMission(game:GetService("Players").LocalPlayer)
 
 	-- End the scene overall

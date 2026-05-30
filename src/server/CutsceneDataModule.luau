@@ -155,7 +155,7 @@ CutsceneDataModule.IntroductionHouse = {
 				TweenType = "CFrame",
 				Value = CFrame.new(222.068, 4.327 + 171.128, 112.341) * CFrame.Angles(0, math.rad(-142.167), 0),
 			},
-			WaitForPreviousEvent = "Open",
+			WaitForPreviousEvent = "OpenDoor",
 		},
 		{
 			-- Open Door 2
@@ -174,7 +174,7 @@ CutsceneDataModule.IntroductionHouse = {
 			Target = "game.ServerStorage.Assets.Security_NONE.Maps.Cutscenes.IntroductionEnterHouse.007e7.Humanoid",
 			Animation = "rbxassetid://93756319231245",
 			WaitForEnd = "rbxassetid://135495793432694",
-			EndPosition = 5 + 2.65 + 4.99 + 4 + 1 / 6 + 3 + 100, -- Waiting for a bit for player to absorb
+			EndPosition = 5 + 2.65 + 4.99 + 4 + 1 / 6 + 3, -- Waiting for a bit for player to absorb
 		},
 	},
 	DialogueKeyframes = {

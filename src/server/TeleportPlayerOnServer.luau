@@ -8,6 +8,7 @@ local tpParts = {
 	["Intro"] = References.TeleportPartIntro,
 	["PizzaPlace"] = References.TeleportPartPizzaPlace,
 	["c00lHouse"] = References.TeleportPartc00lHouse,
+	["HouseMission"] = References.TeleportPartHouseMission,
 }
 
 for key, val in tpParts do
