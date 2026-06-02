@@ -120,6 +120,7 @@ local function HandleAnimations(keyframes)
 	-- Include WaitForEnd, WaitForPreviousEnd, and WaitForPreviousEvent as alternatives to TimePosition
 	local startTick = tick()
 	local areAnimationsFinished = {}
+	local keyframeStartTick
 
 	for index, keyframe in keyframes do
 		local target = keyframe.Target
@@ -135,12 +136,18 @@ local function HandleAnimations(keyframes)
 			end
 		elseif keyframe.WaitForEnd then
 			local rbxId = keyframe.WaitForEnd :: string
+			local waited = false
 			for i = #previousAnimations, 0, -1 do
 				local animTrack: AnimationTrack = previousAnimations[i]
-				if string.match(animTrack.Name, rbxId) then
+
+				if animTrack and string.match(animTrack.Name, rbxId) then
 					-- The Animation to Wait For
 					animTrack.Stopped:Wait()
+					waited = true
 				end
+			end
+			if not waited then
+				warn("Did not find previous animation to WaitForEnd")
 			end
 		elseif keyframe.WaitForPreviousEnd then
 			previousAnimations[#previousAnimations].Stopped:Wait()
@@ -148,6 +155,8 @@ local function HandleAnimations(keyframes)
 			local animTrack: AnimationTrack = previousAnimations[#previousAnimations]
 			animTrack:GetMarkerReachedSignal(keyframe.WaitForPreviousEvent):Wait()
 		end
+
+		keyframeStartTick = tick()
 
 		-- Now at the appropriate timePosition, do the animation
 		if type(keyframe.Animation) == "string" then
@@ -208,7 +217,14 @@ local function HandleAnimations(keyframes)
 			if keyframe.EndPosition then
 				print("has end pos")
 				task.spawn(function()
-					task.wait(keyframe.EndPosition - keyframe.TimePosition)
+					-- Keyframe might not have a timeposition if it is waitingforend
+
+					if not keyframe.TimePosition then
+						-- it might have a different start time
+						task.wait((startTick + keyframe.EndPosition) - keyframeStartTick)
+					else
+						task.wait(keyframe.EndPosition - keyframe.TimePosition)
+					end
 
 					repeat
 						animationTrack:Stop() -- This should stop the track?
@@ -301,6 +317,29 @@ local function HandleDialogue(keyframes)
 	IsCutsceneEffectFinished.Dialogue = true
 end
 
+local function HandleAudio(keyframes)
+	local startTick = tick()
+
+	for _, keyframe in keyframes do
+		local audio: Sound = keyframe.Audio
+		local timePosition = keyframe.TimePosition
+		local endPosition = keyframe.EndPosition
+
+		while tick() - startTick < timePosition do
+			task.wait()
+		end
+
+		audio:Play()
+
+		if endPosition then
+			while tick() - startTick < endPosition do
+				task.wait()
+			end
+
+			audio:Stop()
+		end
+	end
+end
 --[=[
  Handles the client's end of the cutscene: camera, animations, dialogue
  @param cutsceneData any
@@ -333,6 +372,7 @@ local function HandleScene(cutsceneData: any)
 	task.spawn(HandleCamera, cutsceneData.CameraStartCFrame, cutsceneData.CameraKeyframes)
 	task.spawn(HandleAnimations, cutsceneData.AnimationKeyframes)
 	task.spawn(HandleDialogue, cutsceneData.DialogueKeyframes)
+	task.spawn(HandleAudio, cutsceneData.AudioKeyframes)
 
 	-- Wait until all of them are done
 	while

@@ -18,8 +18,7 @@ ckGalaxy.CatPianoClickDetector = workspace.Buildings.c00lHouse["c00l_toys"].CatP
 ckGalaxy.Mirror1Prompt = workspace.Buildings.c00lHouse.Furniture.Bathroom.Mirror.Prompter.ProximityPrompt
 ckGalaxy.Mirror2Prompt = workspace.Buildings.c00lHouse.Furniture["Main Room"].Mirror.Prompter.ProximityPrompt
 ckGalaxy.BedPrompt = workspace.Important.MiscInteractables.InteractBed.ProximityPrompt
-ckGalaxy.CheckForTouchFolder = workspace.Buildings.c00lHouse.CheckForTouch
-ckGalaxy.TeleportPartHouseMission = workspace
+ckGalaxy.TeleportPartHouseMission = ServerStorage.Assets.Security_NONE.Maps.Cutscenes.IntroductionEnterHouse.TPPart
 
 -- NEIGHBORHOOD / OUTSIDE --
 ckGalaxy.FrontDoors = {

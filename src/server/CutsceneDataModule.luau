@@ -1,3 +1,4 @@
+local SoundService = game:GetService("SoundService")
 local CutsceneDataModule = {}
 
 --[[
@@ -75,6 +76,21 @@ CutsceneDataModule.IntroductionDrive = {
 		},
 	},
 	DialogueKeyframes = {},
+	AudioKeyframes = {
+		{
+			Audio = SoundService.SFX["car door opening"],
+			TimePosition = 0.00,
+		},
+		{
+			Audio = SoundService.SFX["car engine start"],
+			TimePosition = 1.00,
+		},
+		{
+			Audio = SoundService.SFX["Truck Acceleration"],
+			TimePosition = 2.00,
+			EndPosition = 10.00,
+		},
+	},
 }
 
 -- Entering the House as 007e7 looking for his cousin
@@ -183,6 +199,7 @@ CutsceneDataModule.IntroductionHouse = {
 			TimePosition = 5 + 2.65,
 		},
 	},
+	AudioKeyframes = {},
 }
 
 return CutsceneDataModule

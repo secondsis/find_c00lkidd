@@ -13,7 +13,6 @@ local pickUpEvent: RemoteEvent = ReplicatedStorage.RemoteEvents.Cutscenes.Intro.
 
 local introFolder = workspace.Cutscenes.Intro
 local importantFolder = introFolder.e7Home.Important
-local CheckForTouchFolder = workspace.Buildings.c00lHouse.CheckForTouch
 
 local wallPhone = importantFolder:WaitForChild("Wall Phone")
 
@@ -33,6 +32,9 @@ local pickUpSfx = sfxGroup.phone_pickup
 -- local hangUpSfx = sfxGroup.HangUpPhone
 local phoneRingSfx = sfxGroup.phoneRing.Value
 local markiplierSfx = sfxGroup.MarkiplierGameplay
+local engineStartSfx = sfxGroup["car engine start"]
+local carEnterSfx = sfxGroup["car door opening"]
+local carMoveSfx = sfxGroup["Truck Acceleration"]
 
 -- local originalPhoneCF = wallPhone.Speaker.CFrame
 
@@ -157,11 +159,13 @@ local function PlayPart4_PhoneConversation()
 	eventsModule.FireSmoothTransitionFunction(3)
 	-- Go to driving scene
 	eventsModule.FireRemotePlayCutscene("IntroductionDrive")
+
 	-- Wait for the scene to end
 	local ended = false
 	eventsModule.ConnectRemoteFinishCutscene(function()
 		ended = true
 	end)
+
 	while not ended do
 		task.wait()
 	end
@@ -169,17 +173,26 @@ local function PlayPart4_PhoneConversation()
 	eventsModule.FireTransitionFunction(4)
 
 	-- Then 007e7 arrives at house cutscene ( COMBINE INTO ONE CUTSCENE )
-	eventsModule.FireRemotePlayCutscene("IntroductionHouse")
+	eventsModule.FireRemotePlayCutscene("IntroductionHouse", {
+		KeepMap = true,
+	})
+
 	local ended2 = false
 	eventsModule.ConnectRemoteFinishCutscene(function()
 		ended2 = true
 	end)
+
 	while not ended2 do
 		task.wait()
 	end
 
+	-- Need to keep the house somehow
+
 	-- Then 007e7 searches the house (IntroMission)
 	-- When player touches a room's respective parts, go tick the box
+	local MapFolder = workspace:WaitForChild("IntroductionEnterHouse")
+	local CheckForTouchFolder = MapFolder:WaitForChild("WaitForTouch")
+
 	local RoomFolders = {
 		LivingRoom = CheckForTouchFolder.LivingRoom,
 		DownstairsBedroom = CheckForTouchFolder.DownstairsBedroom,
@@ -192,6 +205,12 @@ local function PlayPart4_PhoneConversation()
 	local function EndPlayerMission()
 		-- Turn off mission ui
 		MissionGui.Enabled = false
+
+		-- Teleport to normal house
+		print("END SCENE")
+		coroutine.resume(endScene)
+
+		MapFolder:Destroy()
 	end
 
 	local function ConnectTouchEvents()
@@ -238,7 +257,6 @@ local function PlayPart4_PhoneConversation()
 
 	-- End the scene overall
 	eventsModule.FireSmoothTransitionFunction(2)
-	coroutine.resume(endScene)
 end
 
 local function EndScene()

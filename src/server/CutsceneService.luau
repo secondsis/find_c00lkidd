@@ -52,7 +52,7 @@ cutsceneData = {
  @param player Player
  @param cutsceneData any
 ]=]
-function CutsceneService.PlayCutscene(player: Player, cutsceneData: any)
+function CutsceneService.PlayCutscene(player: Player, cutsceneData: any, options: any)
 	-- Prepare the player perspective for cutscene
 	CutsceneService.PreparePlayer(player)
 
@@ -91,7 +91,14 @@ function CutsceneService.PlayCutscene(player: Player, cutsceneData: any)
 	end
 
 	-- Finish and reset
-	CutsceneService.CleanUpCutscene(player)
+	-- Optionally exclude deleting map, etc.
+	if options.KeepMap then
+		CutsceneService.CleanUpCutscene(player, {
+			KeepMap = true,
+		})
+	else
+		CutsceneService.CleanUpCutscene(player)
+	end
 end
 
 -- Client needs to call this
@@ -144,7 +151,7 @@ end
  Resets everything back to normal
  @param player Player
 ]=]
-function CutsceneService.CleanUpCutscene(player: Player)
+function CutsceneService.CleanUpCutscene(player: Player, options)
 	-- Return player movement, mouse, etc.
 	eventsModule.FireRemoteFinishCutscene(player)
 
@@ -152,7 +159,9 @@ function CutsceneService.CleanUpCutscene(player: Player)
 	References.DirectTeleportPlayer(player, playerOriginalCFrame)
 
 	-- Destroy map
-	clonedMap:Destroy()
+	if not options or not options.KeepMap then
+		clonedMap:Destroy()
+	end
 end
 
 --[=[
@@ -161,7 +170,7 @@ end
  @param player Player
  @param cutsceneName string
 ]=]
-local function RemotePlayCutscene(player: Player, cutsceneName: string)
+local function RemotePlayCutscene(player: Player, cutsceneName: string, options: any)
 	-- Implement a check to verify that the player is allowed to view this
 	-- if player:GetAttribute("Cutscenes") == nil or player:GetAttribute("Cutscenes") ~= cutsceneName then
 	-- 	warn("Player does not have permission to play this cutscene!")
@@ -169,7 +178,7 @@ local function RemotePlayCutscene(player: Player, cutsceneName: string)
 	-- end
 
 	-- Play the cutscene
-	CutsceneService.PlayCutscene(player, CutsceneDataModule[cutsceneName])
+	CutsceneService.PlayCutscene(player, CutsceneDataModule[cutsceneName], options)
 end
 
 -- Be able to play cutscene by client request
