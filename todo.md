@@ -8,6 +8,14 @@ Need to work on making the introduction work
 
 Necessary Features: 
     => INTRODUCTION / CUTSCENE REVAMP
+    - dramatic dark red
+    - Increase transition time at end and make it sooner
+    - Fix camera position
+    - Add invisible wall behind door(s) in the c00lhouse
+        - Also add dialogue saying I don't want to go back out there
+    - Make doors open in c00lhouse
+    - Add a delay before jumping into main game
+    - Turn back on the managers before going back to main game
 
     1. Final Battle
         Figure out how to introduce Spectre in the battle

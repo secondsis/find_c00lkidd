@@ -36,6 +36,8 @@ local engineStartSfx = sfxGroup["car engine start"]
 local carEnterSfx = sfxGroup["car door opening"]
 local carMoveSfx = sfxGroup["Truck Acceleration"]
 
+local doorBangSfx = sfxGroup.DoorBang
+
 -- local originalPhoneCF = wallPhone.Speaker.CFrame
 
 local phoneTween = TweenService:Create(wallPhone.Speaker, TweenInfo.new(0.5, Enum.EasingStyle.Linear), {
@@ -156,9 +158,30 @@ local function PlayPart4_PhoneConversation()
 	-- Wait for that to finish
 	eventsModule.FireWaitForDialogueFinish()
 
-	eventsModule.FireSmoothTransitionFunction(3)
+	eventsModule.FireSmoothTransitionFunction(4)
+	local DRIVING_SCENE_LENGTH = 30
 	-- Go to driving scene
 	eventsModule.FireRemotePlayCutscene("IntroductionDrive")
+
+	-- Time the BIG RED SCARY SKY
+	task.spawn(function()
+		-- dark sky aa scary :(
+		local SpectreSky = workspace:WaitForChild("IntroductionDrivingScene"):WaitForChild("SpectreSky")
+		local Lighting = game:GetService("Lighting")
+		local Sky = Lighting.Sky
+		local skyClone = SpectreSky:Clone()
+		task.wait(25)
+		skyClone.Parent = Lighting
+		Sky.Parent = ReplicatedStorage
+		task.wait(DRIVING_SCENE_LENGTH - 25)
+		Sky.Parent = Lighting
+		skyClone:Destroy()
+	end)
+	-- Time the transition
+	task.spawn(function()
+		task.wait(DRIVING_SCENE_LENGTH - 1)
+		eventsModule.FireSmoothTransitionFunction(5)
+	end)
 
 	-- Wait for the scene to end
 	local ended = false
@@ -169,8 +192,6 @@ local function PlayPart4_PhoneConversation()
 	while not ended do
 		task.wait()
 	end
-
-	eventsModule.FireTransitionFunction(4)
 
 	-- Then 007e7 arrives at house cutscene ( COMBINE INTO ONE CUTSCENE )
 	eventsModule.FireRemotePlayCutscene("IntroductionHouse", {
@@ -191,7 +212,9 @@ local function PlayPart4_PhoneConversation()
 	-- Then 007e7 searches the house (IntroMission)
 	-- When player touches a room's respective parts, go tick the box
 	local MapFolder = workspace:WaitForChild("IntroductionEnterHouse")
-	local CheckForTouchFolder = MapFolder:WaitForChild("WaitForTouch")
+	local CheckForTouchFolder = MapFolder:WaitForChild("CheckForTouch")
+
+	MapFolder:WaitForChild("007e7"):Destroy()
 
 	local RoomFolders = {
 		LivingRoom = CheckForTouchFolder.LivingRoom,
@@ -235,7 +258,8 @@ local function PlayPart4_PhoneConversation()
 					table.insert(exploredRooms, roomName)
 
 					-- Check if all rooms have been seen
-					if #exploredRooms == #RoomFolders then
+					if #exploredRooms == 6 then
+						print("ALL ROOMS DONE")
 						EndPlayerMission()
 					end
 				end)

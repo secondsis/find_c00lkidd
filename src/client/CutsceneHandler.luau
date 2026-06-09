@@ -226,9 +226,7 @@ local function HandleAnimations(keyframes)
 						task.wait(keyframe.EndPosition - keyframe.TimePosition)
 					end
 
-					repeat
-						animationTrack:Stop() -- This should stop the track?
-					until animationTrack.IsPlaying == false
+					animationTrack:Stop()
 				end)
 			else
 				-- Do not wait for the last animation to end (so can transition smoothly)

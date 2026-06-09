@@ -92,7 +92,7 @@ function CutsceneService.PlayCutscene(player: Player, cutsceneData: any, options
 
 	-- Finish and reset
 	-- Optionally exclude deleting map, etc.
-	if options.KeepMap then
+	if options and options.KeepMap then
 		CutsceneService.CleanUpCutscene(player, {
 			KeepMap = true,
 		})
