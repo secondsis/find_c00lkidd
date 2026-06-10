@@ -1,3 +1,4 @@
+local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local TweenService = game:GetService("TweenService")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
@@ -170,10 +171,14 @@ local function PlayPart4_PhoneConversation()
 		local Lighting = game:GetService("Lighting")
 		local Sky = Lighting.Sky
 		local skyClone = SpectreSky:Clone()
+
 		task.wait(25)
+
 		skyClone.Parent = Lighting
 		Sky.Parent = ReplicatedStorage
+
 		task.wait(DRIVING_SCENE_LENGTH - 25)
+
 		Sky.Parent = Lighting
 		skyClone:Destroy()
 	end)
@@ -207,8 +212,6 @@ local function PlayPart4_PhoneConversation()
 		task.wait()
 	end
 
-	-- Need to keep the house somehow
-
 	-- Then 007e7 searches the house (IntroMission)
 	-- When player touches a room's respective parts, go tick the box
 	local MapFolder = workspace:WaitForChild("IntroductionEnterHouse")
@@ -226,13 +229,15 @@ local function PlayPart4_PhoneConversation()
 	}
 
 	local function EndPlayerMission()
+		task.wait(5)
+		eventsModule.FireSmoothTransitionFunction(5)
 		-- Turn off mission ui
 		MissionGui.Enabled = false
 
 		-- Teleport to normal house
 		print("END SCENE")
-		coroutine.resume(endScene)
 
+		coroutine.resume(endScene)
 		MapFolder:Destroy()
 	end
 
@@ -281,6 +286,13 @@ local function PlayPart4_PhoneConversation()
 
 	-- End the scene overall
 	eventsModule.FireSmoothTransitionFunction(2)
+	-- Go connect the door parts to dialogue
+	local ExitDoors = CollectionService:GetTagged("ExitDoor")
+	for _, door in ExitDoors do
+		door.Touched:Once(function()
+			eventsModule.FireDialogueFunction("Introduction_ExitDoor")
+		end)
+	end
 end
 
 local function EndScene()

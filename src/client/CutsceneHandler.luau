@@ -197,25 +197,27 @@ local function HandleAnimations(keyframes)
 
 			-- Load Animation
 			local animationTrack: AnimationTrack = Animator:LoadAnimation(animation)
-			print(target)
 			areAnimationsFinished[animationTrack] = false
 			table.insert(previousAnimations, animationTrack)
 
 			-- Play Animation
-			animationTrack:Play()
+			animationTrack:Play(0.5)
+
 			pcall(function()
-				print("Playing " .. tempConverter[animationId])
+				print("Playing (@" .. tick() .. ") " .. tempConverter[animationId])
 			end)
 			-- Check when finished playing
 			animationTrack.Stopped:Connect(function()
-				print("finished " .. animationId)
+				pcall(function()
+					print("Finished (@" .. tick() .. ") " .. tempConverter[animationId])
+				end)
 				areAnimationsFinished[animationTrack] = true
 			end)
 
-			print(areAnimationsFinished)
+			-- print(areAnimationsFinished)
 
 			if keyframe.EndPosition then
-				print("has end pos")
+				-- print("has end pos")
 				task.spawn(function()
 					-- Keyframe might not have a timeposition if it is waitingforend
 
@@ -226,7 +228,8 @@ local function HandleAnimations(keyframes)
 						task.wait(keyframe.EndPosition - keyframe.TimePosition)
 					end
 
-					animationTrack:Stop()
+					task.wait()
+					animationTrack:Stop(0.5)
 				end)
 			else
 				-- Do not wait for the last animation to end (so can transition smoothly)
@@ -257,6 +260,7 @@ local function HandleAnimations(keyframes)
 
 			if keyframe.EndPosition then
 				task.delay(tick() - startTick, function()
+					task.wait()
 					tween:Cancel()
 				end)
 			end

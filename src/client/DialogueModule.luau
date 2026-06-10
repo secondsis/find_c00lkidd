@@ -146,6 +146,15 @@ do -- STORY-RELEVANT
 		},
 	}
 
+	module.Introduction_ExitDoor = {
+		{
+			Name = "007e7",
+			Text = {
+				"There is no reason for me to leave right now.",
+			},
+		},
+	}
+
 	-- You go sleep on yo cuz's bed cuz ur like that
 
 	-- RESTAURANT SPAWN RIG(?)

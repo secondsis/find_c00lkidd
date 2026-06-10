@@ -1,18 +1,7 @@
 local Players = game:GetService("Players")
 local CollectionService = game:GetService("CollectionService")
 
-local Doors = CollectionService:GetTagged("InteractableDoor")
-
-local function UpdateDoors()
-	Doors = CollectionService:GetTagged("InteractableDoor")
-	for _, door in Doors do
-		if door:IsDescendantOf(workspace) then
-			table.remove(Doors, table.find(Doors, door))
-		end
-	end
-end
-
-UpdateDoors()
+local Doors = CollectionService:GetTagged("IntroDoor")
 
 local function HandleDoor(Door)
 	local sound = Door.MovingDoorPart.DoorPart.DoorSound
@@ -154,8 +143,18 @@ local function HandleDoor(Door)
 	end)
 end
 
-for _, door in Doors do
-	HandleDoor(door)
+local function UpdateDoors()
+	Doors = CollectionService:GetTagged("IntroDoor")
+	for _, door in Doors do
+		if door:IsDescendantOf(workspace) then
+			table.remove(Doors, table.find(Doors, door))
+		end
+	end
+	for _, door in Doors do
+		HandleDoor(door)
+	end
 end
+
+UpdateDoors()
 
 return {}
