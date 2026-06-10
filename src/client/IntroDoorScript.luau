@@ -143,10 +143,12 @@ local function HandleDoor(Door)
 	end)
 end
 
-local function UpdateDoors()
+local module = {}
+
+function module.UpdateDoors()
 	Doors = CollectionService:GetTagged("IntroDoor")
 	for _, door in Doors do
-		if door:IsDescendantOf(workspace) then
+		if not door:IsDescendantOf(workspace) then
 			table.remove(Doors, table.find(Doors, door))
 		end
 	end
@@ -155,6 +157,4 @@ local function UpdateDoors()
 	end
 end
 
-UpdateDoors()
-
-return {}
+return module

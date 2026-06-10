@@ -90,6 +90,10 @@ CutsceneDataModule.IntroductionDrive = {
 			TimePosition = 2.00,
 			EndPosition = 25.00,
 		},
+		{
+			Audio = SoundService.SFX["ear-ring"],
+			TimePosition = 27.00,
+		},
 	},
 }
 
@@ -98,7 +102,7 @@ CutsceneDataModule.IntroductionHouse = {
 	MapFolder = game:GetService("ServerStorage").Assets["Security_NONE"].Maps.Cutscenes.IntroductionEnterHouse,
 	TeleportPart = game:GetService("ServerStorage").Assets["Security_NONE"].Maps.Cutscenes.IntroductionEnterHouse.TPPart,
 	CameraStartCFrame = CFrame.new(218.318, 8.766 + 171.128, 74.832)
-		* CFrame.Angles(math.rad(-20.403), math.rad(-164.618), 0),
+		* CFrame.fromOrientation(math.rad(-20.403), math.rad(-164.618), 0),
 	CameraKeyframes = {
 		{
 			CFrame = CFrame.new(224.63, 181.206, 80.883) * CFrame.Angles(math.rad(-14.059), math.rad(-179.198), 0),
@@ -203,6 +207,30 @@ CutsceneDataModule.IntroductionHouse = {
 		{
 			Audio = SoundService.SFX.DoorBang,
 			TimePosition = 5 + 2.65 + 4.99 + 3.1 + 28 / 60,
+		},
+	},
+}
+
+CutsceneDataModule.IntroductionSleep = {
+	CameraStartCFrame = CFrame.new(233.759, 191.773, 118.205)
+		* CFrame.fromOrientation(math.rad(-31.202), math.rad(93.207), 0),
+	AnimationKeyframes = {
+		{
+			Target = "game.ServerStorage.Assets.Security_NONE.Maps.Cutscenes.IntroductionEnterHouse.Clone007e7.HumanoidRootPart",
+			Animation = "rbxassetid://115026270646237",
+			TimePosition = 12,
+		},
+	},
+	DialogueKeyframes = {
+		{
+			DialogueName = "Introduction_Sleepy",
+			TimePosition = 6,
+		},
+	},
+	AudioKeyframes = {
+		{
+			Audio = SoundService.SFX.CrashSFX,
+			TimePosition = 13.5,
 		},
 	},
 }

@@ -9,10 +9,8 @@ Need to work on making the introduction work
 Necessary Features: 
     => INTRODUCTION / CUTSCENE REVAMP
     - Fix camera position
-    - Make doors open in c00lhouse
-    - Add a delay before jumping into main game
-    - Turn back on the managers before going back to main game
-
+    - Put in the sleeping thingy before starting to main game
+    
     1. Final Battle
         Figure out how to introduce Spectre in the battle
     2. Animate Christmas Scene

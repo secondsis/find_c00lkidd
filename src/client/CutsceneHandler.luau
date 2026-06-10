@@ -46,6 +46,10 @@ local function HandleCamera(startCFrame, keyframes)
 
 	local cameraTweensFinished = {}
 
+	if not keyframes then
+		return
+	end
+
 	for _, keyframe in keyframes do
 		local duration = keyframe.TweenInfo.Duration or 0
 		local easingStyle = keyframe.TweenInfo.EasingStyle or Enum.EasingStyle.Linear
@@ -127,7 +131,7 @@ local function HandleAnimations(keyframes)
 
 		local timePosition = keyframe.TimePosition
 
-		print(keyframe)
+		-- print(keyframe)
 
 		-- Wait until timePosition (Length since start < timePosition)
 		if timePosition then
@@ -204,12 +208,12 @@ local function HandleAnimations(keyframes)
 			animationTrack:Play(0.5)
 
 			pcall(function()
-				print("Playing (@" .. tick() .. ") " .. tempConverter[animationId])
+				-- print("Playing (@" .. tick() .. ") " .. tempConverter[animationId])
 			end)
 			-- Check when finished playing
 			animationTrack.Stopped:Connect(function()
 				pcall(function()
-					print("Finished (@" .. tick() .. ") " .. tempConverter[animationId])
+					-- print("Finished (@" .. tick() .. ") " .. tempConverter[animationId])
 				end)
 				areAnimationsFinished[animationTrack] = true
 			end)
@@ -217,7 +221,6 @@ local function HandleAnimations(keyframes)
 			-- print(areAnimationsFinished)
 
 			if keyframe.EndPosition then
-				-- print("has end pos")
 				task.spawn(function()
 					-- Keyframe might not have a timeposition if it is waitingforend
 
@@ -280,7 +283,7 @@ local function HandleAnimations(keyframes)
 		task.wait()
 	end
 
-	print("Finished animations!")
+	-- print("Finished animations!")
 	IsCutsceneEffectFinished.Animations = true
 end
 
@@ -347,11 +350,11 @@ end
  @param cutsceneData any
 ]=]
 local function HandleScene(cutsceneData: any)
-	local newMap = game:GetService("ReplicatedStorage").ClonedFolder:WaitForChild(cutsceneData.MapFolderName)
-	newMap.Parent = game:GetService("Workspace")
-	-- Destroy after use
-	--game:GetService("ReplicatedStorage").ClonedFolder:GetChildren()[1]:Destroy()
-	cutsceneData.MapFolder = newMap
+	if cutsceneData.MapFolderName then
+		local newMap = game:GetService("ReplicatedStorage").ClonedFolder:WaitForChild(cutsceneData.MapFolderName)
+		newMap.Parent = game:GetService("Workspace")
+		cutsceneData.MapFolder = newMap
+	end
 
 	local CutsceneAnimationKeyframes = cutsceneData.AnimationKeyframes
 	for _, v in CutsceneAnimationKeyframes do
@@ -376,6 +379,7 @@ local function HandleScene(cutsceneData: any)
 	task.spawn(HandleDialogue, cutsceneData.DialogueKeyframes)
 	task.spawn(HandleAudio, cutsceneData.AudioKeyframes)
 
+	print("CUTSCENE START")
 	-- Wait until all of them are done
 	while
 		not (
@@ -386,6 +390,8 @@ local function HandleScene(cutsceneData: any)
 	do
 		task.wait()
 	end
+
+	print("CUTSCENE OVER")
 
 	-- Tell the server that this cutscene is over
 	eventsModule.FireRemoteFinishedScene()

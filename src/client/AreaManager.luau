@@ -44,6 +44,14 @@ for _, detector in detectors do
 	playerIsIn[detector.Name] = false
 end
 
+-- local function CheckManagers()
+-- 	while task.wait(3) do
+-- 		print(PauseManagers)
+-- 	end
+-- end
+
+-- task.spawn(CheckManagers)
+
 -- dont set the tweens to have an area with no music
 local function detectPlayerBase(detectorPartValue: ObjectValue, callbackIfPlayer: () -> ())
 	local detectorObject = detectorPartValue.Value
@@ -142,10 +150,12 @@ end
 
 local function firstPersonManager()
 	if detectPlayer(c00lhouseDetector, firstPersonCallbackIfPlayer) then
+		print("First person: c00lhouse")
 		return
 	end
 
 	if detectPlayer(caveDetector, firstPersonCallbackIfPlayer) then
+		print("First person: cave")
 		return
 	end
 
@@ -311,23 +321,23 @@ local function SoundAreaManagerRunner()
 		repeat
 			task.wait(0.5)
 			if detectPlayer(c00lhouseDetector, playOutTweens, true) then
-				return
+				continue
 			end
 
 			if detectPlayer(caveDetector, playOutTweens, true) then
-				return
+				continue
 			end
 
 			if detectPlayer(shopDetector, soundAreaShopCallbackIfPlayer) then
-				return
+				continue
 			end
 
 			if detectPlayer(restaurantDetector, soundAreaRestaurantCallbackIfPlayer) then
-				return
+				continue
 			end
 
 			if detectPlayer(mapDetector, soundAreaNormalCallbackIfPlayer) then
-				return
+				continue
 			end
 		until PauseManagers["SoundAreaManager"]
 	end
@@ -342,13 +352,13 @@ local function SprintingAreaManagerRunner()
 			-- These are the areas where sprinting is disabled.
 
 			if detectPlayer(introHouseDetector, sprintingAreaCallbackIfPlayer) then
-				return
+				continue
 			end
 			if detectPlayer(c00lhouseDetector, sprintingAreaCallbackIfPlayer, true) then
-				return
+				continue
 			end
 			if detectPlayer(caveDetector, sprintingAreaCallbackIfPlayer, true) then
-				return
+				continue
 			end
 
 			if not canSprint then
@@ -393,10 +403,21 @@ local function manualFirstPersonManager()
 	end
 end
 
+local module = {}
+
+function module.RunAllManagers()
+	task.spawn(FirstPersonManagerRunner)
+	task.spawn(SoundAreaManagerRunner)
+	task.spawn(SprintingAreaManagerRunner)
+	task.spawn(HouseMirrorManagerRunner)
+end
+
 eventsModule.ConnectManualCheckFirstPersonManager(manualFirstPersonManager)
 eventsModule.ConnectPauseAreaManager(PauseAreaManager)
 eventsModule.ConnectResumeAreaManager(ResumeAreaManager)
 eventsModule.ConnectPauseAllAreaManagers(PauseAllAreaManagers)
 eventsModule.ConnectResumeAllAreaManagers(ResumeAllAreaManagers)
 
-return {}
+module.RunAllManagers()
+
+return module

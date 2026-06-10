@@ -6,13 +6,11 @@ local Doors = CollectionService:GetTagged("InteractableDoor")
 local function UpdateDoors()
 	Doors = CollectionService:GetTagged("InteractableDoor")
 	for _, door in Doors do
-		if door:IsDescendantOf(workspace) then
+		if not door:IsDescendantOf(workspace) then
 			table.remove(Doors, table.find(Doors, door))
 		end
 	end
 end
-
-UpdateDoors()
 
 local function HandleDoor(Door)
 	local sound = Door.MovingDoorPart.DoorPart.DoorSound
@@ -153,6 +151,8 @@ local function HandleDoor(Door)
 		end
 	end)
 end
+
+UpdateDoors()
 
 for _, door in Doors do
 	HandleDoor(door)

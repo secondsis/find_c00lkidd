@@ -229,16 +229,43 @@ local function PlayPart4_PhoneConversation()
 	}
 
 	local function EndPlayerMission()
-		task.wait(5)
+		task.wait(1)
 		eventsModule.FireSmoothTransitionFunction(5)
 		-- Turn off mission ui
 		MissionGui.Enabled = false
 
-		-- Teleport to normal house
-		print("END SCENE")
+		-- Now run the sleeping scene
+		local e7Clone = MapFolder.Replicate["007e7"]:Clone()
+		e7Clone.Name = "Clone007e7"
+		e7Clone.Parent = MapFolder
+		task.spawn(function()
+			e7Clone.Head.face.Transparency = 0
+			e7Clone.PrimaryPart.CFrame = MapFolder.CharacterCFrame1.Value
+			task.wait(13.5)
+			e7Clone.Head.Tired.Transparency = 0
+			e7Clone.Head.face.Transparency = 1
+			e7Clone.PrimaryPart.CFrame = MapFolder.CharacterCFrame2.Value
+			eventsModule.FireSpawnClientExplosion(MapFolder.CharacterCFrame2.Value.Position)
+		end)
+		eventsModule.FireRemotePlayCutscene("IntroductionSleep")
 
+		local ended3 = false
+		eventsModule.ConnectRemoteFinishCutscene(function()
+			ended3 = true
+		end)
+
+		while not ended3 do
+			task.wait()
+		end
+
+		local subGui = require(script.Parent.SubliminalGuiHandler)
+		subGui.PlaySubliminalText()
+		eventsModule.FireTransitionFunction(3)
+		-- Teleport to normal house
 		coroutine.resume(endScene)
-		MapFolder:Destroy()
+		if MapFolder then
+			MapFolder:Destroy()
+		end
 	end
 
 	local function ConnectTouchEvents()
@@ -264,7 +291,6 @@ local function PlayPart4_PhoneConversation()
 
 					-- Check if all rooms have been seen
 					if #exploredRooms == 6 then
-						print("ALL ROOMS DONE")
 						EndPlayerMission()
 					end
 				end)
@@ -293,6 +319,10 @@ local function PlayPart4_PhoneConversation()
 			eventsModule.FireDialogueFunction("Introduction_ExitDoor")
 		end)
 	end
+
+	-- This makes the house's doors work
+	local IntroDoorScript = require(script.Parent.IntroDoorScript)
+	IntroDoorScript.UpdateDoors()
 end
 
 local function EndScene()
