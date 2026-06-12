@@ -237,26 +237,20 @@ local function PlayPart4_PhoneConversation()
 		-- Now run the sleeping scene
 		local e7Clone = MapFolder.Replicate["007e7"]:Clone()
 		e7Clone.Name = "Clone007e7"
-		e7Clone.Parent = MapFolder
-		task.spawn(function()
-			e7Clone.Head.face.Transparency = 0
-			e7Clone.PrimaryPart.CFrame = MapFolder.CharacterCFrame1.Value
-			task.wait(13.5)
-			e7Clone.Head.Tired.Transparency = 0
-			e7Clone.Head.face.Transparency = 1
-			e7Clone.PrimaryPart.CFrame = MapFolder.CharacterCFrame2.Value
-			eventsModule.FireSpawnClientExplosion(MapFolder.CharacterCFrame2.Value.Position)
-		end)
+		local e7StandClone = MapFolder.Replicate["007e7Stand"]:Clone()
+		e7StandClone.Name = "Clone007e7Stand"
+		e7StandClone.Parent = MapFolder
+
 		eventsModule.FireRemotePlayCutscene("IntroductionSleep")
 
-		local ended3 = false
-		eventsModule.ConnectRemoteFinishCutscene(function()
-			ended3 = true
-		end)
-
-		while not ended3 do
-			task.wait()
-		end
+		e7StandClone.PrimaryPart.CFrame = MapFolder.CharacterCFrame1.Value
+		task.wait(13.5)
+		e7Clone.Parent = MapFolder
+		e7StandClone:Destroy()
+		e7Clone.PrimaryPart.CFrame = MapFolder.CharacterCFrame2.Value
+		eventsModule.FireSpawnClientExplosion(MapFolder.CharacterCFrame2.Value.Position)
+		SoundService.SFX.sleeping:Play()
+		SoundService.SFX.sleeping.Ended:Wait()
 
 		local subGui = require(script.Parent.SubliminalGuiHandler)
 		subGui.PlaySubliminalText()

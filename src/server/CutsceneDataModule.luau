@@ -215,11 +215,11 @@ CutsceneDataModule.IntroductionSleep = {
 	CameraStartCFrame = CFrame.new(233.759, 191.773, 118.205)
 		* CFrame.fromOrientation(math.rad(-31.202), math.rad(93.207), 0),
 	AnimationKeyframes = {
-		{
-			Target = "game.ServerStorage.Assets.Security_NONE.Maps.Cutscenes.IntroductionEnterHouse.Clone007e7.HumanoidRootPart",
-			Animation = "rbxassetid://115026270646237",
-			TimePosition = 12,
-		},
+		-- {
+		-- 	Target = "game.ServerStorage.Assets.Security_NONE.Maps.Cutscenes.IntroductionEnterHouse.Clone007e7.HumanoidRootPart",
+		-- 	Animation = "rbxassetid://115026270646237",
+		-- 	TimePosition = 12,
+		-- },
 	},
 	DialogueKeyframes = {
 		{

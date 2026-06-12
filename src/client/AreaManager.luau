@@ -150,12 +150,10 @@ end
 
 local function firstPersonManager()
 	if detectPlayer(c00lhouseDetector, firstPersonCallbackIfPlayer) then
-		print("First person: c00lhouse")
 		return
 	end
 
 	if detectPlayer(caveDetector, firstPersonCallbackIfPlayer) then
-		print("First person: cave")
 		return
 	end
 
