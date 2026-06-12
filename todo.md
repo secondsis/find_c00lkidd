@@ -3,13 +3,9 @@ Adding this back in because I really don't care anymore what you think about my 
 TODO: 
 
 Figure out how to give client permission by server to: view a cutscene, view dialogue, get ending
-Need to work on making the introduction work
-
 
 Necessary Features: 
-    => INTRODUCTION / CUTSCENE REVAMP
-    - Fix camera position
-    - Put in the sleeping thingy before starting to main game
+    => CUTSCENE REVAMP
     
     1. Final Battle
         Figure out how to introduce Spectre in the battle
@@ -19,7 +15,6 @@ Necessary Features:
         Last page activated by TV prompt. Implement the TV animation I made already for this. 
     4. c00ler Ending
         You need to make it better. Revamp ending portal
-    5. Thomas Ending
     6. Mobile/PC UI Scaling
     7. Revamped Dialogue System
    

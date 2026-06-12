@@ -29,6 +29,7 @@ local endingBadges = {
 	2723694795327934, -- Balloon
 	2220788171378690, -- Sleep
 	872227141172268, -- Cola Addiction
+	2059742817073258, -- Thomas
 }
 
 local badgeToEnding = {
@@ -45,6 +46,7 @@ local badgeToEnding = {
 	[2723694795327934] = "Nile Green",
 	[2220788171378690] = "Sleep",
 	[872227141172268] = "Cola Addiction",
+	[2059742817073258] = "Thomas",
 }
 
 local secretBadges = {
@@ -115,7 +117,6 @@ end)
 -- Run from client to award badges if the client has been given the appropriate Ending attribute
 eventsModule.ConnectRemoteAwardEndingBadge(function(player: Player, endingName: string)
 	-- Player must have the correct "Ending" attribute
-
 	-- INEFFICIENT/SCUFFED There might be a better way of securely tracking this
 	if not player:GetAttribute("Ending") or player:GetAttribute("Ending") ~= endingName then
 		return
