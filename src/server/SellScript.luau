@@ -5,12 +5,11 @@ local CollectionService = game:GetService("CollectionService")
 local eventsModule = require(game:GetService("ReplicatedStorage").ServerEventsModule)
 local shopItems = require(game:GetService("ServerScriptService").Server.ShopItemsModule)
 
-local Prompts = CollectionService:GetTagged("SellPrompt")
-
 local function OnPromptTrigger(player, prompt, itemName)
 	local money = eventsModule.FireGetMoney(player)
 	local cost = shopItems[itemName]
 
+	-- ERROR: ServerScriptService.Server.SellScript:12: attempt to compare nil <= number
 	if money >= cost then
 		local result = eventsModule.FireAddItem(player, itemName)
 		if not result then

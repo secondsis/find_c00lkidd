@@ -2,7 +2,6 @@ local module = {}
 -- This handles the timer so exploiters cant cheat the time limit
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local TweenService = game:GetService("TweenService")
 local ServerStorage = game:GetService("ServerStorage")
 local Players = game:GetService("Players")
 

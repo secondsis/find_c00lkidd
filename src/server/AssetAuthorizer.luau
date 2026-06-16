@@ -1,6 +1,5 @@
 local module = {}
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local ServerStorage = game:GetService("ServerStorage")
 
 local eventsModule = require(ReplicatedStorage.ServerEventsModule)
 

@@ -2,13 +2,12 @@ local module = {}
 
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
-local TweenService = game:GetService("TweenService")
 local SoundService = game:GetService("SoundService")
 
 local player = Players.LocalPlayer
 
-local eventsModule = require(ReplicatedStorage.Modules.Client.ClientEventsModule)
-local cutsceneModule = require(ReplicatedStorage.Modules.Both.CutsceneModule)
+local eventsModule = require(script.Parent.CLIENT_EVENTS)
+local cutsceneModule = require(ReplicatedStorage.Shared.CutsceneModule)
 
 -- stop player from moving
 task.spawn(function()

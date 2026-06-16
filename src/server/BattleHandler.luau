@@ -54,8 +54,8 @@ local Vector3new = Vector3.new
 local Color3new = Color3.new
 local CFramenew = CFrame.new
 
-local eventsModule = require(ReplicatedStorage.ServerEventsModule)
-local cutsceneModule = require(ReplicatedStorage.Modules.Both.CutsceneModule)
+local eventsModule = require(script.Parent.SERVER_EVENTS)
+local cutsceneModule = require(ReplicatedStorage.Shared.CutsceneModule)
 local signalModule = require(ReplicatedStorage.SignalGetter)
 
 local evilRig = ReplicatedStorage.EvilRig
@@ -303,7 +303,7 @@ local function floorIsLavaAttack1(level: number)
 	end
 
 	local newLava = lavaPart:Clone()
-	local fractureModule = require(ServerScriptService.Server.PartFractureModule)
+	local fractureModule = require(ServerScriptService.PartFractureModule)
 
 	local platforms = {}
 
@@ -711,7 +711,7 @@ local function spikeAttack(level: number)
 	newEvilRig:Destroy()
 end
 
--- pretty hard, don't combine with others
+-- white slashes that follow the player
 local function homingProjectileAttack()
 	local newEvilRig = evilRig:Clone()
 	newEvilRig:PivotTo(workspace.BattleArena.MiddleSpawn.CFrame)
