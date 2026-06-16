@@ -1068,8 +1068,23 @@ local attackLevel = 1
 local minigameEndedEvent = signalModule.getBindableEvent("MinigameEnded")
 local bossHealthFunc = signalModule.getBindableFunction("GetBossHealth")
 local bossDeathEvent = signalModule.getBindableEvent("BossDeath")
+local battleReadyEvent: RemoteEvent = signalModule.getRemoteEvent("StartBattle")
 
-task.wait(15)
+local isReady = false
+task.spawn(function()
+	battleReadyEvent.OnServerEvent:Wait()
+	isReady = true
+end)
+local startTick = tick()
+local timeout = 600 -- 10 mins
+while not isReady do
+	task.wait()
+	if tick() - startTick > timeout then
+		break
+	end
+end
+
+task.wait(3)
 while true do
 	if attackLevel == 1 then
 		print("LEVEL ONE")
