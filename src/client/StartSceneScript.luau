@@ -110,6 +110,7 @@ local function fightIntroScene()
 	local rigClone = ReplicatedStorage.EvilRig:Clone()
 	rigClone.PrimaryPart.CFrame = ReplicatedStorage.Locations.EvilRig["1"].Value
 	rigClone.Parent = workspace
+
 	local animator: Animator = rigClone.Humanoid.Animator
 
 	local RigIdleAnimation = Instance.new("Animation")
@@ -118,19 +119,30 @@ local function fightIntroScene()
 	RigTalkAnimation.AnimationId = "rbxassetid://81351761128790"
 	local RigIdleAnimationTrack = animator:LoadAnimation(RigIdleAnimation)
 	local RigTalkAnimationTrack = animator:LoadAnimation(RigTalkAnimation)
+
 	RigIdleAnimationTrack:Play()
 
 	task.wait(3)
 
 	-- later make it only talk when text is actively moving
-	RigTalkAnimationTrack:Play()
-	RigIdleAnimationTrack:Stop()
+
+	local function RigAnimationCallback(isTalking: boolean)
+		if isTalking then
+			RigTalkAnimationTrack:Play()
+			RigIdleAnimationTrack:Stop()
+		else
+			RigIdleAnimationTrack:Play()
+			RigTalkAnimationTrack:Stop()
+		end
+	end
 
 	-- EVIL RIG TALKS
-	eventsModule.FireDialogueFunction("EvilRigTalk", { "enableMovementAfter_false", "enablePromptsAfter_false" })
+	eventsModule.FireDialogueFunction(
+		"EvilRigTalk",
+		{ "enableMovementAfter_false", "enablePromptsAfter_false" },
+		RigAnimationCallback
+	)
 
-	RigIdleAnimationTrack:Play()
-	RigTalkAnimationTrack:Stop()
 	---------------------------------------------------------------------------------------
 
 	cutsceneModule.tweenModelTransparency(evilRig, 1, 1)
