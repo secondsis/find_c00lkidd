@@ -17,6 +17,8 @@ task.spawn(function()
 	eventsModule.FireDisableMovementEvent(false)
 end)
 
+player.PlayerGui:WaitForChild("TransitionGui").Backup.Visible = true
+
 -- Wait for player to finish loading
 do
 	local loaded = player:GetAttribute("Loaded")
@@ -33,7 +35,14 @@ local arenaCenter = workspace.BattleArena:WaitForChild("Center")
 
 local function fightIntroScene()
 	---------------------------------------------------------------------------------------
-	local portal = workspace:WaitForChild("PortalEffect")
+
+	-- Clear scene with black screen
+	eventsModule.FireSmoothTransitionFunction(3)
+	cutsceneModule.fadeOutPlayer(player, 0)
+
+	local IntroFolder = ReplicatedStorage.IntroFolder
+
+	local portal = IntroFolder:WaitForChild("PortalEffect")
 	-- Player falls into world
 	while not player.Character do
 		task.wait()
@@ -49,12 +58,32 @@ local function fightIntroScene()
 	playerClone.HumanoidRootPart.CFrame = portal.CFrame
 	playerClone.HumanoidRootPart.Anchored = true
 
+	-- Scene preperations done
+
+	task.wait(1.5)
+	player.PlayerGui.TransitionGui.Backup.Visible = false
+
+	-- Set Camera Position
+	local cam = workspace.CurrentCamera
+	local oldCamType = cam.CameraType
+	cam.CameraType = Enum.CameraType.Scriptable
+	workspace.CurrentCamera:PivotTo(
+		CFrame.new(-19.833, 11.618, -0.481) * CFrame.fromOrientation(math.rad(-15.602), math.rad(-90.199), 0)
+	)
+
 	-- Open up Portal
 
-	local portalScript = require(portal:WaitForChild("PortalController"))
+	local current_portal = portal:Clone()
+	current_portal.Parent = workspace
+
+	SoundService.SFX.portal_open:Play()
+
+	local portalScript = require(current_portal:WaitForChild("PortalController"))
 	portalScript.TweenPortalSize(0, 4, 2)
 	portalScript.TogglePortal(true)
 	task.wait(2)
+
+	cutsceneModule.setModelTransparency(playerClone, 0)
 
 	-- Player falls out of portal
 	playerClone.Parent = workspace
@@ -67,46 +96,27 @@ local function fightIntroScene()
 		Value = 1,
 	}):Play()
 
-	TweenService:Create(playerClone.PrimaryPart, TweenInfo.new(5), {
-		CFrame = CFrame.new(0.627, 1.804, 0.424) * CFrame.Angles(math.rad(-90), math.rad(-180), 0),
-	}):Play()
+	local playerFallTrack = cutsceneModule.GetAnimationTrackForBody(playerClone, "76975347644327")
+	playerFallTrack:Play()
 
-	--[[ -- Teleport Evil Rig with Portal
-	-- do
-	-- 	local portalPart = workspace:WaitForChild("PortalEffect")
-	-- 	local basePortalEffects = {
-	-- 		portalPart.Main.Portal,
-	-- 		portalPart.Main.PortalOutline,
-	-- 		portalPart.Main.PortalSuck,
-	-- 	}
-	-- 	local portalExitEffects = {
-	-- 		portalPart.Main.PortalExitOutline,
-	-- 		portalPart.Main.PortalInteractionLines,
-	-- 	}
+	local playerGetupTrack = cutsceneModule.GetAnimationTrackForBody(playerClone, "107546687685215")
 
-	-- 	-- PORTAL SOUNDS HERE
-	-- 	for _, fx in basePortalEffects do
-	-- 		if fx:IsA("ParticleEmitter") then
-	-- 			fx.Enabled = true
-	-- 		end
-	-- 	end
+	playerFallTrack.Stopped:Wait()
 
-	-- 	task.wait(5)
+	playerGetupTrack:Play()
+	playerGetupTrack.Stopped:Connect(function()
+		playerGetupTrack:AdjustSpeed(0)
+		playerGetupTrack.TimePosition = playerGetupTrack.Length
+	end)
+	playerGetupTrack.Stopped:Wait()
 
-	-- 	-- PORTAL EXIT SOUND HERE
-	-- 	for _, fx in portalExitEffects do
-	-- 		if fx:IsA("ParticleEmitter") then
-	-- 			fx.Enabled = true
-	-- 		end
-	-- 	end
+	eventsModule.FireSmoothTransitionFunction(3)
+	SoundService.SFX["splat.wav"]:Play()
+	playerClone:Destroy()
+	cutsceneModule.fadeInPlayer(player, 1)
+	cam.CameraType = oldCamType
 
-	-- 	evilRig.Parent = workspace
-
-	-- 	task.wait(3)
-
-	-- 	portalPart:Destroy()
-	-- end]]
-
+	-- Rig Appears
 	local rigClone = ReplicatedStorage.EvilRig:Clone()
 	rigClone.PrimaryPart.CFrame = ReplicatedStorage.Locations.EvilRig["1"].Value
 	rigClone.Parent = workspace
@@ -123,8 +133,6 @@ local function fightIntroScene()
 	RigIdleAnimationTrack:Play()
 
 	task.wait(3)
-
-	-- later make it only talk when text is actively moving
 
 	local function RigAnimationCallback(isTalking: boolean)
 		if isTalking then
@@ -143,8 +151,10 @@ local function fightIntroScene()
 		RigAnimationCallback
 	)
 
+	-- After the talk
 	---------------------------------------------------------------------------------------
 
+	-- Remove Rig
 	cutsceneModule.tweenModelTransparency(evilRig, 1, 1)
 
 	-- RAISE THE ARENA UP

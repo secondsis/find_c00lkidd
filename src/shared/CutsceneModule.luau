@@ -38,7 +38,7 @@ function cutsceneModule.fadeOutPlayer(player, seconds: number)
 	if not char then
 		return
 	end
-	local eventsModule = player.PlayerScripts:WaitForChild("Client"):WaitForChild("CLIENT_EVENTS")
+	local eventsModule = require(player.PlayerScripts:WaitForChild("Client"):WaitForChild("CLIENT_EVENTS"))
 	eventsModule.FireDisableMovementEvent(false)
 
 	for _, v in pairs(char:GetDescendants()) do
@@ -57,7 +57,7 @@ function cutsceneModule.fadeInPlayer(player, seconds: number)
 	if not char then
 		return
 	end
-	local eventsModule = player.PlayerScripts:WaitForChild("Client"):WaitForChild("CLIENT_EVENTS")
+	local eventsModule = require(player.PlayerScripts:WaitForChild("Client"):WaitForChild("CLIENT_EVENTS"))
 	eventsModule.FireDisableMovementEvent(true)
 	for _, v in pairs(char:GetDescendants()) do
 		if v.Name == "Collision" then
@@ -73,7 +73,7 @@ function cutsceneModule.changeCamCFrame(player, newCFrame: CFrame)
 	local cam = workspace.CurrentCamera
 	cam.CameraType = Enum.CameraType.Scriptable
 	cam.CFrame = newCFrame
-	local eventsModule = player.PlayerScripts:WaitForChild("Client"):WaitForChild("CLIENT_EVENTS")
+	local eventsModule = require(player.PlayerScripts:WaitForChild("Client"):WaitForChild("CLIENT_EVENTS"))
 	eventsModule.FireDisableMovementEvent(false)
 end
 
@@ -88,13 +88,13 @@ function cutsceneModule.resetCamOriginal(player)
 	if humanoid then
 		cam.CameraSubject = humanoid
 		cam.Focus = char.Head.CFrame
-		local eventsModule = player.PlayerScripts:WaitForChild("Client"):WaitForChild("CLIENT_EVENTS")
+		local eventsModule = require(player.PlayerScripts:WaitForChild("Client"):WaitForChild("CLIENT_EVENTS"))
 		eventsModule.FireDisableMovementEvent(true)
 	end
 end
 
 function cutsceneModule.resetCam(player)
-	local eventsModule = player.PlayerScripts:WaitForChild("Client"):WaitForChild("CLIENT_EVENTS")
+	local eventsModule = require(player.PlayerScripts:WaitForChild("Client"):WaitForChild("CLIENT_EVENTS"))
 	eventsModule.FireDisableMovementEvent(true)
 end
 
@@ -169,6 +169,49 @@ function cutsceneModule.resetCamZoom(duration: number)
 	--vfxModule.startFOVRun()
 	duration = duration or 0
 	cutsceneModule.zoomCam(originalCamFOV, duration)
+end
+
+function cutsceneModule.GetAnimationTrackForBody(model: Model, animationId: string): AnimationTrack
+	local animation = Instance.new("Animation")
+	animation.AnimationId = "rbxassetid://" .. animationId
+
+	local humanoid = model:FindFirstChildOfClass("Humanoid")
+	local animator
+	if humanoid then
+		animator = humanoid:FindFirstChildOfClass("Animator")
+		if not animator then
+			animator = Instance.new("Animator")
+			animator.Parent = humanoid
+		end
+	else
+		local animationController = model:FindFirstChildOfClass("AnimationController")
+		if not animationController then
+			animationController = Instance.new("AnimationController")
+			animationController.Parent = model
+		end
+
+		animator = animationController:FindFirstChildOfClass("Animator")
+		if not animator then
+			animator = Instance.new("Animator")
+			animator.Parent = animationController
+		end
+	end
+
+	if not animator then
+		return nil
+	end
+
+	local animationTrack = nil
+
+	local succ, err = pcall(function(...)
+		animationTrack = animator:LoadAnimation(animation)
+	end)
+
+	if err then
+		warn(err)
+	end
+
+	return animationTrack
 end
 
 return cutsceneModule

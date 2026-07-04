@@ -251,7 +251,7 @@ local function geyserAttack(level: number)
 			newGeyser.warning:Play()
 			task.wait(0.1)
 		end
-		newGeyser.Transparency = 1
+		newGeyser.Transparency = 0
 
 		CollectionService:AddTag(newGeyser.Hitbox, "Killbrick")
 		addKillbrickConnection(newGeyser.Hitbox)
@@ -465,7 +465,9 @@ local function floorIsLavaAttack2()
 	end
 end
 
-local function slashesAttack()
+local function slashesAttack(pDuration: number)
+	local Duration = pDuration or 15
+
 	local newEvilRig = evilRig:Clone()
 	newEvilRig:PivotTo(workspace.BattleArena.MiddleSpawn.CFrame)
 	newEvilRig.Parent = workspace
@@ -513,7 +515,7 @@ local function slashesAttack()
 	local startTick = tick()
 
 	-- make evil rig shoot a slash every few secs
-	while startTick + 30 > tick() do
+	while startTick + Duration > tick() do
 		task.wait(1)
 		local newSlash = slash:Clone()
 		newSlash:PivotTo(newEvilRig.PrimaryPart.CFrame * CFrame.Angles(0, math.rad(90), 0))

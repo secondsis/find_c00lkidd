@@ -26,8 +26,8 @@ module.characterStyles = {
 		Box = "e7Box",
 	},
 	["Evil Rig"] = {
-		Sfx = "asgore",
-		Box = "CashierBox",
+		Sfx = "earthbound",
+		Box = "DefaultBox",
 	},
 }
 
