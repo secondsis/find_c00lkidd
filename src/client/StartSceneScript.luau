@@ -48,14 +48,16 @@ local function fightIntroScene()
 		task.wait()
 	end
 	player.Character.Archivable = true
+	player.Character:PivotTo(workspace.TPPart_Spawn.CFrame)
 	local playerClone: Model = player.Character:Clone()
+	playerClone.Name = "PlayerClone"
 	local hum: Humanoid = playerClone:WaitForChild("Humanoid")
 	hum.DisplayDistanceType = Enum.HumanoidDisplayDistanceType.None
 
 	local ScaleValue = Instance.new("NumberValue")
 	ScaleValue.Value = 0.05
 	playerClone:ScaleTo(0.05)
-	playerClone.HumanoidRootPart.CFrame = portal.CFrame
+	playerClone.HumanoidRootPart.CFrame = portal.CFrame + Vector3.new(0, 0.5, 0)
 	playerClone.HumanoidRootPart.Anchored = true
 
 	-- Scene preperations done
@@ -92,7 +94,7 @@ local function fightIntroScene()
 		playerClone:ScaleTo(val)
 	end)
 
-	TweenService:Create(ScaleValue, TweenInfo.new(5), {
+	TweenService:Create(ScaleValue, TweenInfo.new(0.5), {
 		Value = 1,
 	}):Play()
 
@@ -101,14 +103,20 @@ local function fightIntroScene()
 
 	local playerGetupTrack = cutsceneModule.GetAnimationTrackForBody(playerClone, "107546687685215")
 
+	task.wait(playerFallTrack.Length - 0.1)
+
+	SoundService.cardboard_box_impact_soft1:Play()
 	playerFallTrack.Stopped:Wait()
 
-	playerGetupTrack:Play()
-	playerGetupTrack.Stopped:Connect(function()
-		playerGetupTrack:AdjustSpeed(0)
-		playerGetupTrack.TimePosition = playerGetupTrack.Length
+	task.spawn(function()
+		portalScript.TweenPortalSize(4, 0, 2)
+		task.wait(2)
+		portalScript.TogglePortal(false)
 	end)
-	playerGetupTrack.Stopped:Wait()
+
+	playerGetupTrack:Play()
+	task.wait(playerGetupTrack.Length - 0.1)
+	playerGetupTrack:AdjustSpeed(0)
 
 	eventsModule.FireSmoothTransitionFunction(3)
 	SoundService.SFX["splat.wav"]:Play()
@@ -119,7 +127,6 @@ local function fightIntroScene()
 	-- Rig Appears
 	local rigClone = ReplicatedStorage.EvilRig:Clone()
 	rigClone.PrimaryPart.CFrame = ReplicatedStorage.Locations.EvilRig["1"].Value
-	rigClone.Parent = workspace
 
 	local animator: Animator = rigClone.Humanoid.Animator
 
@@ -130,7 +137,27 @@ local function fightIntroScene()
 	local RigIdleAnimationTrack = animator:LoadAnimation(RigIdleAnimation)
 	local RigTalkAnimationTrack = animator:LoadAnimation(RigTalkAnimation)
 
+	-- dude i have NO idea why this fixes the issue with the animation not working
+	-- roblox is so weird
+	RigTalkAnimationTrack:Play()
+	RigTalkAnimationTrack:Stop()
+
 	RigIdleAnimationTrack:Play()
+
+	task.wait(1.5)
+
+	-- Teleport Effect
+
+	task.spawn(function()
+		rigClone.HumanoidRootPart.StarParticleAttachment.star.Enabled = true
+		task.wait(1)
+		rigClone.HumanoidRootPart.StarParticleAttachment.star.Enabled = false
+	end)
+	SoundService.SFX.magic_swoosh:Play()
+	cutsceneModule.setModelTransparency(rigClone, 1)
+
+	rigClone.Parent = workspace
+	cutsceneModule.tweenModelTransparency(rigClone, 0, 5)
 
 	task.wait(3)
 

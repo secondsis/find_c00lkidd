@@ -26,7 +26,7 @@ function cutsceneModule.tweenModelTransparency(
 		if exclusions and table.find(exclusions, v.Name) then
 			continue
 		end
-		if v:IsA("BasePart") or v:IsA("Decal") then
+		if (v:IsA("BasePart") or v:IsA("Decal")) and v.Name ~= "HumanoidRootPart" then
 			tweenService:Create(v, TweenInfo.new(seconds), { Transparency = transparency }):Play()
 		end
 	end
@@ -39,7 +39,6 @@ function cutsceneModule.fadeOutPlayer(player, seconds: number)
 		return
 	end
 	local eventsModule = require(player.PlayerScripts:WaitForChild("Client"):WaitForChild("CLIENT_EVENTS"))
-	eventsModule.FireDisableMovementEvent(false)
 
 	for _, v in pairs(char:GetDescendants()) do
 		if v.Name == "Collision" then
@@ -58,7 +57,6 @@ function cutsceneModule.fadeInPlayer(player, seconds: number)
 		return
 	end
 	local eventsModule = require(player.PlayerScripts:WaitForChild("Client"):WaitForChild("CLIENT_EVENTS"))
-	eventsModule.FireDisableMovementEvent(true)
 	for _, v in pairs(char:GetDescendants()) do
 		if v.Name == "Collision" then
 			continue
@@ -74,7 +72,6 @@ function cutsceneModule.changeCamCFrame(player, newCFrame: CFrame)
 	cam.CameraType = Enum.CameraType.Scriptable
 	cam.CFrame = newCFrame
 	local eventsModule = require(player.PlayerScripts:WaitForChild("Client"):WaitForChild("CLIENT_EVENTS"))
-	eventsModule.FireDisableMovementEvent(false)
 end
 
 function cutsceneModule.resetCamOriginal(player)
@@ -88,14 +85,7 @@ function cutsceneModule.resetCamOriginal(player)
 	if humanoid then
 		cam.CameraSubject = humanoid
 		cam.Focus = char.Head.CFrame
-		local eventsModule = require(player.PlayerScripts:WaitForChild("Client"):WaitForChild("CLIENT_EVENTS"))
-		eventsModule.FireDisableMovementEvent(true)
 	end
-end
-
-function cutsceneModule.resetCam(player)
-	local eventsModule = require(player.PlayerScripts:WaitForChild("Client"):WaitForChild("CLIENT_EVENTS"))
-	eventsModule.FireDisableMovementEvent(true)
 end
 
 --[[ 

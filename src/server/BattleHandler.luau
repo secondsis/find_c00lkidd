@@ -73,6 +73,10 @@ Players.PlayerRemoving:Connect(function(player)
 	table.remove(debounceMap, table.find(debounceMap, player))
 end)
 
+eventsModule.ConnectRemotePlayerDeath(function(player)
+	print("Got signal player died!")
+end)
+
 local function damagePlayer(player: Player, part)
 	local char = player.Character
 	if not char then

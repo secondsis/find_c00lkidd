@@ -43,7 +43,24 @@ module.EvilRigTalk = {
 			"That's right.",
 			"You.",
 			"Everything that's happening is because of you. <b>All of you</b>.",
-			"I may be a useless default rig, but that doesn't stop me from slowing you down.",
+		},
+	},
+	{
+		Name = "007e7",
+		Text = {
+			"who tf ru",
+		},
+	},
+	{
+		Name = "Evil Rig",
+		Text = {
+			"I have [THEM], but I would advise to turn back from this path.",
+		},
+	},
+	{
+		Name = "007e7",
+		Text = {
+			"whatever man",
 		},
 	},
 }
