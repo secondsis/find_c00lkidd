@@ -3,7 +3,11 @@ local Players = game:GetService("Players")
 
 local playerHealthMap = {}
 
+Players.CharacterAutoLoads = false
+
 Players.PlayerAdded:Connect(function(player)
+	player:LoadCharacterAsync()
+
 	playerHealthMap[player] = 100
 	player.CharacterAdded:Connect(function(char)
 		local hum: Humanoid = char:WaitForChild("Humanoid")

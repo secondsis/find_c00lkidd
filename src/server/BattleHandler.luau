@@ -54,6 +54,7 @@ local Vector3new = Vector3.new
 local Color3new = Color3.new
 local CFramenew = CFrame.new
 
+local BossHealthHandler = require(script.Parent.BossHealthHandler)
 local eventsModule = require(script.Parent.SERVER_EVENTS)
 local cutsceneModule = require(ReplicatedStorage.Shared.CutsceneModule)
 local signalModule = require(ReplicatedStorage.SignalGetter)
@@ -73,16 +74,64 @@ Players.PlayerRemoving:Connect(function(player)
 	table.remove(debounceMap, table.find(debounceMap, player))
 end)
 
+local function TeleportPlayerToArena(player: Player)
+	local char = player.Character
+	if not char then
+		return
+	end
+	local _, playerSize = char:GetBoundingBox()
+	char:PivotTo(CFrame.new(workspace.BattleArena.ArenaTPPart.Position + Vector3.new(0, playerSize.Y / 2, 0)))
+end
+
+local function ResetPlayerHP(player: Player)
+	local char = player.Character
+	if not char then
+		return
+	end
+
+	local humanoid = char:FindFirstChildOfClass("Humanoid")
+	if not humanoid then
+		return
+	end
+	humanoid.Health = humanoid.MaxHealth
+end
+
+-- Will be called when the player reaches 0 hp and presses the contibue btn
+local function RestartBattle(player: Player)
+	eventsModule.FireRemoteSmoothTransitionFunction(player, 4)
+	-- Reset player HP
+	ResetPlayerHP(player)
+	-- And Boss HP
+	-- (BossHealthHandler listens to the event on its own)
+	-- Teleport them to arena
+	TeleportPlayerToArena(player)
+end
+
 eventsModule.ConnectRemotePlayerDeath(function(player)
 	print("Got signal player died!")
+	-- camera cframe {3.665, -84.16, -161.031}, {-4.5, 89.817, 0}
+	--just keep the death box always there
+	-- When player dies, teleport their camera to the death box (if it doesn't load, then youll just have to put a playerbox too for it)
+	-- Upon clicking the continue btn, player will spawn immediately back into the arena. Evil Rig may comment on this sometimes.
+
+	cutsceneModule.changeCamCFrame(
+		player,
+		CFramenew(3.665, -84.16, -161.031) * CFrame.fromOrientation(math.rad(-4.5), math.rad(90), 0)
+	)
+
+	-- Fire it back for the client to handle the gui stuff
+	eventsModule.FireRemotePlayerDeath(player)
 end)
+
+eventsModule.ConnectRemoteRestartBattle(RestartBattle)
 
 local function damagePlayer(player: Player, part)
 	local char = player.Character
 	if not char then
 		return
 	end
-	local humanoid: Humanoid = char:FindFirstChild("Humanoid")
+	--prob couldve done findfirstoftype or whatevs (ok did it)
+	local humanoid: Humanoid = char:FindFirstChildOfClass("Humanoid")
 	if not humanoid then
 		return
 	end
@@ -1070,72 +1119,77 @@ local function removeBossVulnerable()
 	end
 end
 
-local attackLevel = 1
-local minigameEndedEvent = signalModule.getBindableEvent("MinigameEnded")
-local bossHealthFunc = signalModule.getBindableFunction("GetBossHealth")
-local bossDeathEvent = signalModule.getBindableEvent("BossDeath")
-local battleReadyEvent: RemoteEvent = signalModule.getRemoteEvent("StartBattle")
+local function HANDLE_BATTLE()
+	local attackLevel = 1
+	local minigameEndedEvent = signalModule.getBindableEvent("MinigameEnded")
+	local bossHealthFunc = signalModule.getBindableFunction("GetBossHealth")
+	local bossDeathEvent = signalModule.getBindableEvent("BossDeath")
+	local battleReadyEvent: RemoteEvent = signalModule.getRemoteEvent("StartBattle")
 
-local isReady = false
-task.spawn(function()
-	battleReadyEvent.OnServerEvent:Wait()
-	isReady = true
-end)
-local startTick = tick()
-local timeout = 600 -- 10 mins
-while not isReady do
-	task.wait()
-	if tick() - startTick > timeout then
-		break
-	end
-end
-
-task.wait(3)
-while true do
-	if attackLevel == 1 then
-		print("LEVEL ONE")
-		levelOneAttacks()
-	elseif attackLevel == 2 then
-		print("LEVEL TWO")
-		levelTwoAttacks()
-	else
-		print("LEVEL THREE")
-		levelThreeAttacks()
-	end
-	task.wait(1)
-	local hasTrophy = eventsModule.FireGetItem(Players:GetPlayers()[1])
-	if not hasTrophy then
-		fireMinigame()
-		-- wait for minigame to end
-		minigameEndedEvent.Event:Wait()
-		task.wait(2)
+	local isReady = false
+	task.spawn(function()
+		battleReadyEvent.OnServerEvent:Wait()
+		isReady = true
+	end)
+	local startTick = tick()
+	local timeout = 600 -- 10 mins
+	while not isReady do
+		task.wait()
+		if tick() - startTick > timeout then
+			break
+		end
 	end
 
-	spawnBossVulnerable()
-	local bossDied = false
-	local bossDeathCxn = nil
-	bossDeathCxn = bossDeathEvent.Event:Connect(function()
-		print("BOSS DIED. BATTLE END.")
-		bossDied = true
+	task.wait(3)
+	while true do
+		if attackLevel == 1 then
+			print("LEVEL ONE")
+			levelOneAttacks()
+		elseif attackLevel == 2 then
+			print("LEVEL TWO")
+			levelTwoAttacks()
+		else
+			print("LEVEL THREE")
+			levelThreeAttacks()
+		end
+		task.wait(1)
+		local hasTrophy = eventsModule.FireGetItem(Players:GetPlayers()[1])
+		if not hasTrophy then
+			fireMinigame()
+			-- wait for minigame to end
+			minigameEndedEvent.Event:Wait()
+			task.wait(2)
+		end
+
+		spawnBossVulnerable()
+		local bossDied = false
+		local bossDeathCxn = nil
+		bossDeathCxn = bossDeathEvent.Event:Connect(function()
+			print("BOSS DIED. BATTLE END.")
+			bossDied = true
+			bossDeathCxn:Disconnect()
+			bossDeathCxn = nil
+		end)
+
+		task.wait(10)
+		if bossDied then
+			break
+		end
+		removeBossVulnerable()
 		bossDeathCxn:Disconnect()
 		bossDeathCxn = nil
-	end)
 
-	task.wait(10)
-	if bossDied then
-		break
-	end
-	removeBossVulnerable()
-	bossDeathCxn:Disconnect()
-	bossDeathCxn = nil
-
-	local bossHP = bossHealthFunc:Invoke()
-	if bossHP >= 66 then
-		attackLevel = 1
-	elseif bossHP >= 33 then
-		attackLevel = 2
-	else
-		attackLevel = 3
+		local bossHP = bossHealthFunc:Invoke()
+		if bossHP >= 66 then
+			attackLevel = 1
+		elseif bossHP >= 33 then
+			attackLevel = 2
+		else
+			attackLevel = 3
+		end
 	end
 end
+
+HANDLE_BATTLE()
+
 return module

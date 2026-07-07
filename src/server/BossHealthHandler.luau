@@ -11,7 +11,9 @@ local damageBossEvent = signalModule.getBindableEvent("DamageBoss")
 local getBossHealthFunc = signalModule.getBindableFunction("GetBossHealth")
 local bossDeathEvent = signalModule.getBindableEvent("BossDeath")
 
-local BOSS_HEALTH = 100
+local MAX_BOSS_HEALTH = 100
+
+local BOSS_HEALTH = MAX_BOSS_HEALTH
 
 local NUM_ENDINGS = 13
 
@@ -41,4 +43,13 @@ damageBossEvent.Event:Connect(damageBoss)
 getBossHealthFunc.OnInvoke = function()
 	return BOSS_HEALTH
 end
+
+local function ResetBossHealth()
+	BOSS_HEALTH = MAX_BOSS_HEALTH
+	updateBossHealthEvent:FireAllClients(BOSS_HEALTH)
+end
+
+local eventsModule = require(script.Parent.SERVER_EVENTS)
+eventsModule.ConnectRemoteRestartBattle(ResetBossHealth)
+
 return module
