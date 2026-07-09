@@ -18,8 +18,16 @@ local function toggleDeathGui(enabled: boolean)
 	deathGui.Enabled = enabled
 end
 
-eventsModule.ConnectRemotePlayerDeath(function()
+eventsModule.ConnectPlayerDeath(function()
+	player.PlayerGui.TransitionGui.Backup.Visible = true
+	eventsModule.FireSmoothTransitionFunction(3)
+	cutsceneModule.changeCamCFrame(
+		player,
+		CFrame.new(3.665, -84.16, -161.031) * CFrame.fromOrientation(math.rad(-4.5), math.rad(90), 0)
+	)
 	toggleDeathGui(true)
+	task.wait(1.5)
+	player.PlayerGui.TransitionGui.Backup.Visible = false
 end)
 
 continueButton.Activated:Connect(function(a0: InputObject, a1: number)

@@ -2,6 +2,9 @@ Adding this back in because I really don't care anymore what you think about my 
 
 TODO: 
 
+SWAP OUT ALL TELEPORT PASSWORDS FOR NEW ONES BECAUSE THE STUFF IS ON GITHUB...
+test whether the get up button works
+
 Figure out how to give client permission by server to: view a cutscene, view dialogue, get ending
 
 Necessary Features: 

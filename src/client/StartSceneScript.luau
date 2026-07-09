@@ -3,6 +3,7 @@ local module = {}
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Players = game:GetService("Players")
 local SoundService = game:GetService("SoundService")
+local TeleportService = game:GetService("TeleportService")
 local TweenService = game:GetService("TweenService")
 
 local player = Players.LocalPlayer
@@ -28,6 +29,13 @@ do
 	end
 	eventsModule.FireDisableMovementEvent(false)
 end
+local quickStart = false
+local tpData = TeleportService:GetLocalPlayerTeleportData()
+if tpData then
+	if tpData["QuickStart"] then
+		quickStart = true
+	end
+end
 
 task.wait(1)
 local evilRig = ReplicatedStorage.EvilRig:Clone()
@@ -47,6 +55,7 @@ local function fightIntroScene()
 	while not player.Character do
 		task.wait()
 	end
+
 	player.Character.Archivable = true
 	player.Character:PivotTo(workspace.TPPart_Spawn.CFrame)
 	local playerClone: Model = player.Character:Clone()
@@ -115,7 +124,7 @@ local function fightIntroScene()
 	end)
 
 	playerGetupTrack:Play()
-	task.wait(playerGetupTrack.Length - 0.1)
+	task.wait(playerGetupTrack.Length - 0.05)
 	playerGetupTrack:AdjustSpeed(0)
 
 	eventsModule.FireSmoothTransitionFunction(3)
@@ -172,11 +181,9 @@ local function fightIntroScene()
 	end
 
 	-- EVIL RIG TALKS
-	eventsModule.FireDialogueFunction(
-		"EvilRigTalk",
-		{ "enableMovementAfter_false", "enablePromptsAfter_false" },
-		RigAnimationCallback
-	)
+	eventsModule.FireDialogueFunction("EvilRigTalk", { "enableMovementAfter_false", "enablePromptsAfter_false" }, {
+		{ Name = "Evil Rig", Callback = RigAnimationCallback },
+	})
 
 	-- After the talk
 	---------------------------------------------------------------------------------------
@@ -197,12 +204,47 @@ local function fightIntroScene()
 	-- Start battle
 	eventsModule.FireEnterBattleGui()
 	local startBattle = SignalGetter.getRemoteEvent("StartBattle")
+	eventsModule.FireToggleDash(true)
 	startBattle:FireServer()
 	SoundService["ERROR 264"]:Play()
 	eventsModule.FireDisableMovementEvent(true)
 	eventsModule.FireSetCanSprintEvent(true)
 end
 
-fightIntroScene()
+local function quickStartFight()
+	-- Clear scene with black screen
+	eventsModule.FireSmoothTransitionFunction(3)
+
+	task.wait(1.5)
+	player.PlayerGui.TransitionGui.Backup.Visible = false
+
+	-- After the talk
+	---------------------------------------------------------------------------------------
+
+	-- RAISE THE ARENA UP
+	eventsModule.FireRaiseArena(true)
+
+	task.wait(1.5)
+	-- Start battle
+	eventsModule.FireEnterBattleGui()
+	local startBattle = SignalGetter.getRemoteEvent("StartBattle")
+	eventsModule.FireToggleDash(true)
+	startBattle:FireServer()
+	SoundService["ERROR 264"]:Play()
+	eventsModule.FireDisableMovementEvent(true)
+	eventsModule.FireSetCanSprintEvent(true)
+end
+
+local function StopMusic()
+	SoundService["ERROR 264"]:Stop()
+end
+
+eventsModule.ConnectPlayerDeath(StopMusic)
+
+if not quickStart then
+	fightIntroScene()
+else
+	quickStartFight()
+end
 
 return module

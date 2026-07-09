@@ -26,12 +26,12 @@ local ServerScriptService = game:GetService("ServerScriptService")
 	
 	
 	
-	descriptions
+	descriptions (yes this is from gpt... im sry guys..)
 	Homing Projectile – The boss fires slow-moving orbs that track the nearest player. Players must outrun them or lead them into walls to destroy them.
 
 Charge Attack – The boss locks onto a player, gives a short wind-up (audio/visual cue), and dashes in a straight line. Leaves a damaging trail or shockwave on impact.
 
-Fake Safe Zones – Similar to your “floor is lava” mechanic, but sometimes the highlighted safe zone is a trap and the real safe zone appears a moment later. Forces quick recognition instead of blind reaction.
+Fake Safe Zones – Similar to a “floor is lava” mechanic, but sometimes the highlighted safe zone is a trap and the real safe zone appears a moment later. Forces quick recognition instead of blind reaction.
 
 Sweeper + Geyser – While sweeping blades move across the map, random geyser circles appear to block safe routes.
 
@@ -65,7 +65,12 @@ local resumeBattleEvent = ReplicatedStorage.RemoteEvents.ResumeBattle
 --[player][part] = lastTick
 local debounceMap = {}
 local killbrickConnections = {}
-local battle_cancelled = false
+-- local battle_cancelled = false
+local quickStart = false
+
+eventsModule.ConnectSetBattleQuickStart(function()
+	quickStart = true
+end)
 
 Players.PlayerAdded:Connect(function(player)
 	debounceMap[player] = {}
@@ -99,45 +104,52 @@ end
 
 -- Will be called when the player reaches 0 hp and presses the contibue btn
 local function RestartBattle(player: Player)
-	eventsModule.FireRemoteSmoothTransitionFunction(player, 4)
-	-- Reset player HP
-	ResetPlayerHP(player)
-	-- And Boss HP
-	-- (BossHealthHandler listens to the event on its own)
-	-- Teleport them to arena
-	TeleportPlayerToArena(player)
+	eventsModule.FireRemoteSmoothTransitionFunction(player, 999)
+	-- -- Reset player HP
+	-- ResetPlayerHP(player)
+	-- -- And Boss HP
+	-- -- (BossHealthHandler listens to the event on its own)
+	-- -- Teleport them to arena
+	-- TeleportPlayerToArena(player)
+
+	-- Just have the player rejoin
+	eventsModule.FireTeleportToPlace(player, 78907491464330, {
+		["Password"] = "Brombus_" .. tostring(player.UserId % 236 * 100),
+		["QuickStart"] = true,
+	})
 end
 
-eventsModule.ConnectRemotePlayerDeath(function(player)
-	print("Got signal player died!")
-	-- camera cframe {3.665, -84.16, -161.031}, {-4.5, 89.817, 0}
-	--just keep the death box always there
-	-- When player dies, teleport their camera to the death box (if it doesn't load, then youll just have to put a playerbox too for it)
-	-- Upon clicking the continue btn, player will spawn immediately back into the arena. Evil Rig may comment on this sometimes.
+-- holy circus hot potato
+-- eventsModule.ConnectRemotePlayerDeath(function(player)
+-- 	print("Got signal player died!")
+-- 	-- camera cframe {3.665, -84.16, -161.031}, {-4.5, 89.817, 0}
+-- 	--just keep the death box always there
+-- 	-- When player dies, teleport their camera to the death box (if it doesn't load, then youll just have to put a playerbox too for it)
+-- 	-- Upon clicking the continue btn, player will spawn immediately back into the arena. Evil Rig may comment on this sometimes.
 
-	battle_cancelled = true
+-- 	-- battle_cancelled = true
 
-	cutsceneModule.changeCamCFrame(
-		player,
-		CFramenew(3.665, -84.16, -161.031) * CFrame.fromOrientation(math.rad(-4.5), math.rad(90), 0)
-	)
+-- 	-- cutsceneModule.changeCamCFrame(
+-- 	-- 	player,
+-- 	-- 	CFramenew(3.665, -84.16, -161.031) * CFrame.fromOrientation(math.rad(-4.5), math.rad(90), 0)
+-- 	-- )
 
-	-- Fire it back for the client to handle the gui stuff
-	eventsModule.FireRemotePlayerDeath(player)
-end)
+-- 	-- Fire it back for the client to handle the gui stuff
+-- 	eventsModule.FireRemotePlayerDeath(player)
+-- end)
 
 eventsModule.ConnectRemoteRestartBattle(RestartBattle)
 
-local function battleWait(seconds: number): boolean
-	local startTick = tick()
-	while startTick + seconds > tick() do
-		if battle_cancelled then
-			return true
-		end
-		task.wait()
-	end
-	return false
-end
+-- local function battleWait(seconds: number): boolean
+-- 	local startTick = tick()
+-- 	while startTick + seconds > tick() do
+-- 		if battle_cancelled then
+-- 			return true
+-- 		end
+-- 		task.wait()
+-- 	end
+-- 	return false
+-- end
 
 local function damagePlayer(player: Player, part)
 	local char = player.Character
@@ -231,9 +243,10 @@ local function rotatorAttack()
 		newRotator.Rotator.CFrame *= CFrameAngles(math.pi / 4 * delta, 0, 0)
 	end)
 
-	if battleWait(9.5) then
-		return true
-	end
+	task.wait(9.5)
+	-- if battleWait(9.5) then
+	-- 	return true
+	-- end
 
 	removeKillbrickConnection(newRotator.Blade)
 	TweenService:Create(newRotator.Rotator, TweenInfonew(1), {
@@ -242,9 +255,10 @@ local function rotatorAttack()
 	TweenService:Create(newRotator.Blade, TweenInfonew(1), {
 		Transparency = 1,
 	}):Play()
-	if battleWait(1) then
-		return true
-	end
+	task.wait(1)
+	-- if battleWait(1) then
+	-- 	return true
+	-- end
 
 	cxn:Disconnect()
 	newRotator:Destroy()
@@ -287,7 +301,7 @@ local function sweeperAttack(level: number)
 			if
 				(direction[axis] > 0 and sweeperStartPos + direction[axis] * 400 < sweeper.Position[axis])
 				or (direction[axis] < 0 and sweeperStartPos + direction[axis] * 400 > sweeper.Position[axis])
-				or battle_cancelled
+				-- or battle_cancelled
 			then
 				cxn:Disconnect()
 				removeKillbrickConnection(sweeper)
@@ -310,7 +324,7 @@ local function geyserAttack(level: number)
 		amount = 200
 	end
 
-	local function geyserErupt(newGeyser: Instance)
+	local function geyserErupt(newGeyser: BasePart)
 		local geyserTween = TweenService:Create(newGeyser, TweenInfonew(3), {
 			Transparency = 0,
 		})
@@ -336,7 +350,8 @@ local function geyserAttack(level: number)
 				emitter.Enabled = true
 			end
 		end
-		battleWait(6)
+		task.wait(6)
+		-- battleWait(6)
 		removeKillbrickConnection(newGeyser.Hitbox)
 		newGeyser:Destroy()
 		return
@@ -356,7 +371,8 @@ local function geyserAttack(level: number)
 		end)
 		task.wait(0.05)
 	end
-	battleWait(10)
+	task.wait(10)
+	-- battleWait(10)
 end
 
 local lavaPlatform = ServerStorage.Other.Platform
@@ -495,23 +511,25 @@ local function floorIsLavaAttack1(level: number)
 		Size = Vector3new(newLava.Size.X, 50, newLava.Size.Z),
 	})
 	lavaRiseTween:Play()
-	if battleWait(5) then
-		removeKillbrickConnection(newLava)
-		for _, platform in platforms do
-			platform:Destroy()
-		end
-		return true
-	end
+	task.wait(5)
+	-- if battleWait(5) then
+	-- 	removeKillbrickConnection(newLava)
+	-- 	for _, platform in platforms do
+	-- 		platform:Destroy()
+	-- 	end
+	-- 	return true
+	-- end
 	TweenService:Create(newLava, TweenInfonew(1), {
 		Size = Vector3new(newLava.Size.X, 0, newLava.Size.Z),
 	}):Play()
-	if battleWait(2) then
-		removeKillbrickConnection(newLava)
-		for _, platform in platforms do
-			platform:Destroy()
-		end
-		return true
-	end
+	task.wait(2)
+	-- if battleWait(2) then
+	-- 	removeKillbrickConnection(newLava)
+	-- 	for _, platform in platforms do
+	-- 		platform:Destroy()
+	-- 	end
+	-- 	return true
+	-- end
 	removeKillbrickConnection(newLava)
 	for _, platform in platforms do
 		platform:Destroy()
@@ -539,27 +557,29 @@ local function floorIsLavaAttack2()
 		Size = Vector3new(newLava.Size.X, 50, newLava.Size.Z),
 	})
 	lavaRiseTween:Play()
-	if battleWait(5) then
-		removeKillbrickConnection(newLava)
-		obbySegment:Destroy()
-		newLava:Destroy()
-		for _, plr in Players:GetPlayers() do
-			changeStateEvent:FireClient(plr, Enum.HumanoidStateType.Jumping, false)
-		end
-		return true
-	end
+	task.wait(5)
+	-- if battleWait(5) then
+	-- 	removeKillbrickConnection(newLava)
+	-- 	obbySegment:Destroy()
+	-- 	newLava:Destroy()
+	-- 	for _, plr in Players:GetPlayers() do
+	-- 		changeStateEvent:FireClient(plr, Enum.HumanoidStateType.Jumping, false)
+	-- 	end
+	-- 	return true
+	-- end
 	TweenService:Create(newLava, TweenInfonew(1), {
 		Size = Vector3new(newLava.Size.X, 0, newLava.Size.Z),
 	}):Play()
-	if battleWait(2) then
-		removeKillbrickConnection(newLava)
-		obbySegment:Destroy()
-		newLava:Destroy()
-		for _, plr in Players:GetPlayers() do
-			changeStateEvent:FireClient(plr, Enum.HumanoidStateType.Jumping, false)
-		end
-		return true
-	end
+	task.wait(2)
+	-- if battleWait(2) then
+	-- 	removeKillbrickConnection(newLava)
+	-- 	obbySegment:Destroy()
+	-- 	newLava:Destroy()
+	-- 	for _, plr in Players:GetPlayers() do
+	-- 		changeStateEvent:FireClient(plr, Enum.HumanoidStateType.Jumping, false)
+	-- 	end
+	-- 	return true
+	-- end
 	removeKillbrickConnection(newLava)
 	obbySegment:Destroy()
 	newLava:Destroy()
@@ -584,11 +604,11 @@ local function slashesAttack(pDuration: number)
 
 	local cxn
 	cxn = RunService.PostSimulation:Connect(function(delta)
-		if battle_cancelled then
-			cxn:Disconnect()
-			cxn = nil
-			return
-		end
+		-- if battle_cancelled then
+		-- 	cxn:Disconnect()
+		-- 	cxn = nil
+		-- 	return
+		-- end
 		playerSwitchTimer += delta
 		if playerSwitchTimer >= 5 then
 			playerList = Players:GetPlayers()
@@ -624,9 +644,10 @@ local function slashesAttack(pDuration: number)
 
 	-- make evil rig shoot a slash every few secs
 	while startTick + Duration > tick() do
-		if battleWait(1) then
-			return true
-		end
+		task.wait(1)
+		-- if battleWait(1) then
+		-- 	return true
+		-- end
 		local newSlash = slash:Clone()
 		newSlash:PivotTo(newEvilRig.PrimaryPart.CFrame * CFrame.Angles(0, math.rad(90), 0))
 		newSlash.Parent = workspace
@@ -648,15 +669,17 @@ local function slashesAttack(pDuration: number)
 			end
 		end)
 	end
-	if battleWait(6) then
-		cxn:Disconnect()
-		newEvilRig:Destroy()
-		return true
-	end
+	task.wait(6)
+	-- if battleWait(6) then
+	-- 	cxn:Disconnect()
+	-- 	newEvilRig:Destroy()
+	-- 	return true
+	-- end
 	cxn:Disconnect()
 	newEvilRig:Destroy()
-	battleWait(5)
-	return false
+	task.wait(5)
+	-- battleWait(5)
+	return
 end
 
 local function spikeAttack(level: number)
@@ -711,12 +734,14 @@ local function spikeAttack(level: number)
 					removeKillbrickConnection(spike.Spike.Spike.Part3)
 					removeKillbrickConnection(spike.Spike.Spike.Part4)
 				end)
-				battleWait(5)
+				task.wait(5)
+				-- battleWait(5)
 				spikeSound.Parent.SpikeDownSound:Play()
 				TweenService:Create(warningPart, TweenInfonew(1, Enum.EasingStyle.Quad, Enum.EasingDirection.InOut), {
 					CFrame = warningPart.CFrame + Vector3new(0, -30.573, 0),
 				}):Play()
-				battleWait(1)
+				task.wait(1)
+				-- battleWait(1)
 
 				spike:Destroy()
 			end)
@@ -751,9 +776,10 @@ local function spikeAttack(level: number)
 					raiseSpikes(spikeRow)
 				end)
 			end
-			if battleWait(12) then
-				return true
-			end
+			task.wait(12)
+			-- if battleWait(12) then
+			-- 	return true
+			-- end
 			spikesModel1:Destroy()
 		end)
 
@@ -765,9 +791,10 @@ local function spikeAttack(level: number)
 				raiseSpikes(spikeRow)
 			end)
 		end
-		if battleWait(12) then
-			return true
-		end
+		task.wait(12)
+		-- if battleWait(12) then
+		-- 	return true
+		-- end
 		spikesModel2:Destroy()
 	elseif math.round(math.random()) == 0 then
 		local spikesModel1 = killbrickFolder.Spikes.Patterns.PlusSpikePattern:Clone()
@@ -778,9 +805,10 @@ local function spikeAttack(level: number)
 				raiseSpikes(spikeRow)
 			end)
 		end
-		if battleWait(12) then
-			return true
-		end
+		task.wait(12)
+		-- if battleWait(12) then
+		-- 	return true
+		-- end
 		spikesModel1:Destroy()
 	else
 		local spikesModel2 = killbrickFolder.Spikes.Patterns.XSpikePattern:Clone()
@@ -791,9 +819,10 @@ local function spikeAttack(level: number)
 				raiseSpikes(spikeRow)
 			end)
 		end
-		if battleWait(12) then
-			return true
-		end
+		task.wait(12)
+		-- if battleWait(12) then
+		-- 	return true
+		-- end
 		spikesModel2:Destroy()
 	end
 
@@ -891,9 +920,10 @@ local function homingProjectileAttack()
 
 	-- make evil rig shoot a slash every few secs
 	while startTick + 30 > tick() do
-		if battleWait(1) then
-			break
-		end
+		task.wait(1)
+		-- if battleWait(1) then
+		-- 	break
+		-- end
 		local newSlash = slash:Clone()
 		newSlash:PivotTo(newEvilRig.PrimaryPart.CFrame, playerFocus.Character.HumanoidRootPart.Position)
 		newSlash.Parent = workspace
@@ -950,7 +980,8 @@ local function homingProjectileAttack()
 			end
 		end)
 		task.spawn(function()
-			battleWait(5)
+			task.wait(5)
+			-- battleWait(5)
 			if newSlash then
 				for _, emitter in newSlash:GetDescendants() do
 					if emitter:IsA("ParticleEmitter") then
@@ -965,7 +996,8 @@ local function homingProjectileAttack()
 					Transparency = 1,
 				}):Play()
 				removeKillbrickConnection(newSlash)
-				battleWait(1)
+				task.wait(1)
+				-- battleWait(1)
 
 				if slashCxn then
 					slashCxn:Disconnect()
@@ -976,24 +1008,24 @@ local function homingProjectileAttack()
 			end
 		end)
 	end
-	if battleWait(6) then
-		cxn:Disconnect()
-		newEvilRig:Destroy()
-		return true
-	end
+	task.wait(6)
+	-- if battleWait(6) then
+	-- 	cxn:Disconnect()
+	-- 	newEvilRig:Destroy()
+	-- 	return true
+	-- end
 	cxn:Disconnect()
 	newEvilRig:Destroy()
-	battleWait(5)
+	task.wait(5)
+	-- battleWait(5)
 	return false
 end
 
 local function chargeAttack(level: number)
 	local baits = false
-	if level == 1 then
+	if level == 1 or level == 2 then
 		baits = false
-	elseif level == 2 then
-		baits = false
-	else
+	elseif level == 3 then
 		baits = true
 	end
 	-- rig moves in a straight line to player like walkspeed override
@@ -1045,9 +1077,10 @@ local function chargeAttack(level: number)
 	local startTick = tick()
 	while startTick + 30 > tick() do
 		pauseTracking = true
-		if battleWait(1) then
-			return true
-		end
+		task.wait(1)
+		-- if battleWait(1) then
+		-- 	return true
+		-- end
 		local rigClone = newEvilRig:Clone()
 		for _, v in rigClone:GetDescendants() do
 			if v:IsA("BasePart") then
@@ -1082,9 +1115,10 @@ local function chargeAttack(level: number)
 			rigClone.PrimaryPart.CFrame += rigClone.PrimaryPart.CFrame.LookVector * delta * 200
 		end)
 
-		if battleWait(2) then
-			return true
-		end
+		-- if battleWait(2) then
+		-- 	return true
+		-- end
+		task.wait(2)
 		removeKillbrickConnection(cloneHrp)
 		lungeCxn:Disconnect()
 		rigClone:Destroy()
@@ -1118,14 +1152,9 @@ local function sweeperAndGeyser()
 	task.spawn(function()
 		task.wait(1)
 		print("SWEEPER ATTACK COMING")
-		if sweeperAttack(2) then
-			return true
-		end
+		sweeperAttack(2)
 	end)
-	if geyserAttack() then
-		return true
-	end
-	return false
+	geyserAttack(2)
 end
 
 local function spikeAndSlashes(level: number)
@@ -1151,9 +1180,10 @@ local function levelOneAttacks(): boolean
 	}
 
 	for i = 1, #attacks do
-		if attacks[math.random(#attacks)](1) then
-			return true
-		end
+		attacks[math.random(#attacks)](1)
+		-- if attacks[math.random(#attacks)](1) then
+		-- 	return true
+		-- end
 		task.wait(1)
 	end
 	return false
@@ -1172,9 +1202,10 @@ local function levelTwoAttacks(): boolean
 	}
 
 	for i = 1, #attacks do
-		if attacks[math.random(#attacks)](2) then
-			return true
-		end
+		attacks[math.random(#attacks)](2)
+		-- if attacks[math.random(#attacks)](2) then
+		-- 	return true
+		-- end
 		task.wait(1)
 	end
 	return false
@@ -1195,9 +1226,10 @@ local function levelThreeAttacks(): boolean
 	}
 
 	for i = 1, #attacks do
-		if attacks[math.random(#attacks)](2) then
-			return true
-		end
+		attacks[math.random(#attacks)](2)
+		-- if attacks[math.random(#attacks)](2) then
+		-- 	return true
+		-- end
 		task.wait(1)
 	end
 	return false
@@ -1236,19 +1268,22 @@ local function HANDLE_BATTLE()
 	local bossDeathEvent = signalModule.getBindableEvent("BossDeath")
 	local battleReadyEvent: RemoteEvent = signalModule.getRemoteEvent("StartBattle")
 
-	local isReady = false
-	task.spawn(function()
-		battleReadyEvent.OnServerEvent:Wait()
-		isReady = true
-	end)
-	local startTick = tick()
-	local timeout = 600 -- 10 mins
-	while not isReady do
-		task.wait()
-		if tick() - startTick > timeout then
-			break
+	if not quickStart then
+		local isReady = false
+		task.spawn(function()
+			battleReadyEvent.OnServerEvent:Wait()
+			isReady = true
+		end)
+		local startTick = tick()
+		local timeout = 600 -- 10 mins
+		while not isReady do
+			task.wait()
+			if tick() - startTick > timeout then
+				break
+			end
 		end
 	end
+	-- If it is quick Start, make sure the player teleports onto the platform that has already risen.
 
 	task.wait(3)
 	while true do
@@ -1269,9 +1304,9 @@ local function HANDLE_BATTLE()
 			end
 		end
 
-		if battle_cancelled then
-			return
-		end
+		-- if battle_cancelled then
+		-- 	return
+		-- end
 		task.wait(1)
 		local hasTrophy = eventsModule.FireGetItem(Players:GetPlayers()[1])
 		if not hasTrophy then
