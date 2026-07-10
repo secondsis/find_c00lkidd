@@ -1,6 +1,7 @@
 local module = {}
 
 module.TNT = 100
+module.Snack = 20
 module.Slimeball = 20
 module.ColaPack = 20
 module.TurkeyLeg = 20

@@ -6,6 +6,7 @@ local ServerStorage = game:GetService("ServerStorage")
 local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ServerScriptService = game:GetService("ServerScriptService")
+local TextChatService = game:GetService("TextChatService")
 
 -- WHY ARE SPIKES LAGGY?
 
@@ -66,7 +67,7 @@ local resumeBattleEvent = ReplicatedStorage.RemoteEvents.ResumeBattle
 local debounceMap = {}
 local killbrickConnections = {}
 local battle_cancelled = false
-local quickStart = false
+local quickStart = true -- reset this
 
 eventsModule.ConnectSetBattleQuickStart(function()
 	quickStart = true
@@ -1216,19 +1217,22 @@ local function levelOneAttacks(): boolean
 	-- floorIsLavaAttack1(1)
 	-- floorIsLavaAttack1(1)
 	-- floorIsLavaAttack1(1)
+	task.wait(10)
 
-	for i = 1, 3 do
-		local index = math.random(#attacks)
-		while lastAttack and index == lastAttack do
-			index = math.random(#attacks) -- roll again until its different
-		end
-		attacks[index](1)
-		lastAttack = index
-		-- if attacks[math.random(#attacks)](1) then
-		-- 	return true
-		-- end
-		task.wait(1)
-	end
+	-- TextChatService:DisplayBubble(evilRig, "So you can do that, I see...")
+
+	-- for i = 1, 3 do
+	-- 	local index = math.random(#attacks)
+	-- 	while lastAttack and index == lastAttack do
+	-- 		index = math.random(#attacks) -- roll again until its different
+	-- 	end
+	-- 	attacks[index](1)
+	-- 	lastAttack = index
+	-- 	-- if attacks[math.random(#attacks)](1) then
+	-- 	-- 	return true
+	-- 	-- end
+	-- 	task.wait(1)
+	-- end
 	return false
 end
 

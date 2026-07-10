@@ -33,7 +33,7 @@ end)
 
 continueButton.Activated:Connect(function(a0: InputObject, a1: number)
 	toggleDeathGui(false)
-	eventsModule.FireSmoothTransitionFunction(player, 999)
+	eventsModule.FireSmoothTransitionFunction(999)
 	eventsModule.FireRemoteRestartBattle()
 end)
 

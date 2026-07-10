@@ -5,9 +5,11 @@ TODO:
 SWAP OUT ALL TELEPORT PASSWORDS FOR NEW ONES BECAUSE THE STUFF IS ON GITHUB...
 test whether the get up button works
 add an "easy mode" if player dies 2 times to lava cuz it is genuinely unfair
-fix the broken cameras
+fix Bribe ending
 
-create the list of ending trophies in minigame, / implementing the main game way of doing it
+fix the trophies not being positioned correctly in the black and white view
+
+create the list of ending trophies (yeah) in minigame, / implementing the main game way of doing it
 
 also make something happen at the end of the battle
 

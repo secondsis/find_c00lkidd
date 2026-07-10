@@ -29,7 +29,7 @@ do
 	end
 	eventsModule.FireDisableMovementEvent(false)
 end
-local quickStart = false
+local quickStart = true -- reset this
 local tpData = TeleportService:GetLocalPlayerTeleportData()
 if tpData then
 	if tpData["QuickStart"] then

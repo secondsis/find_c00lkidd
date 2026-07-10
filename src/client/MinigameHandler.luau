@@ -20,7 +20,19 @@ local CFramenew = CFrame.new
 local cameraCxn = nil
 local cameraCxn2 = nil
 
-local MINIGAME_QUEUE = {}
+local MINIGAME_QUEUE = {
+	"Snack",
+	"Bribe",
+	"Frogs.",
+	"Cola Addiction",
+	"Delusional",
+	"Drink",
+	"Escaped",
+	"McDarndolds",
+	"SPEEN",
+	"Shedletsky_CHICKEN",
+	"Sleep",
+}
 
 local function fillMinigameQueue()
 	local data = TeleportService:GetLocalPlayerTeleportData()
@@ -127,22 +139,22 @@ local function startCameraHandler()
 						break
 					end
 					task.wait(0.1)
-					print("camera handling")
+					-- print("camera handling")
 					local parts_detected = workspace:GetPartsInPart(detector, overlap_params)
 
 					for _, other in parts_detected do
-						if lastDetector == detector.Name then
-							return
-						end
-						lastDetector = detector.Name
+						-- if lastDetector == detector.Name then
+						-- 	continue
+						-- end
+						-- lastDetector = detector.Name
 
 						if not other.Parent then
-							return
+							continue
 						end
 
 						local _player = game:GetService("Players"):GetPlayerFromCharacter(other.Parent)
 						if not _player then
-							return
+							continue
 						end
 
 						local cameraPartAttribute = detector:GetAttribute("CameraPart")
@@ -154,7 +166,7 @@ local function startCameraHandler()
 							local cameraPart = detectorFolder.Parent.Parent.Cameras:FindFirstChild(cameraPartAttribute)
 							if not cameraPart then
 								warn("Couldn't find camera part!")
-								return
+								continue
 							end
 
 							resetCameraMode1(true)
@@ -290,6 +302,7 @@ local endingGetSfx = SoundService.SFX.EndingGetSfx
 local battleReturnSfx = SoundService.SFX.BattleReturnWithTrophySfx
 
 eventsModule.ConnectObtainedTrophyEffect(function(object: Model, modelName: string, extra)
+	print("trophy obtained effect")
 	eventsModule.FireDisableMovementEvent(false)
 	local char = player.Character
 	if not char then
@@ -335,8 +348,8 @@ end
 -- START MINIGAME MAIN
 local function startMinigame()
 	onTick2 = false
-	--local endingToGet = table.remove(MINIGAME_QUEUE, 1)
-	local endingToGet = "Snack"
+	local endingToGet = table.remove(MINIGAME_QUEUE, 1)
+	-- local endingToGet = "Snack"
 	task.spawn(lowerMusic)
 
 	-- make only that ending appear on the map
@@ -367,6 +380,7 @@ local function startMinigame()
 end
 
 local function endMinigame(succeeded: boolean, ending: string)
+	print("end minigame")
 	stopCameraHandler()
 	resetMusic()
 	eventsModule.FireEndDialogue()
