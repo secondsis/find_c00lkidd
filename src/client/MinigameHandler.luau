@@ -123,7 +123,11 @@ local function startCameraHandler()
 			overlap_params.FilterDescendantsInstances = { detector }
 			task.spawn(function()
 				while true do
+					if detectors_ON == false then
+						break
+					end
 					task.wait(0.1)
+					print("camera handling")
 					local parts_detected = workspace:GetPartsInPart(detector, overlap_params)
 
 					for _, other in parts_detected do

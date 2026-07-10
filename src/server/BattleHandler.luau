@@ -1213,22 +1213,22 @@ local function levelOneAttacks(): boolean
 	}
 
 	local lastAttack = nil
-	floorIsLavaAttack1(1)
-	floorIsLavaAttack1(1)
-	floorIsLavaAttack1(1)
+	-- floorIsLavaAttack1(1)
+	-- floorIsLavaAttack1(1)
+	-- floorIsLavaAttack1(1)
 
-	-- for i = 1, 3 do
-	-- 	local index = math.random(#attacks)
-	-- 	while lastAttack and index == lastAttack do
-	-- 		index = math.random(#attacks) -- roll again until its different
-	-- 	end
-	-- 	attacks[index](1)
-	-- 	lastAttack = index
-	-- 	-- if attacks[math.random(#attacks)](1) then
-	-- 	-- 	return true
-	-- 	-- end
-	-- 	task.wait(1)
-	-- end
+	for i = 1, 3 do
+		local index = math.random(#attacks)
+		while lastAttack and index == lastAttack do
+			index = math.random(#attacks) -- roll again until its different
+		end
+		attacks[index](1)
+		lastAttack = index
+		-- if attacks[math.random(#attacks)](1) then
+		-- 	return true
+		-- end
+		task.wait(1)
+	end
 	return false
 end
 

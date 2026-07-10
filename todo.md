@@ -4,8 +4,8 @@ TODO:
 
 SWAP OUT ALL TELEPORT PASSWORDS FOR NEW ONES BECAUSE THE STUFF IS ON GITHUB...
 test whether the get up button works
-fix floor is lava pillars (to be tested)
-make shop camera box / idk, all boxes to be bigger cuz of the player dashing past them
+add an "easy mode" if player dies 2 times to lava cuz it is genuinely unfair
+fix the broken cameras
 
 create the list of ending trophies in minigame, / implementing the main game way of doing it
 
