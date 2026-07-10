@@ -97,12 +97,14 @@ local function tpPlayer(cf: CFrame)
 end
 
 local lastDetector = nil
-local detectorCxns = {}
+-- local detectorCxns = {}
+local detectors_ON = false
 
 local function startCameraHandler()
-	if #detectorCxns > 0 then
+	if detectors_ON then
 		return
 	end
+	detectors_ON = true
 
 	local detectorFolder = workspace:WaitForChild("MinigameMap").Other.Detectors
 	detectorFolder:WaitForChild("EnterBloxGoDetector")
@@ -116,48 +118,91 @@ local function startCameraHandler()
 
 	for _, detector in detectorChildren do
 		if detector:IsA("BasePart") then
-			local newCxn = detector.Touched:Connect(function(other)
-				if lastDetector == detector.Name then
-					return
-				end
-				lastDetector = detector.Name
+			local overlap_params = OverlapParams.new()
+			overlap_params.FilterType = Enum.RaycastFilterType.Exclude
+			overlap_params.FilterDescendantsInstances = { detector }
+			task.spawn(function()
+				while true do
+					task.wait(0.1)
+					local parts_detected = workspace:GetPartsInPart(detector, overlap_params)
 
-				if not other.Parent then
-					return
-				end
+					for _, other in parts_detected do
+						if lastDetector == detector.Name then
+							return
+						end
+						lastDetector = detector.Name
 
-				local player = game:GetService("Players"):GetPlayerFromCharacter(other.Parent)
-				if not player then
-					return
-				end
+						if not other.Parent then
+							return
+						end
 
-				local cameraPartAttribute = detector:GetAttribute("CameraPart")
+						local _player = game:GetService("Players"):GetPlayerFromCharacter(other.Parent)
+						if not _player then
+							return
+						end
 
-				if cameraPartAttribute == "None" then
-					resetCameraMode2()
-					minigameCameraMode()
-				else
-					local cameraPart = detectorFolder.Parent.Parent.Cameras:FindFirstChild(cameraPartAttribute)
-					if not cameraPart then
-						warn("Couldn't find camera part!")
-						return
+						local cameraPartAttribute = detector:GetAttribute("CameraPart")
+
+						if cameraPartAttribute == "None" then
+							resetCameraMode2()
+							minigameCameraMode()
+						else
+							local cameraPart = detectorFolder.Parent.Parent.Cameras:FindFirstChild(cameraPartAttribute)
+							if not cameraPart then
+								warn("Couldn't find camera part!")
+								return
+							end
+
+							resetCameraMode1(true)
+							cameraOnPart(cameraPart)
+						end
 					end
-
-					resetCameraMode1(true)
-					cameraOnPart(cameraPart)
 				end
 			end)
 
-			table.insert(detectorCxns, newCxn)
+			-- local newCxn = detector.Touched:Connect(function(other)
+			-- 	if lastDetector == detector.Name then
+			-- 		return
+			-- 	end
+			-- 	lastDetector = detector.Name
+
+			-- 	if not other.Parent then
+			-- 		return
+			-- 	end
+
+			-- 	local player = game:GetService("Players"):GetPlayerFromCharacter(other.Parent)
+			-- 	if not player then
+			-- 		return
+			-- 	end
+
+			-- 	local cameraPartAttribute = detector:GetAttribute("CameraPart")
+
+			-- 	if cameraPartAttribute == "None" then
+			-- 		resetCameraMode2()
+			-- 		minigameCameraMode()
+			-- 	else
+			-- 		local cameraPart = detectorFolder.Parent.Parent.Cameras:FindFirstChild(cameraPartAttribute)
+			-- 		if not cameraPart then
+			-- 			warn("Couldn't find camera part!")
+			-- 			return
+			-- 		end
+
+			-- 		resetCameraMode1(true)
+			-- 		cameraOnPart(cameraPart)
+			-- 	end
+			-- end)
+
+			-- table.insert(detectorCxns, newCxn)
 		end
 	end
 end
 
 local function stopCameraHandler()
-	for _, detectorCxn in detectorCxns do
-		detectorCxn:Disconnect()
-	end
-	table.clear(detectorCxns)
+	-- for _, detectorCxn in detectorCxns do
+	-- 	detectorCxn:Disconnect()
+	-- end
+	-- table.clear(detectorCxns)
+	detectors_ON = false
 end
 
 local minigameGui = player.PlayerGui:WaitForChild("MinigameGui")

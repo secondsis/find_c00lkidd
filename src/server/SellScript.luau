@@ -2,8 +2,8 @@ local module = {}
 
 local CollectionService = game:GetService("CollectionService")
 
-local eventsModule = require(game:GetService("ReplicatedStorage").ServerEventsModule)
-local shopItems = require(game:GetService("ServerScriptService").Server.ShopItemsModule)
+local eventsModule = require(script.Parent.SERVER_EVENTS)
+local shopItems = require(script.Parent.ShopItemsModule)
 
 local function OnPromptTrigger(player, prompt, itemName)
 	local money = eventsModule.FireGetMoney(player)

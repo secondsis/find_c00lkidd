@@ -104,7 +104,6 @@ end
 
 -- Will be called when the player reaches 0 hp and presses the contibue btn
 local function RestartBattle(player: Player)
-	eventsModule.FireRemoteSmoothTransitionFunction(player, 999)
 	-- -- Reset player HP
 	-- ResetPlayerHP(player)
 	-- -- And Boss HP
@@ -422,29 +421,32 @@ local function floorIsLavaAttack1(level: number)
 				CFramenew(math.random(-150, 100), 778.803, math.random(-100, 100), c1, c2, c3, c4, c5, c6, c7, c8, c9)
 			)
 
-			newPlatform.PlatformWarning.Detection.Touched:Connect(function(other)
-				if not other.Parent then
-					return
-				end
+			-- newPlatform.PlatformWarning.Detection.Touched:Connect(function(other)
+			-- 	if not other.Parent then
+			-- 		return
+			-- 	end
 
-				local player = Players:GetPlayerFromCharacter(other.Parent)
-				if not player then
-					return
-				end
-				local char = player.Character
-				if not char then
-					return
-				end
-				local hrp = char:FindFirstChild("HumanoidRootPart")
-				if not hrp then
-					return
-				end
+			-- 	local player = Players:GetPlayerFromCharacter(other.Parent)
+			-- 	if not player then
+			-- 		return
+			-- 	end
+			-- 	local char = player.Character
+			-- 	if not char then
+			-- 		return
+			-- 	end
+			-- 	local hrp = char:FindFirstChild("HumanoidRootPart")
+			-- 	if not hrp then
+			-- 		return
+			-- 	end
 
-				local weldConstraint = Instance.new("WeldConstraint")
-				weldConstraint.Part0 = newPlatform.PlatformWarning.Detection
-				weldConstraint.Part1 = hrp
-				weldConstraint.Parent = newPlatform.PlatformWarning.Detection
-			end)
+			-- 	local weldConstraint = Instance.new("WeldConstraint")
+			-- 	weldConstraint.Enabled = false
+			-- 	weldConstraint.Part0 = newPlatform.PlatformWarning.Detection
+			-- 	weldConstraint.Part1 = hrp
+			-- 	weldConstraint.Parent = newPlatform.PlatformWarning.Detection
+			-- 	task.wait(1)
+			-- 	weldConstraint.Enabled = true
+			-- end)
 
 			newPlatform.Parent = workspace
 
@@ -467,10 +469,12 @@ local function floorIsLavaAttack1(level: number)
 				platformWarning.Transparency = 1
 
 				local platformRiseTween = TweenService:Create(platformWarning, TweenInfonew(1), {
-					CFrame = platformWarning.CFrame + Vector3new(0, 60, 0),
+					CFrame = platformWarning.CFrame + Vector3.new(0, 60, 0),
 				})
 				platformWarning.Platform.Transparency = 0
 				platformWarning.Platform["grind concrete"]:Play()
+				-- platformWarning.Platform.CanCollide = false
+				-- platformWarning.Wall.PrismaticConstraint.TargetPosition = 60
 				platformRiseTween:Play()
 			end)
 		else
@@ -559,6 +563,7 @@ local function floorIsLavaAttack1(level: number)
 	-- 	return true
 	-- end
 	removeKillbrickConnection(newLava)
+	newLava:Destroy()
 	for _, platform in platforms do
 		platform:Destroy()
 	end
@@ -1207,13 +1212,23 @@ local function levelOneAttacks(): boolean
 		floorIsLavaAttack1,
 	}
 
-	for i = 1, 3 do
-		attacks[math.random(#attacks)](1)
-		-- if attacks[math.random(#attacks)](1) then
-		-- 	return true
-		-- end
-		task.wait(1)
-	end
+	local lastAttack = nil
+	floorIsLavaAttack1(1)
+	floorIsLavaAttack1(1)
+	floorIsLavaAttack1(1)
+
+	-- for i = 1, 3 do
+	-- 	local index = math.random(#attacks)
+	-- 	while lastAttack and index == lastAttack do
+	-- 		index = math.random(#attacks) -- roll again until its different
+	-- 	end
+	-- 	attacks[index](1)
+	-- 	lastAttack = index
+	-- 	-- if attacks[math.random(#attacks)](1) then
+	-- 	-- 	return true
+	-- 	-- end
+	-- 	task.wait(1)
+	-- end
 	return false
 end
 
@@ -1228,9 +1243,15 @@ local function levelTwoAttacks(): boolean
 		chargeAttack,
 		sweeperAndGeyser,
 	}
-
+	local lastAttack = nil
 	for i = 1, 5 do
-		attacks[math.random(#attacks)](2)
+		local index = math.random(#attacks)
+		while lastAttack and index == lastAttack do
+			index = math.random(#attacks) -- roll again until its different
+		end
+		attacks[index](2)
+		lastAttack = index
+
 		-- if attacks[math.random(#attacks)](2) then
 		-- 	return true
 		-- end
@@ -1252,9 +1273,14 @@ local function levelThreeAttacks(): boolean
 		homingProjectileAttack,
 		spikeAndSlashes,
 	}
-
+	local lastAttack = nil
 	for i = 1, 6 do
-		attacks[math.random(#attacks)](2)
+		local index = math.random(#attacks)
+		while lastAttack and index == lastAttack do
+			index = math.random(#attacks) -- roll again until its different
+		end
+		attacks[index](3)
+		lastAttack = index
 		-- if attacks[math.random(#attacks)](2) then
 		-- 	return true
 		-- end

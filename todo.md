@@ -7,6 +7,10 @@ test whether the get up button works
 fix floor is lava pillars (to be tested)
 make shop camera box / idk, all boxes to be bigger cuz of the player dashing past them
 
+create the list of ending trophies in minigame, / implementing the main game way of doing it
+
+also make something happen at the end of the battle
+
 Figure out how to give client permission by server to: view a cutscene, view dialogue, get ending
 
 Necessary Features: 

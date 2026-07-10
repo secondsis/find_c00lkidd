@@ -7,8 +7,10 @@ PhysicsService:RegisterCollisionGroup("PlayerBox")
 PhysicsService:RegisterCollisionGroup("PlayerTorso")
 PhysicsService:RegisterCollisionGroup("DashingPlayer")
 PhysicsService:RegisterCollisionGroup("Dashable")
+PhysicsService:RegisterCollisionGroup("Platform")
 
 PhysicsService:CollisionGroupSetCollidable("DashingPlayer", "Dashable", false)
+PhysicsService:CollisionGroupSetCollidable("Platform", "Default", false)
 
 for _, group in PhysicsService:GetRegisteredCollisionGroups() do
 	PhysicsService:CollisionGroupSetCollidable("PlayerTorso", group.name, false)

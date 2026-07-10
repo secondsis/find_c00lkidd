@@ -20,18 +20,20 @@ end
 
 eventsModule.ConnectPlayerDeath(function()
 	player.PlayerGui.TransitionGui.Backup.Visible = true
-	eventsModule.FireSmoothTransitionFunction(3)
+	eventsModule.FireSmoothTransitionFunction(2)
 	cutsceneModule.changeCamCFrame(
 		player,
 		CFrame.new(3.665, -84.16, -161.031) * CFrame.fromOrientation(math.rad(-4.5), math.rad(90), 0)
 	)
 	toggleDeathGui(true)
-	task.wait(1.5)
+	SoundService.SFX.BattleLost:Play()
+	task.wait(1)
 	player.PlayerGui.TransitionGui.Backup.Visible = false
 end)
 
 continueButton.Activated:Connect(function(a0: InputObject, a1: number)
 	toggleDeathGui(false)
+	eventsModule.FireSmoothTransitionFunction(player, 999)
 	eventsModule.FireRemoteRestartBattle()
 end)
 
