@@ -4,6 +4,8 @@ TODO:
 
 SWAP OUT ALL TELEPORT PASSWORDS FOR NEW ONES BECAUSE THE STUFF IS ON GITHUB...
 test whether the get up button works
+fix floor is lava pillars (to be tested)
+make shop camera box / idk, all boxes to be bigger cuz of the player dashing past them
 
 Figure out how to give client permission by server to: view a cutscene, view dialogue, get ending
 
@@ -24,6 +26,7 @@ Necessary Features:
 Known Bugs: 
     1. Camera "rolls" when you try to rotate it in certain cutscenes
         I think this is because of AreaManager constantly trying to put the player in first person, causing the cxn to run
+    2. I think the battle still continues for the current attack upon death, so some sound effects from battle can still be heard and tat no gud
 
 Other Features: 
     1. Donation Leaderboard

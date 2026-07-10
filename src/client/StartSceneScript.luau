@@ -179,10 +179,29 @@ local function fightIntroScene()
 			RigTalkAnimationTrack:Stop()
 		end
 	end
+	task.spawn(function()
+		print("task spawned")
+		local startTick = tick()
+		local timeout = 120
+		while task.wait() do
+			local currLine = eventsModule.FireCheckCurrentDialogueLine()
+			if currLine == "I have [THEM], but I would advise to turn back from this path." then
+				-- Make the two appear
+				SoundService.SFX.magic_poof:Play()
+				local theTwoClone = ReplicatedStorage.TheTwo:Clone()
+				theTwoClone.Parent = workspace
+				break
+			end
 
+			if startTick + timeout < tick() then
+				print("timed out")
+				break
+			end
+		end
+	end)
 	-- EVIL RIG TALKS
 	eventsModule.FireDialogueFunction("EvilRigTalk", { "enableMovementAfter_false", "enablePromptsAfter_false" }, {
-		{ Name = "Evil Rig", Callback = RigAnimationCallback },
+		{ Name = "Evil Rig", AnimCallback = RigAnimationCallback },
 	})
 
 	-- After the talk

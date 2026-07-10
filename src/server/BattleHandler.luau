@@ -65,7 +65,7 @@ local resumeBattleEvent = ReplicatedStorage.RemoteEvents.ResumeBattle
 --[player][part] = lastTick
 local debounceMap = {}
 local killbrickConnections = {}
--- local battle_cancelled = false
+local battle_cancelled = false
 local quickStart = false
 
 eventsModule.ConnectSetBattleQuickStart(function()
@@ -120,23 +120,25 @@ local function RestartBattle(player: Player)
 end
 
 -- holy circus hot potato
--- eventsModule.ConnectRemotePlayerDeath(function(player)
--- 	print("Got signal player died!")
--- 	-- camera cframe {3.665, -84.16, -161.031}, {-4.5, 89.817, 0}
--- 	--just keep the death box always there
--- 	-- When player dies, teleport their camera to the death box (if it doesn't load, then youll just have to put a playerbox too for it)
--- 	-- Upon clicking the continue btn, player will spawn immediately back into the arena. Evil Rig may comment on this sometimes.
+eventsModule.ConnectRemotePlayerDeath(function(player)
+	print("Got signal player died!")
+	-- camera cframe {3.665, -84.16, -161.031}, {-4.5, 89.817, 0}
+	--just keep the death box always there
+	-- When player dies, teleport their camera to the death box (if it doesn't load, then youll just have to put a playerbox too for it)
+	-- Upon clicking the continue btn, player will spawn immediately back into the arena. Evil Rig may comment on this sometimes.
 
--- 	-- battle_cancelled = true
+	-- battle_cancelled = true
 
--- 	-- cutsceneModule.changeCamCFrame(
--- 	-- 	player,
--- 	-- 	CFramenew(3.665, -84.16, -161.031) * CFrame.fromOrientation(math.rad(-4.5), math.rad(90), 0)
--- 	-- )
+	-- cutsceneModule.changeCamCFrame(
+	-- 	player,
+	-- 	CFramenew(3.665, -84.16, -161.031) * CFrame.fromOrientation(math.rad(-4.5), math.rad(90), 0)
+	-- )
 
--- 	-- Fire it back for the client to handle the gui stuff
--- 	eventsModule.FireRemotePlayerDeath(player)
--- end)
+	-- Fire it back for the client to handle the gui stuff
+	-- eventsModule.FireRemotePlayerDeath(player)
+
+	battle_cancelled = true
+end)
 
 eventsModule.ConnectRemoteRestartBattle(RestartBattle)
 
@@ -325,13 +327,13 @@ local function geyserAttack(level: number)
 	end
 
 	local function geyserErupt(newGeyser: BasePart)
-		local geyserTween = TweenService:Create(newGeyser, TweenInfonew(3), {
+		local geyserTween = TweenService:Create(newGeyser, TweenInfonew(1), {
 			Transparency = 0,
 		})
 		geyserTween:Play()
 		task.wait(1)
 		local startTick = tick()
-		while startTick + 1 > tick() do
+		while startTick + 0.5 > tick() do
 			newGeyser.Color = Color3new(1, 0, 0)
 			newGeyser.warning:Play()
 			task.wait(0.1)
@@ -339,7 +341,8 @@ local function geyserAttack(level: number)
 			newGeyser.warning:Play()
 			task.wait(0.1)
 		end
-		newGeyser.Transparency = 0
+		newGeyser.Transparency = 1
+		print(newGeyser.Name)
 
 		CollectionService:AddTag(newGeyser.Hitbox, "Killbrick")
 		addKillbrickConnection(newGeyser.Hitbox)
@@ -418,6 +421,31 @@ local function floorIsLavaAttack1(level: number)
 			platformWarning:PivotTo(
 				CFramenew(math.random(-150, 100), 778.803, math.random(-100, 100), c1, c2, c3, c4, c5, c6, c7, c8, c9)
 			)
+
+			newPlatform.PlatformWarning.Detection.Touched:Connect(function(other)
+				if not other.Parent then
+					return
+				end
+
+				local player = Players:GetPlayerFromCharacter(other.Parent)
+				if not player then
+					return
+				end
+				local char = player.Character
+				if not char then
+					return
+				end
+				local hrp = char:FindFirstChild("HumanoidRootPart")
+				if not hrp then
+					return
+				end
+
+				local weldConstraint = Instance.new("WeldConstraint")
+				weldConstraint.Part0 = newPlatform.PlatformWarning.Detection
+				weldConstraint.Part1 = hrp
+				weldConstraint.Parent = newPlatform.PlatformWarning.Detection
+			end)
+
 			newPlatform.Parent = workspace
 
 			task.spawn(function()
@@ -588,7 +616,7 @@ local function floorIsLavaAttack2()
 	end
 end
 
-local function slashesAttack(pDuration: number)
+local function slashesAttack(level: number, pDuration: number)
 	local Duration = pDuration or 15
 
 	local newEvilRig = evilRig:Clone()
@@ -648,6 +676,7 @@ local function slashesAttack(pDuration: number)
 		-- if battleWait(1) then
 		-- 	return true
 		-- end
+		print("slash")
 		local newSlash = slash:Clone()
 		newSlash:PivotTo(newEvilRig.PrimaryPart.CFrame * CFrame.Angles(0, math.rad(90), 0))
 		newSlash.Parent = workspace
@@ -679,7 +708,6 @@ local function slashesAttack(pDuration: number)
 	newEvilRig:Destroy()
 	task.wait(5)
 	-- battleWait(5)
-	return
 end
 
 local function spikeAttack(level: number)
@@ -869,7 +897,6 @@ local function spikeAttack(level: number)
 	newEvilRig:Destroy()
 end
 
--- white slashes that follow the player
 local function homingProjectileAttack()
 	local newEvilRig = evilRig:Clone()
 	newEvilRig:PivotTo(workspace.BattleArena.MiddleSpawn.CFrame)
@@ -919,11 +946,12 @@ local function homingProjectileAttack()
 	local followTimer = 2
 
 	-- make evil rig shoot a slash every few secs
-	while startTick + 30 > tick() do
+	while startTick + 60 > tick() do
 		task.wait(1)
 		-- if battleWait(1) then
 		-- 	break
 		-- end
+		print("homing projectile")
 		local newSlash = slash:Clone()
 		newSlash:PivotTo(newEvilRig.PrimaryPart.CFrame, playerFocus.Character.HumanoidRootPart.Position)
 		newSlash.Parent = workspace
@@ -1179,7 +1207,7 @@ local function levelOneAttacks(): boolean
 		floorIsLavaAttack1,
 	}
 
-	for i = 1, #attacks do
+	for i = 1, 3 do
 		attacks[math.random(#attacks)](1)
 		-- if attacks[math.random(#attacks)](1) then
 		-- 	return true
@@ -1201,7 +1229,7 @@ local function levelTwoAttacks(): boolean
 		sweeperAndGeyser,
 	}
 
-	for i = 1, #attacks do
+	for i = 1, 5 do
 		attacks[math.random(#attacks)](2)
 		-- if attacks[math.random(#attacks)](2) then
 		-- 	return true
@@ -1225,7 +1253,7 @@ local function levelThreeAttacks(): boolean
 		spikeAndSlashes,
 	}
 
-	for i = 1, #attacks do
+	for i = 1, 6 do
 		attacks[math.random(#attacks)](2)
 		-- if attacks[math.random(#attacks)](2) then
 		-- 	return true
@@ -1287,6 +1315,9 @@ local function HANDLE_BATTLE()
 
 	task.wait(3)
 	while true do
+		if battle_cancelled then
+			return
+		end
 		if attackLevel == 1 then
 			print("LEVEL ONE")
 			if levelOneAttacks() then
@@ -1304,9 +1335,9 @@ local function HANDLE_BATTLE()
 			end
 		end
 
-		-- if battle_cancelled then
-		-- 	return
-		-- end
+		if battle_cancelled then
+			return
+		end
 		task.wait(1)
 		local hasTrophy = eventsModule.FireGetItem(Players:GetPlayers()[1])
 		if not hasTrophy then
