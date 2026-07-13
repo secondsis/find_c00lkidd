@@ -5,11 +5,9 @@ TODO:
 SWAP OUT ALL TELEPORT PASSWORDS FOR NEW ONES BECAUSE THE STUFF IS ON GITHUB...
 test whether the get up button works (Roblox-only)
 test "easy mode" when dying to lava 2 times (Roblox-only)
-test that the endings loop or kill the boss sufficiently
+test that the endings kill the boss sufficiently
 test and adapt time per ending
-test that endings are redone if failed
-fix Bribe ending also fix in main game
-idk how to get drink ending?
+fix Bribe ending in main game?
 fix the charge attack it does 0 dmg
 
 

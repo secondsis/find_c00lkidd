@@ -19,22 +19,25 @@ local CFramenew = CFrame.new
 -- CAMERA HANDLER
 local cameraCxn = nil
 local cameraCxn2 = nil
+local lastDetector = nil
 
 local minigame_index = 0
 
 local MINIGAME_QUEUE = {
-	"NileGreen",
-	"Shedletsky",
-	"Snack",
+
+	-- "Snack",
+	"Drink",
 	"Bribe",
 	"Frogs.",
 	"Cola Addiction",
 	"Delusional",
-	"Drink",
+	-- "Drink",
 	"Escaped",
 	"McDarndolds",
 	"SPEEN",
 	"Sleep",
+	"NileGreen",
+	"Shedletsky",
 }
 
 local function fillMinigameQueue()
@@ -49,44 +52,9 @@ end
 
 --fillMinigameQueue()
 
-local function minigameCameraMode()
-	cam.CameraType = Enum.CameraType.Scriptable
-
-	if not cameraCxn then
-		cameraCxn = RunService.Heartbeat:Connect(function(delta)
-			local char = player.Character
-			if not char then
-				return
-			end
-			local head = char:FindFirstChild("Head")
-			if not head then
-				return
-			end
-			cam.CFrame = CFrame.lookAt(head.Position + Vector3.new(0, 50, 50), head.Position)
-		end)
-	end
-end
-
-local function cameraOnPart(camPart: BasePart)
-	cam.CameraType = Enum.CameraType.Scriptable
-
-	if not cameraCxn2 then
-		cameraCxn2 = RunService.Heartbeat:Connect(function(delta)
-			local char = player.Character
-			if not char then
-				return
-			end
-			local head = char:FindFirstChild("Head")
-			if not head then
-				return
-			end
-			cam.CFrame = CFrame.lookAt(camPart.Position, head.Position)
-		end)
-	end
-end
-
 local function resetCameraMode1(dontResetToCustom: boolean)
 	if cameraCxn then
+		-- print("reset cameraCxn")
 		cameraCxn:Disconnect()
 		cameraCxn = nil
 	end
@@ -98,8 +66,57 @@ end
 
 local function resetCameraMode2()
 	if cameraCxn2 then
+		print("reset cameraCxn2")
 		cameraCxn2:Disconnect()
 		cameraCxn2 = nil
+	end
+end
+
+local function minigameCameraMode(detectorName)
+	cam.CameraType = Enum.CameraType.Scriptable
+
+	if (cameraCxn == nil) or (lastDetector ~= nil and lastDetector ~= detectorName) then
+		-- print("set lastDetector as " .. detectorName)
+		lastDetector = detectorName
+		resetCameraMode1(true)
+		cameraCxn = RunService.Heartbeat:Connect(function(delta)
+			local char = player.Character
+			if not char then
+				return
+			end
+			local head = char:FindFirstChild("Head")
+			if not head then
+				return
+			end
+			-- print("Connection 1")
+			cam.CFrame = CFrame.lookAt(head.Position + Vector3.new(0, 50, 50), head.Position)
+		end)
+	end
+end
+
+local function cameraOnPart(camPart: BasePart, detectorName)
+	cam.CameraType = Enum.CameraType.Scriptable
+	-- print("cameraonPart")
+	-- print(lastDetector)
+	-- print(detectorName)
+	-- If there is no camera connection
+	-- Or if the detector is a different detector
+	if (cameraCxn2 == nil) or (lastDetector ~= nil and lastDetector ~= detectorName) then
+		lastDetector = detectorName
+		resetCameraMode2()
+		print("cameracxn2 and set lastDetector")
+		cameraCxn2 = RunService.Heartbeat:Connect(function(delta)
+			local char = player.Character
+			if not char then
+				return
+			end
+			local head = char:FindFirstChild("Head")
+			if not head then
+				return
+			end
+			print("Connection 2")
+			cam.CFrame = CFrame.lookAt(camPart.Position, head.Position)
+		end)
 	end
 end
 
@@ -111,7 +128,6 @@ local function tpPlayer(cf: CFrame)
 	char:PivotTo(cf)
 end
 
-local lastDetector = nil
 -- local detectorCxns = {}
 local detectors_ON = false
 
@@ -132,7 +148,6 @@ local function startCameraHandler()
 	local detectorChildren = detectorFolder:GetChildren()
 
 	for _, detector in detectorChildren do
-		print(detector.Name)
 		if detector:IsA("BasePart") then
 			local overlap_params = OverlapParams.new()
 			overlap_params.FilterType = Enum.RaycastFilterType.Exclude
@@ -160,12 +175,14 @@ local function startCameraHandler()
 						if not _player then
 							continue
 						end
+						print("Detected player in camera detect zone: " .. detector.Name)
 
 						local cameraPartAttribute = detector:GetAttribute("CameraPart")
 
 						if cameraPartAttribute == "None" then
+							-- print("reset camera")
 							resetCameraMode2()
-							minigameCameraMode()
+							minigameCameraMode(detector.Name)
 						else
 							local cameraPart = detectorFolder.Parent.Parent.Cameras:FindFirstChild(cameraPartAttribute)
 							if not cameraPart then
@@ -174,7 +191,7 @@ local function startCameraHandler()
 							end
 
 							resetCameraMode1(true)
-							cameraOnPart(cameraPart)
+							cameraOnPart(cameraPart, detector.Name)
 						end
 					end
 				end
@@ -374,7 +391,7 @@ local function startMinigame()
 	eventsModule.FireExitBattleGui()
 	eventsModule.FireSmoothTransitionFunction(2)
 	eventsModule.FireSetIsCameraRelative(false)
-	minigameCameraMode()
+	minigameCameraMode("none")
 
 	-- tp player to that cframe
 	tpPlayer(ReplicatedStorage.Values.MinigameCFrame.Value)

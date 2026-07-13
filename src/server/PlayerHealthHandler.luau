@@ -13,6 +13,8 @@ Players.PlayerAdded:Connect(function(player)
 		local hum: Humanoid = char:WaitForChild("Humanoid")
 		hum.RequiresNeck = false
 		hum.BreakJointsOnDeath = false
+
+		hum:SetStateEnabled(Enum.HumanoidStateType.Ragdoll, false)
 	end)
 end)
 
