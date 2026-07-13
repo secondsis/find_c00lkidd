@@ -5,6 +5,7 @@ TODO:
 SWAP OUT ALL TELEPORT PASSWORDS FOR NEW ONES BECAUSE THE STUFF IS ON GITHUB...
 test whether the get up button works (Roblox-only)
 test "easy mode" when dying to lava 2 times (Roblox-only)
+test it works overall in roblox
 fix Bribe ending in main game?
 
 fix when timer reaches 0 and u just barely get the trophy but dont, it bugs out for the rest of the game - honestly this is so rare i think ima leave it until its a real issue cuz idk how to fix rn
