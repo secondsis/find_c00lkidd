@@ -6,6 +6,7 @@ local ServerStorage = game:GetService("ServerStorage")
 local CollectionService = game:GetService("CollectionService")
 local Players = game:GetService("Players")
 local ServerScriptService = game:GetService("ServerScriptService")
+local SoundService = game:GetService("SoundService")
 local TextChatService = game:GetService("TextChatService")
 
 -- WHY ARE SPIKES LAGGY?
@@ -172,12 +173,12 @@ eventsModule.ConnectRemoteRestartBattle(RestartBattle)
 local function damagePlayer(player: Player, part)
 	local char = player.Character
 	if not char then
-		return
+		return false
 	end
 	--prob couldve done findfirstoftype or whatevs (ok did it)
 	local humanoid: Humanoid = char:FindFirstChildOfClass("Humanoid")
 	if not humanoid then
-		return
+		return false
 	end
 	local success, msg = pcall(function()
 		assert(humanoid:IsA("Humanoid"))
@@ -190,7 +191,7 @@ local function damagePlayer(player: Player, part)
 	local ignoreInvincibility = part:GetAttribute("IgnoreInvincibility")
 	local invincible = player:GetAttribute("Invincible")
 	if invincible and not ignoreInvincibility then
-		return
+		return false
 	end
 
 	local lastDamageTick = debounceMap[player][part] or 0
@@ -202,6 +203,9 @@ local function damagePlayer(player: Player, part)
 		local amount = part:GetAttribute("DamageAmount") or 10
 		humanoid:TakeDamage(amount)
 		debounceMap[player][part] = now
+		return true
+	else
+		return false
 	end
 end
 
@@ -1074,7 +1078,10 @@ local function homingProjectileAttack()
 	-- battleWait(5)
 	return false
 end
-
+local hitSounds = {
+	SoundService.SFX["Undertale - Attack hit"],
+	SoundService.SFX["Kid saying Ouch.wav"],
+}
 local function chargeAttack(level: number)
 	local baits = false
 	if level == 1 or level == 2 then
@@ -1082,6 +1089,79 @@ local function chargeAttack(level: number)
 	elseif level == 3 then
 		baits = true
 	end
+
+	local hitboxes = {}
+	local op = OverlapParams.new()
+	local chargeAttackInfoPart = Instance.new("Part")
+	chargeAttackInfoPart:SetAttribute("DamageCooldown", 2)
+	chargeAttackInfoPart:SetAttribute("DamageAmount", 45)
+
+	local hitboxPrefab = Instance.new("Part")
+	hitboxPrefab.CanCollide = false
+	hitboxPrefab.CanTouch = false
+	hitboxPrefab.Color = Color3new(1, 0, 0)
+	hitboxPrefab.Transparency = 0.7
+	hitboxPrefab.Material = Enum.Material.Neon
+
+	local function createHitbox(cframe: CFrame, size: Vector3, duration: number, visible: boolean)
+		local newHitbox = hitboxPrefab:Clone()
+		newHitbox.Size = size
+		hitboxPrefab.CFrame = cframe
+		table.insert(hitboxes, newHitbox)
+
+		if visible then
+			TweenService:Create(newHitbox, TweenInfonew(duration, Enum.EasingStyle.Exponential), {
+				Transparency = 1,
+			}):Play()
+		else
+			newHitbox.Transparency = 1
+		end
+
+		local hitboxCxn
+		hitboxCxn = RunService.Heartbeat:Connect(function()
+			if not newHitbox then
+				hitboxCxn:Disconnect()
+				hitboxCxn = nil
+				return
+			end
+			local gotHit = workspace:GetPartsInPart(newHitbox, op)
+			for _, other in gotHit do
+				if not other.Parent then
+					continue
+				end
+				local player = Players:GetPlayerFromCharacter(other.Parent)
+				if not player then
+					continue
+				end
+
+				-- hit
+				local succ = damagePlayer(player, chargeAttackInfoPart)
+				if succ then
+					local newSfx = hitSounds[math.random(#hitSounds)]:Clone()
+					newSfx.Parent = gotHit[1]
+					newSfx:Play()
+					task.spawn(function()
+						newSfx.Stopped:Wait()
+						newSfx:Destroy()
+					end)
+					-- remove all other hitboxes
+					for _, hitbox in hitboxes do
+						hitbox:Destroy()
+					end
+					table.clear(hitboxes)
+				end
+			end
+		end)
+		newHitbox.Parent = workspace
+		task.wait(duration)
+		if hitboxCxn then
+			hitboxCxn:Disconnect()
+			hitboxCxn = nil
+		end
+		table.remove(hitboxes, table.find(hitboxes, newHitbox))
+		newHitbox:Destroy()
+	end
+
 	-- rig moves in a straight line to player like walkspeed override
 	local newEvilRig = evilRig:Clone()
 	newEvilRig:PivotTo(workspace.BattleArena.MiddleSpawn.CFrame)
@@ -1142,14 +1222,15 @@ local function chargeAttack(level: number)
 			end
 		end
 		-- this doesnt rlly work as a killbrick?
-		local cloneHrp = rigClone.HumanoidRootPart
-		CollectionService:AddTag(cloneHrp, "Killbrick")
-		cloneHrp:SetAttribute("DamageCooldown", 2)
-		cloneHrp:SetAttribute("DamageAmount", 60)
+		-- local cloneHrp = rigClone.HumanoidRootPart
+		-- CollectionService:AddTag(cloneHrp, "Killbrick")
+		-- cloneHrp:SetAttribute("DamageCooldown", 2)
+		-- cloneHrp:SetAttribute("DamageAmount", 60)
 
 		cutsceneModule.setModelTransparency(newEvilRig, 1)
 		rigClone.Parent = workspace
-		addKillbrickConnection(cloneHrp)
+
+		-- addKillbrickConnection(cloneHrp)
 		if baits and math.round(math.random()) == 0 then
 			if not playerFocus then
 				playerFocus = getRandomPlayer()
@@ -1166,16 +1247,33 @@ local function chargeAttack(level: number)
 				)
 			)
 		end
-		local lungeCxn = RunService.PostSimulation:Connect(function(delta)
+		local lastHitboxPos = Vector3.zero
+		local function lungeFunc(delta)
 			rigClone.PrimaryPart.CFrame += rigClone.PrimaryPart.CFrame.LookVector * delta * 200
+			if lastHitboxPos and (lastHitboxPos - rigClone.PrimaryPart.Position).Magnitude > 2.5 then
+				createHitbox(rigClone.PrimaryPart.CFrame, Vector3new(5, 5, 10), 0.2, true)
+				lastHitboxPos = rigClone.PrimaryPart.Position
+			end
+		end
+		local lungeCxn = RunService.PostSimulation:Connect(function(delta)
+			if not rigClone then
+				return
+			end
+
+			pcall(lungeFunc, delta)
 		end)
 
 		-- if battleWait(2) then
 		-- 	return true
 		-- end
 		task.wait(2)
-		removeKillbrickConnection(cloneHrp)
+		-- removeKillbrickConnection(cloneHrp)
 		lungeCxn:Disconnect()
+		lungeCxn = nil
+		for _, hitbox in hitboxes do
+			hitbox:Destroy()
+		end
+		table.clear(hitboxes)
 		rigClone:Destroy()
 		cutsceneModule.setModelTransparency(newEvilRig, 0)
 		pauseTracking = false
@@ -1239,10 +1337,11 @@ local function levelOneAttacks(): boolean
 	end
 
 	local lastAttack = nil
-	-- floorIsLavaAttack1(1)
-	-- floorIsLavaAttack1(1)
-	-- floorIsLavaAttack1(1)
-	task.wait(10)
+
+	chargeAttack(1)
+	chargeAttack(1)
+	chargeAttack(1)
+	-- task.wait(10)
 
 	-- TextChatService:DisplayBubble(evilRig, "So you can do that, I see...")
 
@@ -1374,7 +1473,7 @@ local function HANDLE_BATTLE()
 	end
 	-- If it is quick Start, make sure the player teleports onto the platform that has already risen.
 
-	task.wait(3)
+	task.wait(10)
 	while true do
 		if battle_cancelled then
 			return

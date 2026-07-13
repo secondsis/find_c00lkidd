@@ -8,7 +8,8 @@ test "easy mode" when dying to lava 2 times (Roblox-only)
 test that the endings kill the boss sufficiently
 test and adapt time per ending
 fix Bribe ending in main game?
-fix the charge attack it does 0 dmg
+
+fix when timer reaches 0 and u just barely get the trophy but dont, it bugs out for the rest of the game - honestly this is so rare i think ima leave it until its a real issue cuz idk how to fix rn
 
 
 fix shedletsky trophy falling down in the b&w scene
