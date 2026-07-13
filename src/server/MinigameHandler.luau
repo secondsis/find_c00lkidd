@@ -92,7 +92,7 @@ local function finishMinigameEarly(ending: string)
 	end
 end
 
-local function startMinigame(ending: string)
+local function startMinigame(test: string)
 	local newMap = minigameMap:Clone()
 	newMap.Parent = workspace
 	-- print("gonna clear")
@@ -102,7 +102,7 @@ local function startMinigame(ending: string)
 	else
 		minigame_index = 1
 	end
-	local endingToGet = MINIGAME_QUEUE[minigame_index]
+	local ending = MINIGAME_QUEUE[minigame_index]
 	-- let the transition happen
 	task.wait(1)
 	-- after transition start

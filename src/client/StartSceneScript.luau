@@ -263,6 +263,7 @@ local function StopMusic()
 end
 
 eventsModule.ConnectPlayerDeath(StopMusic)
+eventsModule.ConnectRemoteBossDeath(StopMusic)
 
 if not quickStart then
 	fightIntroScene()

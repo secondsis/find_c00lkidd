@@ -1349,18 +1349,18 @@ local function levelOneAttacks(): boolean
 
 	-- TextChatService:DisplayBubble(evilRig, "So you can do that, I see...")
 
-	-- for i = 1, 3 do
-	-- 	local index = math.random(#attacks)
-	-- 	while lastAttack and index == lastAttack do
-	-- 		index = math.random(#attacks) -- roll again until its different
-	-- 	end
-	-- 	attacks[index](1)
-	-- 	lastAttack = index
-	-- 	-- if attacks[math.random(#attacks)](1) then
-	-- 	-- 	return true
-	-- 	-- end
-	-- 	task.wait(1)
-	-- end
+	for i = 1, 3 do
+		local index = math.random(#attacks)
+		while lastAttack and index == lastAttack do
+			index = math.random(#attacks) -- roll again until its different
+		end
+		attacks[index](1)
+		lastAttack = index
+		-- if attacks[math.random(#attacks)](1) then
+		-- 	return true
+		-- end
+		task.wait(1)
+	end
 	return false
 end
 
@@ -1380,19 +1380,19 @@ local function levelTwoAttacks(): boolean
 	end
 	local lastAttack = nil
 	task.wait(5)
-	-- for i = 1, 5 do
-	-- 	local index = math.random(#attacks)
-	-- 	while lastAttack and index == lastAttack do
-	-- 		index = math.random(#attacks) -- roll again until its different
-	-- 	end
-	-- 	attacks[index](2)
-	-- 	lastAttack = index
+	for i = 1, 5 do
+		local index = math.random(#attacks)
+		while lastAttack and index == lastAttack do
+			index = math.random(#attacks) -- roll again until its different
+		end
+		attacks[index](2)
+		lastAttack = index
 
-	-- 	-- if attacks[math.random(#attacks)](2) then
-	-- 	-- 	return true
-	-- 	-- end
-	-- 	task.wait(1)
-	-- end
+		-- if attacks[math.random(#attacks)](2) then
+		-- 	return true
+		-- end
+		task.wait(1)
+	end
 	return false
 end
 
@@ -1414,18 +1414,18 @@ local function levelThreeAttacks(): boolean
 	end
 	local lastAttack = nil
 	task.wait(5)
-	-- for i = 1, 6 do
-	-- 	local index = math.random(#attacks)
-	-- 	while lastAttack and index == lastAttack do
-	-- 		index = math.random(#attacks) -- roll again until its different
-	-- 	end
-	-- 	attacks[index](3)
-	-- 	lastAttack = index
-	-- 	-- if attacks[math.random(#attacks)](2) then
-	-- 	-- 	return true
-	-- 	-- end
-	-- 	task.wait(1)
-	-- end
+	for i = 1, 6 do
+		local index = math.random(#attacks)
+		while lastAttack and index == lastAttack do
+			index = math.random(#attacks) -- roll again until its different
+		end
+		attacks[index](3)
+		lastAttack = index
+		-- if attacks[math.random(#attacks)](2) then
+		-- 	return true
+		-- end
+		task.wait(1)
+	end
 	return false
 end
 
@@ -1434,9 +1434,9 @@ local function fireMinigame()
 		eventsModule.FireStartMinigame(player)
 	end
 
-	local ending = eventsModule.FireGetCurrentMinigameEnding()
+	-- local ending = eventsModule.FireGetCurrentMinigameEnding()
 
-	eventsModule.FireStartMinigameServerCheck(ending)
+	eventsModule.FireStartMinigameServerCheck()
 end
 
 local vulnerableRig = nil
@@ -1459,7 +1459,6 @@ end
 
 local function OnBossDeath()
 	-- End Music -- Client
-	eventsModule.FireRemoteBossDeath()
 
 	-- Stop Boss Health bar -- Client
 
@@ -1468,8 +1467,9 @@ local function OnBossDeath()
 	-- Give the outro cutscene to the player (found in ServerStorage)
 	local OutroLocalScript = ServerStorage.SecureScripts.OutroScript
 	for _, player in Players:GetPlayers() do
+		eventsModule.FireRemoteBossDeath(player)
 		local newScript = OutroLocalScript:Clone()
-		newScript.Parent = player.PlayerScripts
+		newScript.Parent = player.Character
 		newScript.Enabled = true
 	end
 end
@@ -1536,6 +1536,7 @@ local function HANDLE_BATTLE()
 		local bossDied = false
 		local bossDeathCxn = nil
 		bossDeathCxn = bossDeathEvent.Event:Connect(function()
+			removeBossVulnerable()
 			print("BOSS DIED. BATTLE END.")
 			bossDied = true
 			bossDeathCxn:Disconnect()
