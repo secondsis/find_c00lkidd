@@ -6,7 +6,7 @@ SWAP OUT ALL TELEPORT PASSWORDS FOR NEW ONES BECAUSE THE STUFF IS ON GITHUB...
 test whether the get up button works (Roblox-only)
 test "easy mode" when dying to lava 2 times (Roblox-only)
 test that the endings kill the boss sufficiently
-test and adapt time per ending
+test and adapt time per ending - WHY DOES IT NOT WORK
 fix Bribe ending in main game?
 
 fix when timer reaches 0 and u just barely get the trophy but dont, it bugs out for the rest of the game - honestly this is so rare i think ima leave it until its a real issue cuz idk how to fix rn
@@ -14,6 +14,7 @@ fix when timer reaches 0 and u just barely get the trophy but dont, it bugs out 
 
 fix shedletsky trophy falling down in the b&w scene
 fix the trophies not being positioned correctly in the black and white view
+fix the player not walking in the way of the camera bleh controls suck
 
 create the list of ending trophies (yeah) in minigame, / implementing the main game way of doing it
 

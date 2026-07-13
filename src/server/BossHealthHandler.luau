@@ -15,7 +15,7 @@ local MAX_BOSS_HEALTH = 100
 
 local BOSS_HEALTH = MAX_BOSS_HEALTH
 
-local NUM_ENDINGS = 12
+local NUM_ENDINGS = 3
 
 -- Make it impossible to kill the boss until the player gets the last trophy
 local damagePerAttack = BOSS_HEALTH / NUM_ENDINGS

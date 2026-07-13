@@ -70,6 +70,7 @@ local killbrickConnections = {}
 local battle_cancelled = false
 local lava_attack = false
 local lava_deaths = 0
+local deaths = 0
 local quickStart = true -- reset this
 local noobMode = false
 
@@ -79,7 +80,8 @@ eventsModule.ConnectRemoteSetBattleQuickStart(function(player)
 end)
 
 -- Died too much to lava?
-eventsModule.ConnectRemoteSetNoobMode(function(player, lavaDeaths: number)
+eventsModule.ConnectRemoteSetNoobMode(function(player, lavaDeaths: number, _deaths: number)
+	deaths = _deaths
 	lava_deaths = lavaDeaths
 	if lavaDeaths >= 2 then
 		noobMode = true
@@ -130,6 +132,7 @@ local function RestartBattle(player: Player)
 		["Password"] = "Brombus_" .. tostring(player.UserId % 236 * 100),
 		["QuickStart"] = true,
 		["LavaDeaths"] = lava_deaths,
+		["Deaths"] = deaths,
 	})
 end
 
@@ -153,6 +156,7 @@ eventsModule.ConnectRemotePlayerDeath(function(player)
 	if lava_attack then
 		lava_deaths += 1
 	end
+	deaths += 1
 
 	battle_cancelled = true
 end)
@@ -1338,10 +1342,10 @@ local function levelOneAttacks(): boolean
 
 	local lastAttack = nil
 
-	chargeAttack(1)
-	chargeAttack(1)
-	chargeAttack(1)
-	-- task.wait(10)
+	-- chargeAttack(1)
+	-- chargeAttack(1)
+	-- chargeAttack(1)
+	task.wait(5)
 
 	-- TextChatService:DisplayBubble(evilRig, "So you can do that, I see...")
 
@@ -1375,19 +1379,20 @@ local function levelTwoAttacks(): boolean
 		table.remove(attacks, table.find(attacks, floorIsLavaAttack1))
 	end
 	local lastAttack = nil
-	for i = 1, 5 do
-		local index = math.random(#attacks)
-		while lastAttack and index == lastAttack do
-			index = math.random(#attacks) -- roll again until its different
-		end
-		attacks[index](2)
-		lastAttack = index
+	task.wait(5)
+	-- for i = 1, 5 do
+	-- 	local index = math.random(#attacks)
+	-- 	while lastAttack and index == lastAttack do
+	-- 		index = math.random(#attacks) -- roll again until its different
+	-- 	end
+	-- 	attacks[index](2)
+	-- 	lastAttack = index
 
-		-- if attacks[math.random(#attacks)](2) then
-		-- 	return true
-		-- end
-		task.wait(1)
-	end
+	-- 	-- if attacks[math.random(#attacks)](2) then
+	-- 	-- 	return true
+	-- 	-- end
+	-- 	task.wait(1)
+	-- end
 	return false
 end
 
@@ -1408,18 +1413,19 @@ local function levelThreeAttacks(): boolean
 		table.remove(attacks, table.find(attacks, floorIsLavaAttack1))
 	end
 	local lastAttack = nil
-	for i = 1, 6 do
-		local index = math.random(#attacks)
-		while lastAttack and index == lastAttack do
-			index = math.random(#attacks) -- roll again until its different
-		end
-		attacks[index](3)
-		lastAttack = index
-		-- if attacks[math.random(#attacks)](2) then
-		-- 	return true
-		-- end
-		task.wait(1)
-	end
+	task.wait(5)
+	-- for i = 1, 6 do
+	-- 	local index = math.random(#attacks)
+	-- 	while lastAttack and index == lastAttack do
+	-- 		index = math.random(#attacks) -- roll again until its different
+	-- 	end
+	-- 	attacks[index](3)
+	-- 	lastAttack = index
+	-- 	-- if attacks[math.random(#attacks)](2) then
+	-- 	-- 	return true
+	-- 	-- end
+	-- 	task.wait(1)
+	-- end
 	return false
 end
 
@@ -1428,7 +1434,9 @@ local function fireMinigame()
 		eventsModule.FireStartMinigame(player)
 	end
 
-	eventsModule.FireStartMinigameServerCheck("Snack")
+	local ending = eventsModule.FireGetCurrentMinigameEnding()
+
+	eventsModule.FireStartMinigameServerCheck(ending)
 end
 
 local vulnerableRig = nil
@@ -1446,6 +1454,23 @@ end
 local function removeBossVulnerable()
 	if vulnerableRig then
 		vulnerableRig:Destroy()
+	end
+end
+
+local function OnBossDeath()
+	-- End Music -- Client
+	eventsModule.FireRemoteBossDeath()
+
+	-- Stop Boss Health bar -- Client
+
+	-- Outro Cutscene
+
+	-- Give the outro cutscene to the player (found in ServerStorage)
+	local OutroLocalScript = ServerStorage.SecureScripts.OutroScript
+	for _, player in Players:GetPlayers() do
+		local newScript = OutroLocalScript:Clone()
+		newScript.Parent = player.PlayerScripts
+		newScript.Enabled = true
 	end
 end
 
@@ -1519,6 +1544,7 @@ local function HANDLE_BATTLE()
 
 		task.wait(10)
 		if bossDied then
+			OnBossDeath()
 			break
 		end
 		removeBossVulnerable()

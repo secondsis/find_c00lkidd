@@ -36,8 +36,8 @@ if tpData then
 		quickStart = true
 		eventsModule.FireRemoteSetBattleQuickStart()
 	end
-	if tpData["LavaDeaths"] then
-		eventsModule.FireRemoteSetBattleNoobMode(tpData["LavaDeaths"])
+	if tpData["LavaDeaths"] and tpData["Deaths"] then
+		eventsModule.FireRemoteSetNoobMode(tpData["LavaDeaths"], tpData["Deaths"])
 	end
 end
 

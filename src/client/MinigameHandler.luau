@@ -24,14 +24,12 @@ local lastDetector = nil
 local minigame_index = 0
 
 local MINIGAME_QUEUE = {
-
-	-- "Snack",
+	"Snack",
 	"Drink",
 	"Bribe",
 	"Frogs.",
 	"Cola Addiction",
 	"Delusional",
-	-- "Drink",
 	"Escaped",
 	"McDarndolds",
 	"SPEEN",
@@ -66,7 +64,7 @@ end
 
 local function resetCameraMode2()
 	if cameraCxn2 then
-		print("reset cameraCxn2")
+		-- print("reset cameraCxn2")
 		cameraCxn2:Disconnect()
 		cameraCxn2 = nil
 	end
@@ -104,7 +102,7 @@ local function cameraOnPart(camPart: BasePart, detectorName)
 	if (cameraCxn2 == nil) or (lastDetector ~= nil and lastDetector ~= detectorName) then
 		lastDetector = detectorName
 		resetCameraMode2()
-		print("cameracxn2 and set lastDetector")
+		-- print("cameracxn2 and set lastDetector")
 		cameraCxn2 = RunService.Heartbeat:Connect(function(delta)
 			local char = player.Character
 			if not char then
@@ -114,7 +112,7 @@ local function cameraOnPart(camPart: BasePart, detectorName)
 			if not head then
 				return
 			end
-			print("Connection 2")
+			-- print("Connection 2")
 			cam.CFrame = CFrame.lookAt(camPart.Position, head.Position)
 		end)
 	end
@@ -175,7 +173,7 @@ local function startCameraHandler()
 						if not _player then
 							continue
 						end
-						print("Detected player in camera detect zone: " .. detector.Name)
+						-- print("Detected player in camera detect zone: " .. detector.Name)
 
 						local cameraPartAttribute = detector:GetAttribute("CameraPart")
 
@@ -272,6 +270,12 @@ local timerTick2 = SoundService.ClockTick2
 
 local onTick2 = false
 
+local function getCurrentMinigameEnding()
+	return MINIGAME_QUEUE[minigame_index]
+end
+
+-- eventsModule.ConnectRemoteGetCurrentMinigameEnding(getCurrentMinigameEnding)
+
 local function lowerMusic()
 	musicLowerTween:Play()
 	musicLowerTween.Completed:Wait()
@@ -323,7 +327,7 @@ local endingGetSfx = SoundService.SFX.EndingGetSfx
 local battleReturnSfx = SoundService.SFX.BattleReturnWithTrophySfx
 
 eventsModule.ConnectObtainedTrophyEffect(function(object: Model, modelName: string, extra)
-	print("trophy obtained effect")
+	-- print("trophy obtained effect")
 	eventsModule.FireDisableMovementEvent(false)
 	local char = player.Character
 	if not char then

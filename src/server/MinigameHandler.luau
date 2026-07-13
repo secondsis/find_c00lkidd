@@ -26,19 +26,36 @@ local minigameEndedBindableEvent = signalModule.getBindableEvent("MinigameEnded"
 	NileGreen
 ]]
 local timePerEnding = {
-	["McDarndolds"] = 15,
+	["McDarndolds"] = 10,
 	-- ["Rig?"] = 30,
 	["Delusional"] = 50,
 	["SPEEN"] = 50,
 	["Escaped"] = 10,
-	["Drink"] = 30,
-	["Snack"] = 30,
-	["Bribe"] = 50,
-	["Frogs."] = 30,
-	["Cola Addiction"] = 30,
-	["Shedletsky"] = 30,
+	["Drink"] = 10,
+	["Snack"] = 15,
+	["Bribe"] = 30,
+	["Frogs."] = 15,
+	["Cola Addiction"] = 15,
+	["Shedletsky"] = 15,
 	["Sleep"] = 10,
 	["NileGreen"] = 10,
+}
+
+local minigame_index = 0
+
+local MINIGAME_QUEUE = {
+	"Snack",
+	"Drink",
+	"Bribe",
+	"Frogs.",
+	"Cola Addiction",
+	"Delusional",
+	"Escaped",
+	"McDarndolds",
+	"SPEEN",
+	"Sleep",
+	"NileGreen",
+	"Shedletsky",
 }
 
 local updateTimerEvent = ReplicatedStorage.AllClientEvents.UpdateTimer
@@ -78,8 +95,14 @@ end
 local function startMinigame(ending: string)
 	local newMap = minigameMap:Clone()
 	newMap.Parent = workspace
-	print("gonna clear")
+	-- print("gonna clear")
 	eventsModule.FireClearMoney()
+	if minigame_index < #MINIGAME_QUEUE then
+		minigame_index += 1
+	else
+		minigame_index = 1
+	end
+	local endingToGet = MINIGAME_QUEUE[minigame_index]
 	-- let the transition happen
 	task.wait(1)
 	-- after transition start
@@ -123,9 +146,14 @@ local function startMinigame(ending: string)
 	end
 
 	ReplicatedStorage.AllClientEvents.EndMinigame:FireAllClients()
+	minigame_index -= 1
 	minigameEndedBindableEvent:Fire()
 	task.wait(3)
 	newMap:Destroy()
+end
+
+local function getCurrentMinigameEnding()
+	return MINIGAME_QUEUE[minigame_index]
 end
 
 -- ONLY SINGLEPLAYER
@@ -135,6 +163,7 @@ end
 
 eventsModule.ConnectStartMinigameServerCheck(startMinigame)
 eventsModule.ConnectFinishMinigameEarly(finishMinigameEarly)
+eventsModule.ConnectGetCurrentMinigameEnding(getCurrentMinigameEnding)
 
 local signalModule = require(ReplicatedStorage.SignalGetter)
 local pauseEvent = signalModule.getBindableEvent("PauseMinigameTimer")
