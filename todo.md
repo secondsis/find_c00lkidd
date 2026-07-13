@@ -3,10 +3,17 @@ Adding this back in because I really don't care anymore what you think about my 
 TODO: 
 
 SWAP OUT ALL TELEPORT PASSWORDS FOR NEW ONES BECAUSE THE STUFF IS ON GITHUB...
-test whether the get up button works
-add an "easy mode" if player dies 2 times to lava cuz it is genuinely unfair
-fix Bribe ending
+test whether the get up button works (Roblox-only)
+test "easy mode" when dying to lava 2 times (Roblox-only)
+test that the endings loop or kill the boss sufficiently
+test and adapt time per ending
+test that endings are redone if failed
+fix Bribe ending also fix in main game
+idk how to get drink ending?
+fix the charge attack it does 0 dmg
 
+
+fix shedletsky trophy falling down in the b&w scene
 fix the trophies not being positioned correctly in the black and white view
 
 create the list of ending trophies (yeah) in minigame, / implementing the main game way of doing it

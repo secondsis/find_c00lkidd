@@ -20,7 +20,11 @@ local CFramenew = CFrame.new
 local cameraCxn = nil
 local cameraCxn2 = nil
 
+local minigame_index = 0
+
 local MINIGAME_QUEUE = {
+	"NileGreen",
+	"Shedletsky",
 	"Snack",
 	"Bribe",
 	"Frogs.",
@@ -30,7 +34,6 @@ local MINIGAME_QUEUE = {
 	"Escaped",
 	"McDarndolds",
 	"SPEEN",
-	"Shedletsky_CHICKEN",
 	"Sleep",
 }
 
@@ -129,6 +132,7 @@ local function startCameraHandler()
 	local detectorChildren = detectorFolder:GetChildren()
 
 	for _, detector in detectorChildren do
+		print(detector.Name)
 		if detector:IsA("BasePart") then
 			local overlap_params = OverlapParams.new()
 			overlap_params.FilterType = Enum.RaycastFilterType.Exclude
@@ -348,12 +352,17 @@ end
 -- START MINIGAME MAIN
 local function startMinigame()
 	onTick2 = false
-	local endingToGet = table.remove(MINIGAME_QUEUE, 1)
+	if minigame_index < #MINIGAME_QUEUE then
+		minigame_index += 1
+	else
+		minigame_index = 1
+	end
+	local endingToGet = MINIGAME_QUEUE[minigame_index]
 	-- local endingToGet = "Snack"
 	task.spawn(lowerMusic)
 
 	-- make only that ending appear on the map
-	eventsModule.FireCloneMinigameAssets(endingToGet)
+	eventsModule.FireCloneMinigameAssets(endingToGet) -- <- check this
 	local waitCloneFinishEvent = ReplicatedStorage.WaitEvents.AssetCloningFinished
 	waitCloneFinishEvent.OnClientEvent:Wait()
 
@@ -398,6 +407,9 @@ local function endMinigame(succeeded: boolean, ending: string)
 		return
 	end
 	char:PivotTo(ReplicatedStorage.Values.ArenaCFrame.Value)
+	-- delete anything in inventory
+	eventsModule.FireRemoteRemoveItem()
+
 	if succeeded then
 		task.wait(1)
 		battleReturnSfx:Play()
@@ -407,6 +419,7 @@ local function endMinigame(succeeded: boolean, ending: string)
 		eventsModule.FireDisableMovementEvent(true)
 	else
 		eventsModule.FireDisableMovementEvent(true)
+		minigame_index -= 1
 	end
 end
 

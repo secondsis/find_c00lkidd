@@ -67,10 +67,22 @@ local resumeBattleEvent = ReplicatedStorage.RemoteEvents.ResumeBattle
 local debounceMap = {}
 local killbrickConnections = {}
 local battle_cancelled = false
+local lava_attack = false
+local lava_deaths = 0
 local quickStart = true -- reset this
+local noobMode = false
 
-eventsModule.ConnectSetBattleQuickStart(function()
+eventsModule.ConnectRemoteSetBattleQuickStart(function(player)
+	print("quick started")
 	quickStart = true
+end)
+
+-- Died too much to lava?
+eventsModule.ConnectRemoteSetNoobMode(function(player, lavaDeaths: number)
+	lava_deaths = lavaDeaths
+	if lavaDeaths >= 2 then
+		noobMode = true
+	end
 end)
 
 Players.PlayerAdded:Connect(function(player)
@@ -116,6 +128,7 @@ local function RestartBattle(player: Player)
 	eventsModule.FireTeleportToPlace(player, 78907491464330, {
 		["Password"] = "Brombus_" .. tostring(player.UserId % 236 * 100),
 		["QuickStart"] = true,
+		["LavaDeaths"] = lava_deaths,
 	})
 end
 
@@ -136,6 +149,9 @@ eventsModule.ConnectRemotePlayerDeath(function(player)
 
 	-- Fire it back for the client to handle the gui stuff
 	-- eventsModule.FireRemotePlayerDeath(player)
+	if lava_attack then
+		lava_deaths += 1
+	end
 
 	battle_cancelled = true
 end)
@@ -384,6 +400,7 @@ local lavaPart = killbrickFolder.Lava
 local function floorIsLavaAttack1(level: number)
 	local platformAmount = 50
 	local fakes = false
+	lava_attack = true
 
 	if level == 1 then
 		platformAmount = 50
@@ -565,12 +582,14 @@ local function floorIsLavaAttack1(level: number)
 	-- end
 	removeKillbrickConnection(newLava)
 	newLava:Destroy()
+	lava_attack = false
 	for _, platform in platforms do
 		platform:Destroy()
 	end
 end
 
 local function floorIsLavaAttack2()
+	lava_attack = true
 	local changeStateEvent = signalModule.getRemoteEvent("SetPlayerStateEnabled")
 	for _, plr in Players:GetPlayers() do
 		changeStateEvent:FireClient(plr, Enum.HumanoidStateType.Jumping, true)
@@ -617,6 +636,7 @@ local function floorIsLavaAttack2()
 	removeKillbrickConnection(newLava)
 	obbySegment:Destroy()
 	newLava:Destroy()
+	lava_attack = false
 	for _, plr in Players:GetPlayers() do
 		changeStateEvent:FireClient(plr, Enum.HumanoidStateType.Jumping, false)
 	end
@@ -1121,6 +1141,7 @@ local function chargeAttack(level: number)
 				v.CanCollide = false
 			end
 		end
+		-- this doesnt rlly work as a killbrick?
 		local cloneHrp = rigClone.HumanoidRootPart
 		CollectionService:AddTag(cloneHrp, "Killbrick")
 		cloneHrp:SetAttribute("DamageCooldown", 2)
@@ -1213,6 +1234,10 @@ local function levelOneAttacks(): boolean
 		floorIsLavaAttack1,
 	}
 
+	if noobMode then
+		table.remove(attacks, table.find(attacks, floorIsLavaAttack1))
+	end
+
 	local lastAttack = nil
 	-- floorIsLavaAttack1(1)
 	-- floorIsLavaAttack1(1)
@@ -1247,6 +1272,9 @@ local function levelTwoAttacks(): boolean
 		chargeAttack,
 		sweeperAndGeyser,
 	}
+	if noobMode then
+		table.remove(attacks, table.find(attacks, floorIsLavaAttack1))
+	end
 	local lastAttack = nil
 	for i = 1, 5 do
 		local index = math.random(#attacks)
@@ -1277,6 +1305,9 @@ local function levelThreeAttacks(): boolean
 		homingProjectileAttack,
 		spikeAndSlashes,
 	}
+	if noobMode then
+		table.remove(attacks, table.find(attacks, floorIsLavaAttack1))
+	end
 	local lastAttack = nil
 	for i = 1, 6 do
 		local index = math.random(#attacks)

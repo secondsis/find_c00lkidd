@@ -16,6 +16,16 @@ end)
 
 local updateMoneyEvent = ReplicatedStorage.RemoteEvents.RemoteUpdateMoney
 
+local function ClearMoney()
+	print("Clearing money?")
+
+	for player, _ in playerMoneyList do
+		print("Cleared money!")
+		playerMoneyList[player] = 0
+		eventsModule.FireRemoteUpdateMoneySilent(player, 0)
+	end
+end
+
 local function AddMoney(player: Player, amount: number)
 	if playerMoneyList[player] then
 		playerMoneyList[player] += amount
@@ -37,4 +47,5 @@ end
 
 eventsModule.ConnectAddMoney(AddMoney)
 eventsModule.ConnectGetMoney(GetMoney)
+eventsModule.ConnectClearMoney(ClearMoney)
 return module

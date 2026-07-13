@@ -34,6 +34,10 @@ local tpData = TeleportService:GetLocalPlayerTeleportData()
 if tpData then
 	if tpData["QuickStart"] then
 		quickStart = true
+		eventsModule.FireRemoteSetBattleQuickStart()
+	end
+	if tpData["LavaDeaths"] then
+		eventsModule.FireRemoteSetBattleNoobMode(tpData["LavaDeaths"])
 	end
 end
 

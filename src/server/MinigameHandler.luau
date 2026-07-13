@@ -26,19 +26,19 @@ local minigameEndedBindableEvent = signalModule.getBindableEvent("MinigameEnded"
 	NileGreen
 ]]
 local timePerEnding = {
-	["McDarndolds"] = 30,
-	["Rig?"] = 30,
-	["Delusional"] = 100,
-	["SPEEN"] = 30,
-	["Escaped"] = 30,
+	["McDarndolds"] = 15,
+	-- ["Rig?"] = 30,
+	["Delusional"] = 50,
+	["SPEEN"] = 50,
+	["Escaped"] = 10,
 	["Drink"] = 30,
 	["Snack"] = 30,
-	["Bribe"] = 30,
+	["Bribe"] = 50,
 	["Frogs."] = 30,
 	["Cola Addiction"] = 30,
 	["Shedletsky"] = 30,
-	["Sleep"] = 30,
-	["NileGreen"] = 30,
+	["Sleep"] = 10,
+	["NileGreen"] = 10,
 }
 
 local updateTimerEvent = ReplicatedStorage.AllClientEvents.UpdateTimer
@@ -78,6 +78,8 @@ end
 local function startMinigame(ending: string)
 	local newMap = minigameMap:Clone()
 	newMap.Parent = workspace
+	print("gonna clear")
+	eventsModule.FireClearMoney()
 	-- let the transition happen
 	task.wait(1)
 	-- after transition start
