@@ -27,6 +27,10 @@ local donationDataStore = DataStoreService:GetOrderedDataStore(orderedDataStoreN
 -- Players' data in this session. Will be saved regularly to DataStore and deleted from table when player leaves
 local player_data = {}
 
+local DEFAULT_DATA = {
+	["Cutscenes.Intro"] = false,
+}
+
 --[=[
  Initialize the player's data
 
@@ -42,10 +46,8 @@ local function InitializePlayerData(player: Player)
 
 	-- Initialize new players' data
 	if not playerGameData then
-		playerGameData = {
-			["Cutscenes.Intro"] = false,
-			["JoinedTick"] = tick(),
-		}
+		playerGameData = DEFAULT_DATA
+		playerGameData["JoinedTick"] = tick()
 
 		dataStore:SetAsync("Player_" .. player.UserId, playerGameData)
 		-- GIVE WELCOME BADGE
@@ -88,21 +90,21 @@ Players.PlayerAdded:Connect(function(player: Player)
 	end
 end)
 
--- TODO: Check if we need this function (I forgot if I already made a player leaving save feature)
--- Players.PlayerRemoving:Connect(function(player)
--- 	local _, err = pcall(function()
--- 		-- Save Player Data
--- 		local playerGameData = player_data[player.UserId]
--- 		dataStore:SetAsync("Player_" .. player.UserId, playerGameData)
+-- I don't believe we need this because data saves as soon as we get it (I think i cant remember honestly)
+Players.PlayerRemoving:Connect(function(player)
+	local _, err = pcall(function()
+		-- Save Player Data
+		local playerGameData = player_data[player.UserId]
+		dataStore:SetAsync("Player_" .. player.UserId, playerGameData)
 
--- 		-- Delete player from list
--- 		table.remove(player_data, player.UserId)
--- 	end)
+		-- Delete player from list
+		table.remove(player_data, player.UserId)
+	end)
 
--- 	if err then
--- 		warn(err)
--- 	end
--- end)
+	if err then
+		warn(err)
+	end
+end)
 
 --[=[
  Assign values to player's DataStore data in bulk using a list of entries and values
@@ -133,6 +135,18 @@ local function massSetData(player: Player, entryNameList: { string }, values: { 
 	if err then
 		warn(err)
 	end
+end
+
+local function resetData(player: Player)
+	if not player_data[player] then
+		return
+	end
+	local oldJoinTick = player_data[player]["JoinedTick"]
+
+	player_data[player] = DEFAULT_DATA
+	player_data[player]["JoinedTick"] = oldJoinTick
+	warn("Make sure to also delete badges if you want a full data reset!")
+	dataStore:SetAsync("Player_" .. player.UserId, player_data[player])
 end
 
 --[=[
@@ -217,6 +231,8 @@ end
 -- 		warn(err)
 -- 	end
 -- end
+
+eventsModule.ConnectRemoteResetDataAsync(resetData)
 
 eventsModule.ConnectSetDataAsync(setData)
 eventsModule.ConnectSetDataMassAsync(massSetData)

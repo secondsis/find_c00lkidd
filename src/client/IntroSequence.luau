@@ -61,22 +61,22 @@ local function PlayPart1_WatchingTV()
 
 	-- Clone 007e7 to lay on couch
 
-	-- eventsModule.FireCloneAssetSecurityNone("Objects.007e7_Clone1")
-	-- local clone1Asset = replicatedStorage.ClonedFolder:WaitForChild("007e7_Clone1")
-	-- local clone1 = clone1Asset:Clone()
-	-- clone1Asset:Destroy()
-	-- clone1.Parent = introFolder
+	eventsModule.FireCloneAssetSecurityNone("Objects.007e7_Clone1")
+	local clone1Asset = ReplicatedStorage.ClonedFolder:WaitForChild("007e7_Clone1")
+	local clone1 = clone1Asset:Clone()
+	clone1Asset:Destroy()
+	clone1.Parent = introFolder
 
-	-- local cloneHumanoid1 = clone1:WaitForChild("Humanoid")
-	-- local animator1 = cloneHumanoid1:WaitForChild("Animator")
+	local cloneHumanoid1 = clone1:WaitForChild("Humanoid")
+	local animator1 = cloneHumanoid1:WaitForChild("Animator")
 
-	-- local layingTrack = animator1:LoadAnimation(cloneHumanoid1.laying)
-	-- local gettingUpTrack = animator1:LoadAnimation(cloneHumanoid1.getting_up)
-	-- local turningOffTrack = animator1:LoadAnimation(cloneHumanoid1.turning_off)
+	local layingTrack = animator1:LoadAnimation(cloneHumanoid1.laying)
+	local gettingUpTrack = animator1:LoadAnimation(cloneHumanoid1.getting_up)
+	local turningOffTrack = animator1:LoadAnimation(cloneHumanoid1.turning_off)
 
-	-- -- Set the scene: 007e7 is laying on the couch and markiplier is playing on the TV
-	-- layingTrack:Play()
-	-- markiplierSfx:Play()
+	-- Set the scene: 007e7 is laying on the couch and markiplier is playing on the TV
+	layingTrack:Play()
+	markiplierSfx:Play()
 
 	-- Move camera to face the couch
 	cutsceneModule.changeCamCFrame(cam1.CFrame)
@@ -86,24 +86,24 @@ local function PlayPart1_WatchingTV()
 	task.wait(2)
 
 	-- 007e7 gets up
-	-- layingTrack:Stop()
-	-- gettingUpTrack:Play()
-	-- gettingUpTrack.Stopped:Wait()
-	-- -- 007e7 turns off the TV
-	-- turningOffTrack:Play()
-	-- -- Right when the remote clicks, stop markipllier
-	-- task.wait(24 / 60)
-	-- markiplierSfx:Stop()
-	-- -- Remote click sound effect
-	-- sfxGroup["Television 4 (SFX)"]:Play()
-	-- -- Kill markiplier
-	-- importantFolder.TVDecal.Value:Destroy()
+	layingTrack:Stop()
+	gettingUpTrack:Play()
+	gettingUpTrack.Stopped:Wait()
+	-- 007e7 turns off the TV
+	turningOffTrack:Play()
+	-- Right when the remote clicks, stop markipllier
+	task.wait(24 / 60)
+	markiplierSfx:Stop()
+	-- Remote click sound effect
+	sfxGroup["Television 4 (SFX)"]:Play()
+	-- Kill markiplier
+	importantFolder.TVDecal.Value:Destroy()
 
 	task.wait(1)
 	-- Transition to controlling 007e7 character
 	eventsModule.FireSmoothTransitionFunction(2)
 	eventsModule.FireDisableSkipEvent()
-	-- cloneHumanoid1.Parent:Destroy()
+	cloneHumanoid1.Parent:Destroy()
 	cutsceneModule.fadeInPlayer(2.5)
 	cutsceneModule.resetCam()
 	eventsModule.FireEnableMouseIcon()

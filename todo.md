@@ -1,6 +1,7 @@
 Adding this back in because I really don't care anymore what you think about my (maybe-haphazard) process
 
 TODO: 
+FIX BRIBE ENDING -- go to version history and bring back a really old one and look at the trailer door script in that
 
 Figure out how to give client permission by server to: view a cutscene, view dialogue, get ending
 

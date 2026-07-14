@@ -5,6 +5,8 @@ local eventsModule = References.ServerEventsModule
 local Prompts = CollectionService:GetTagged("DoorPrompt")
 
 local function ConnectPromptTrigger(prompt: ProximityPrompt)
+	local isWeird = prompt:GetAttribute("Weird")
+	local asked = false
 	prompt.Triggered:Connect(function(player)
 		local item = eventsModule.FireGetItem(player)
 		local hasCrowbar = item and item.Name == "Crowbar"
@@ -12,7 +14,12 @@ local function ConnectPromptTrigger(prompt: ProximityPrompt)
 		if hasCrowbar then
 			prompt.Enabled = false
 			CollectionService:RemoveTag(prompt, "Prompt")
-			eventsModule.FireRemoteDialogueFunction(player, "HouseDeath")
+			if isWeird then
+				eventsModule.FireRemoteDialogueFunction(player, "WeirdHouseDeath")
+			else
+				eventsModule.FireRemoteDialogueFunction(player, "HouseDeath")
+			end
+
 			-- Explode
 			local DoorBoundsValue = prompt:FindFirstChildOfClass("ObjectValue")
 
@@ -23,7 +30,17 @@ local function ConnectPromptTrigger(prompt: ProximityPrompt)
 
 			prompt:Destroy()
 		else
-			eventsModule.FireRemoteDialogueFunction(player, "HouseTalk")
+			if isWeird then
+				eventsModule.FireRemoteDialogueFunction(player, "WeirdHouseTalk")
+				if not asked then
+					asked = true
+					local monerbag = game:GetService("ServerStorage").Assets.Security_SERVERONLY.Objects.Money_Bag
+						:Clone()
+					monerbag.Parent = workspace
+				end
+			else
+				eventsModule.FireRemoteDialogueFunction(player, "HouseTalk")
+			end
 		end
 	end)
 end

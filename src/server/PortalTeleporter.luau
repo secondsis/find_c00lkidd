@@ -2,7 +2,7 @@ local TeleportService = game:GetService("TeleportService")
 local Players = game:GetService("Players")
 local References = require(script.Parent.References)
 
-local END_GAME_ID = 100980384697456
+local END_GAME_ID = 78907491464330
 
 local part = References.CavePortal
 
