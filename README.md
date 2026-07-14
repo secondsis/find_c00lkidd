@@ -6,6 +6,7 @@ This is the `master` branch of the **find c00lkidd** Roblox game.
 <img width="640" height="360" alt="title screen" src="https://github.com/user-attachments/assets/c72f1542-4154-40cd-9c40-b7a8f37a2c1b" />
 
 # About
+Tools: **Roblox Studio / Luau / VSCode**
 
 This is my passion project I started over a while ago. This game is based in the universe of Forsaken, where you play as 007e7 and explore the neighborhood as you look for c00lkidd and cousin 007n7. With GASA4 gameplay, you collect endings to unlock the finale. I wanted a different ending to Forsaken, so I made it. It's kind of like a fangame or AU. 
 
