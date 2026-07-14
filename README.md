@@ -1,12 +1,24 @@
 # find c00lkidd: Boss 1
 This is the Boss 1 subplace of the find c00lkidd game. Go to `master` to see the main game code. 
 
+<img width="640" height="360" alt="Before scripts, it's just a baseplate" src="https://github.com/user-attachments/assets/0b20af64-da84-4d18-af85-c9c1dfe0f6b4" />
+
+
 # About
 Tools: **Roblox Studio / Luau / VSCode**
 
+<img width="640" height="360" alt="Falling out of the portal" src="https://github.com/user-attachments/assets/d9098860-5477-4252-8f5d-cb89f1e8b9ca" />
+
+
 In this part of the game, you fight the boss **Evil Rig**. It includes an intro and outro cutscene. The boss has three phases where its attacks will become more complex the lower its health. 
 
+<img width="640" height="360" alt="Green platform projections" src="https://github.com/user-attachments/assets/3aa2dae6-d180-4888-bc70-112c9cae3051" />
+
+
 In between boss attacks, you complete minigames where you speedrun endings from the main game. You use the trophies from these endings to attack the boss. 
+
+<img width="640" height="360" alt="Game over screen" src="https://github.com/user-attachments/assets/3f6f1a9c-0e14-4942-95ea-b700d2b26a04" />
+
 
 # Development
 
