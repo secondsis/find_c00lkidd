@@ -1,8 +1,39 @@
-# find c00lkidd Boss 1
-yep u guys can see what im doing here now
-it's a boss fight or whatever
-in between boss attacks, you go do a minigame where you speedrun endings from the original game
+# find c00lkidd: Boss 1
+This is the Boss 1 subplace of the find c00lkidd game. Go to `master` to see the main game code. 
 
+# About
+Tools: **Roblox Studio / Luau / VSCode**
+
+In this part of the game, you fight the boss **Evil Rig**. It includes an intro and outro cutscene. The boss has three phases where its attacks will become more complex the lower its health. 
+
+In between boss attacks, you complete minigames where you speedrun endings from the main game. You use the trophies from these endings to attack the boss. 
+
+# Development
+
+This was more of a test of what I can do with a boss battle. I have never made something like this before, so I was just seeing what kind of mechanics I could create. I didn't have an idea for *who* the boss would be, so it is still a Rig. I like to think of it as the Rig can be *anyone*. 
+
+I repurposed utility scripts from my main game into making this one. The `CutsceneModule`, ClientEventsModule, ServerEventsModule, etc. 
+
+I didn't really like the restrictive workflow that my `CutsceneService` provided, so in this subplace I just created the cutscenes almost from scratch, simply using utility functions. 
+
+I researched making a dynamic health bar for the boss and modeled it after a "grass boss" from another game.
+
+This is part of my long-lasting battle against Roblox Studio's terrible environment. Assets kept becoming broken or suffered from link rot, Roblox pushed updates that broke certain aspects, and now Roblox is taking away publishing games entirely. During the development of the boss, Roblox went from bad to unrecognizable. I hope that my work won't be for nothing though.
+
+# Instructions
+
+1. Give your face or id to roblox
+2. pray
+3. ur cooked.
+
+Okay but for real instructions on playing, it's basically the same: 
+1. Create a Roblox account (they will use your data)
+2. Age-verify (face or ID)
+3. Be 16+. Just be 16+. 
+4. Message me (SlackID: U09GFRYBF27) and request for access. 
+5. Pray that Roblox does not crash and burn by the time I respond. Or pray that it will. I don't know anymore. 
+
+Game Link: [Roblox-find-c00lkidd](https://www.roblox.com/games/94246194215637/Find-c00lkidd)
 
 # AI Usage
 I've used AI to: 
