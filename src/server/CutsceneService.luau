@@ -134,6 +134,7 @@ function CutsceneService.TeleportPlayerToBox(player: Player, boxTPPart: BasePart
 	end
 	local originalPlayerCFrame = player.Character.PrimaryPart.CFrame
 	References.DirectTeleportPlayer(player, boxTPPart.CFrame)
+	player.Character.PrimaryPart.Anchored = true
 	return originalPlayerCFrame
 end
 
@@ -157,6 +158,9 @@ function CutsceneService.CleanUpCutscene(player: Player, options)
 
 	-- Return player position
 	References.DirectTeleportPlayer(player, playerOriginalCFrame)
+	pcall(function()
+		player.Character.PrimaryPart.Anchored = false
+	end)
 
 	-- Destroy map
 	if not options or not options.KeepMap then

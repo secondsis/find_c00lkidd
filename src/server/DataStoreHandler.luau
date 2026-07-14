@@ -91,20 +91,20 @@ Players.PlayerAdded:Connect(function(player: Player)
 end)
 
 -- I don't believe we need this because data saves as soon as we get it (I think i cant remember honestly)
-Players.PlayerRemoving:Connect(function(player)
-	local _, err = pcall(function()
-		-- Save Player Data
-		local playerGameData = player_data[player.UserId]
-		dataStore:SetAsync("Player_" .. player.UserId, playerGameData)
+-- Players.PlayerRemoving:Connect(function(player)
+-- 	local _, err = pcall(function()
+-- 		-- Save Player Data
+-- 		local playerGameData = player_data[player.UserId]
+-- 		dataStore:SetAsync("Player_" .. player.UserId, playerGameData)
 
-		-- Delete player from list
-		table.remove(player_data, player.UserId)
-	end)
+-- 		-- Delete player from list
+-- 		table.remove(player_data, player.UserId)
+-- 	end)
 
-	if err then
-		warn(err)
-	end
-end)
+-- 	if err then
+-- 		warn(err)
+-- 	end
+-- end)
 
 --[=[
  Assign values to player's DataStore data in bulk using a list of entries and values
@@ -138,15 +138,16 @@ local function massSetData(player: Player, entryNameList: { string }, values: { 
 end
 
 local function resetData(player: Player)
-	if not player_data[player] then
+	if not player_data["Player_" .. player.UserId] then
+		print("couldnt find player data")
 		return
 	end
-	local oldJoinTick = player_data[player]["JoinedTick"]
+	local oldJoinTick = player_data["Player_" .. player.UserId]["JoinedTick"]
 
-	player_data[player] = DEFAULT_DATA
-	player_data[player]["JoinedTick"] = oldJoinTick
+	player_data["Player_" .. player.UserId] = DEFAULT_DATA
+	player_data["Player_" .. player.UserId]["JoinedTick"] = oldJoinTick
 	warn("Make sure to also delete badges if you want a full data reset!")
-	dataStore:SetAsync("Player_" .. player.UserId, player_data[player])
+	dataStore:SetAsync("Player_" .. player.UserId, player_data["Player_" .. player.UserId])
 end
 
 --[=[

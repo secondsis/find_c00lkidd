@@ -1,7 +1,7 @@
 local References = require(script.Parent.References)
 
-local tpFromPart = References.CaveExit
-local tpToPart = References.TeleportPartOutsideCave
+local tpFromPart = References.TeleportPartInsideCave
+local tpToPart = References.CaveEntrance
 
 -- FOREVER CONNECTION
 local cxn = References.TeleportPlayerOnTeleportPartTouch(tpFromPart, tpToPart.CFrame)
