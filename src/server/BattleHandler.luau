@@ -71,7 +71,7 @@ local battle_cancelled = false
 local lava_attack = false
 local lava_deaths = 0
 local deaths = 0
-local quickStart = true -- reset this
+local quickStart = false
 local noobMode = false
 
 eventsModule.ConnectRemoteSetBattleQuickStart(function(player)
