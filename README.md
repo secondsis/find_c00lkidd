@@ -37,12 +37,8 @@ Game Link: [Roblox-find-c00lkidd](https://www.roblox.com/games/94246194215637/Fi
 **No code was AI-generated**. As for making up ideas or debugging, it was very minimal and exclusively before 2026. I had a major break in development between November 2025 and May 2026. Since then, I started working on projects on Hack Club, which discourages overuse of AI. 
 
 # Note
-Rojo does not integrate with Roblox Studio perfectly. I am unable to upload scripts under Tools or ServerStorage. 
+Rojo does not integrate with Roblox Studio perfectly. I am unable to upload scripts under Tools or ServerStorage. Rojo only includes scripts under ServerScriptService, ReplicatedStorage, and StarterPlayerScripts by default. I tried my best to move every script I could into those three services. 
 
-Rojo only includes scripts under ServerScriptService, ReplicatedStorage, and StarterPlayerScripts by default.
+To best accomodate this, every single script and object and place and everything can be found under /builds, where I put the .rbxl files. You will need Roblox Studio to open them. 
 
-I tried my best to move every script I could into those three services. 
-
-Some scripts that must be instantiated/cloned under an object and require a reference to the Parent cannot be saved into Rojo. 
-
-But you could always just play my game and reverse engineer it ;) you should totally play!!!
+You should totally play!! Please please send me a msg!!
